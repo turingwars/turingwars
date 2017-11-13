@@ -1,0 +1,274 @@
+@font-face {
+  font-family: 'Lazer';
+  src: url('../fonts/Lazer84.ttf');
+}
+
+body {
+    color:#222;
+    font-family: Lazer;
+    background-image: url('../images/background.jpg');
+    background-size: 100%;
+}
+
+#innerBody{
+    position:relative;
+    z-index: 100;
+    background-color: black;
+    width: 1000px;
+    margin:auto;
+    padding: 30px;
+    padding-top: 5px;
+    opacity: 0.9;
+    background: linear-gradient(to bottom, #0000 0%,#00000073 10%,#1c1c1c 30%,#131313 100%);
+}
+
+.index h1 {
+    color: #f09609;
+    font-size: 100px !important;
+    text-align: center;
+    text-shadow:-1px 0 #ff0097, 0 1px #ff0097, 1px 0 #ff0097, 0 -1px #ff0097 !important;
+}
+
+#innerBody.index {
+    background: linear-gradient(to bottom, #0000 0%,#00000073 40%,#1c1c1c 50%,#131313 50%) !important;
+}
+
+#separator {
+    box-shadow: 1px -1px 1px #ff0097, -1px 1px 1px #1ba1e2;
+    height: 10px;
+    width: 400px;
+    background-color: #f09609;
+    display:block;
+    position: relative;
+    transform: rotate(1.9rad);
+    top: 130px;
+    left: 90px;
+}
+
+#champSelect {
+    width: 600px;
+    margin:auto;
+    background:transparent;
+    height: 400px;
+}
+
+.champBox{
+    width: 290px;
+    height: 200px;
+    clear: none;
+}
+
+.champBox table, .champBox tr {
+    padding: 0px;
+    margin: 0px;
+}
+
+.champBox td {
+    width: 90px;
+    height: 90px;
+    margin: 5px;
+    border: 1px solid #333;
+
+    text-align:center;
+    color: #fff;
+
+    clear: none;
+    cursor: pointer;
+}
+
+td.hidden, td.hidden:hover {
+    border: 0px solid #000 !important;
+}
+
+#player2champ td:hover {
+    border:1px solid #ff0097;
+}
+#player2champ .selected {
+    border:1px solid #ff0097;
+    color:#ff0097;
+}
+
+#player1champ td:hover {
+    border:1px solid #1ba1e2;
+}
+
+#player1champ .selected {
+    border:1px solid #1ba1e2;
+    color:#1ba1e2;
+}
+
+#player1champ {
+    position: relative;
+    left: -70px;
+    top: -40px;
+}
+
+#player2champ {
+    float: right;
+    position: relative;
+    left: 70px;
+    top: -80px;
+}
+
+#start{
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+    width: 300px;
+    display: none;
+    height: 150px;
+    float: right;
+    font-size: 60px;
+    position: relative;
+    top: 10px;
+    left: 320px;
+    color: #f09609;
+    vertical-align: middle;
+    text-shadow:-1px 0 #ff0097, 0 1px #ff0097, 1px 0 #ff0097, 0 -1px #ff0097 !important;
+    cursor: pointer;
+}
+
+#champSelect h2 {
+    font-size: 30px;
+}
+
+#champSelect #player1 {
+    position: relative;
+    top: -40px;
+    color: #1ba1e2;
+}
+
+#champSelect #player2 {
+    position: relative;
+    top:-80px;
+    float: right;
+    color: #ff0097;
+}
+
+#title1 {
+    text-shadow: 5px 2px 5px #ff0097, -1px 2px 1px #1ba1e2,  0px 0px 2px #ccc,  0px 1px 1px #fff;
+    font-size:40px;
+    letter-spacing:2px;
+}
+
+#memoryMapCanvas {
+    width:500px;
+    height: 500px;
+    display: inline-block;
+    border: 15px solid #222;
+    padding: 0px;
+    margin: 0px;
+}
+
+.playerBoard{
+
+    width: 200px;
+    height: 500px;
+    display: inline-block;
+    border: 15px solid #222;
+    padding: 0px;
+    margin: 0px;
+}
+
+.playerBoard svg {
+    display:block;
+}
+
+#versus{
+    font-size:30px;
+    width:100%;
+}
+
+.playerName {
+    text-shadow: 0px 0px 2px #ccc;
+    text-align:center;
+    display:inline-block;
+    width:230px;
+}
+
+#player2name {
+    float: right;
+}
+
+.playerscore {
+    text-shadow: 0px 0px 1px #ccc;
+    width:200px;
+    text-align:center;
+    font-size:30px;
+    position:absolute;
+}
+
+#displayFight {
+    z-index: 1000;
+    font-size:40px;
+    position:absolute;
+    top: 300px;
+    text-align:center;
+    margin: 0 auto; left: 0; right: 0;
+    width:1000px;
+    display:block;
+}
+
+#displayWinner {
+
+    z-index: 1000;
+    font-size:1px;
+    position:absolute;
+    top: 300px;
+    text-align:center;
+    margin: 0 auto; left: 0; right: 0;
+    width:1000px;
+    display:none;
+}
+
+.gold {
+    color: #f09609;
+    text-shadow: none;
+}
+
+#backArrow {
+    font-size: 10px;
+    color: white;
+    margin-top: -20px;
+    margin-bottom: 10px;
+    display: block;
+}
+#backArrow a{
+    color: #444;
+}
+
+#editChamp {
+    font-size: 20px;
+    color: #a200ff;
+    text-decoration: none;
+    display: block;
+    margin-left: 60px;
+    opacity: 1;
+    margin-top: 30px;
+}
+
+#editChamp.disabled {
+    color: #ccc;
+    opacity: 0.3;
+}
+
+#editName {
+    background: transparent;
+    border: 1px solid black;
+    color: #f09609;
+    font-family: Lazer;
+    font-size: 30px;
+    margin-left: 20px;
+}
+
+#CodeMirror-gutters {
+    background-color: #222;
+    
+}
+
+#hyperloop {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+}

@@ -1,0 +1,65 @@
+@import { Champion } from '../entities/Champion'
+
+@extends './layout.top'
+
+@param champions: Champion[]
+
+@section(content)
+
+    <div id="innerBody" class="index">
+
+    <!-- Header bar -->
+    <h1 id="title1">Turing &nbsp; wars</h1>
+
+    <div id="champSelect">
+        <div id="separator"></div>
+
+        <h2 id="player1">Player 1 &nbsp; &#9662;</h2>
+
+        <div id="player2champ" class="champBox">
+            <table>
+                <tr>
+                    <td class="hidden"></td>
+                    @if(champions.length > 0) <td class="player2" data-player-id="@(champions[0].id)">@(champions[0].name)</td> @endif
+                    @if(champions.length > 1) <td class="player2" data-player-id="@(champions[1].id)">@(champions[1].name)</td> @endif
+                </tr>
+                <tr>
+                    @if(champions.length > 2) <td class="player2" data-player-id="@(champions[2].id)">@(champions[2].name)</td> @endif
+                    @if(champions.length > 3) <td class="player2" data-player-id="@(champions[3].id)">@(champions[3].name)</td> @endif
+                    @if(champions.length > 4) <td class="player2" data-player-id="@(champions[4].id)">@(champions[4].name)</td> @endif
+                </tr>
+            </table>
+        </div>
+
+        <div id="player1champ" class="champBox">
+            <table>
+                <tr>
+                    @if(champions.length > 0) <td class="player1" data-player-id="@(champions[0].id)">@(champions[0].name)</td> @endif
+                    @if(champions.length > 1) <td class="player1" data-player-id="@(champions[1].id)">@(champions[1].name)</td> @endif
+                    @if(champions.length > 2) <td class="player1" data-player-id="@(champions[2].id)">@(champions[2].name)</td> @endif
+                </tr>
+                <tr>
+                    @if(champions.length > 3) <td class="player1" data-player-id="@(champions[3].id)">@(champions[3].name)</td> @endif
+                    @if(champions.length > 4) <td class="player1" data-player-id="@(champions[4].id)">@(champions[4].name)</td> @endif
+                    <td class="hidden"></td>
+                </tr>
+            </table>
+            <a id="editChamp" class="disabled" href="/">Edit Source</a>
+        </div>
+
+        <h2 id="player2">&#9652; &nbsp; Player 2</h2>
+
+        <h3 id="start">Go &#x25B8; &#x25B8;</h3>
+
+    </div>
+</div>
+<div style="display:none">
+@for (champ of champions)
+    <li><a href="/champion/@(champ.id)">@(champ.name)</a></li>
+@endfor
+</div>
+@endsection
+    
+@section(scripts)
+    <script src="/dist/index.js"></script>
+@endsection
