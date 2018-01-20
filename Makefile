@@ -13,6 +13,7 @@ copy-jar: $(JAR_IN_WEBSERVER)
 .PHONY: test
 test:
 	$(MAKE) -C engine/turingwars test
+	$(MAKE) -C web test
 
 .PHONY: serve
 serve: $(JAR_IN_WEBSERVER)
