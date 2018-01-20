@@ -17,3 +17,5 @@ export const NUM_CYCLES = 5000;
  * Number of scheduler cwles
  */
 export const UPDATE_PERIOD = 10;
+
+export const JAR_LOCATION = 'jar/turingwars.jar';

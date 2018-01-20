@@ -22,10 +22,11 @@ import { GameUpdate } from '../../model/GameUpdate';
 import { Champion } from '../entities/Champion';
 import { GameLog } from '../entities/GameLog';
 import { orFail } from '../helpers';
+import { JAR_LOCATION } from '../../config';
 
 const engineCmdLine = [
     '-cp',
-    path.join(process.cwd(), '../engine/turingwars/target/scala-2.12/turingwars-assembly-0.1.jar'),
+    path.join(process.cwd(), JAR_LOCATION),
     'core.Application'
 ];
 
