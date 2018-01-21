@@ -38,6 +38,10 @@ mine %id
 ```
 This one does not mine at first, but hopes to hijack the other's program CPU time! He floods every 4 slots of the memory with `mov` instructions that points to its own `mine` instruction. If it his the memory space corresponding to the opponent program, he will make him jump to the Dwarf's `mine` instruction. Potentially, in the end, both program work for the Dwarf ! 
 
+### I made a killer program !
+
+Awesome, we want to include it in the game. Just open an issue with the code.
+
 ## How to run
 
 ### Docker setup
@@ -46,15 +50,17 @@ This one does not mine at first, but hopes to hijack the other's program CPU tim
 
 ### Manual
 
-You need NodeJS to run the server, and java to execute the .jar that simulates the programs. To compile the .jar, you need sbt.
+You only need NodeJS to run the server, java to execute the .jar that simulates the programs, and sbt (which fetches scala) to compile the .jar. Make sure you have at least 10GB of space on your drive for `node_modules`. Just kidding.
 
-Simply run `make serve` in the main folder to get started.
+Run `make install` in the main folder once to fetch everything. This will download about the whole internet via sbt and node packages.
+
+Then, simply run `make serve` in the main folder to get started.
 
 TODO: instruction on how to develop with watches
 
 ## Authors
 
-Christophe Tafani-Dereeper
-Nicolas Reich
-Hadrien Milano
-Ludovic Barman
+- [Christophe Tafani-Dereeper](https://christophetd.fr)
+- Nicolas Reich
+- [Hadrien Milano](https://hmil.fr)
+- [Ludovic Barman](https://lbarman.ch)
