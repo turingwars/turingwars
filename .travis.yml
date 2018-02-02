@@ -1,0 +1,9 @@
+language: node_js
+before_script:
+  - make install
+script:
+  - make test
+node_js:
+  - 6.10.3
+scala:
+  - 2.12.4

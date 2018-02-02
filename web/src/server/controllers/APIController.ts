@@ -13,6 +13,7 @@ import * as uuid from 'uuid/v4';
 import { Assembler } from '../../assembler/Assembler';
 import { CompilerError } from '../../assembler/CompileError';
 import { CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../../config';
+import { JAR_LOCATION } from '../../config';
 import { IAPIParseError } from '../../dto/APIParseError';
 import { CreateMatchRequest } from '../../dto/CreateMatchRequest';
 import { CreateMatchResponse } from '../../dto/CreateMatchResponse';
@@ -25,7 +26,7 @@ import { orFail } from '../helpers';
 
 const engineCmdLine = [
     '-cp',
-    path.join(process.cwd(), '../engine/turingwars/target/scala-2.12/turingwars-assembly-0.1.jar'),
+    path.join(process.cwd(), JAR_LOCATION),
     'core.Application'
 ];
 

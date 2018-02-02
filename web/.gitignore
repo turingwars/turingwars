@@ -4,3 +4,4 @@ coverage
 public/dist
 src/server/views
 .tmp
+jar/turingwars.jar
