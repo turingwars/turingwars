@@ -4,6 +4,8 @@ JAR=scala-2.12/turingwars-assembly-$(JAR_VARION).jar
 $(JAR):
 	sbt assembly
 
+install:
+
 .PHONY: jar
 jar: $(JAR)
 
