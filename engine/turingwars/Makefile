@@ -5,6 +5,9 @@ $(JAR):
 	sbt assembly
 
 install:
+	mkdir -p $HOME/.sbt/launchers/1.0.3/
+	curl -L -o $HOME/.sbt/launchers/1.0.3/sbt-launch.jar http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/1.0.3/sbt-launch.jar
+
 
 .PHONY: jar
 jar: $(JAR)
