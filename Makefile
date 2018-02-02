@@ -15,9 +15,10 @@ test:
 	$(MAKE) -C engine/turingwars test
 	$(MAKE) -C web test
 
-.PHONY: install
-install:
-	$(MAKE) -C engine/turingwars install
+.PHONY: install-travis
+install-travis:
+	$(MAKE) -C engine/turingwars install-travis
+	$(MAKE) -C web install
 
 .PHONY: serve
 serve: $(JAR_IN_WEBSERVER)
