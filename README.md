@@ -1,4 +1,4 @@
-# TuringWars
+# TuringWars [![Build Status](https://travis-ci.org/turingwars/turingwars.svg?branch=master)](https://travis-ci.org/turingwars/turingwars)
 
 ![TuringWars](/resources/logos/turingwars.png)
 
