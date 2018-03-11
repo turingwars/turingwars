@@ -1,21 +1,21 @@
-FROM node:latest
+#fix so we know it's Debian Jessie (8)
+FROM node:9.8
 
-RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list
-RUN echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+# installs OpenJDK headless on Debian Jessie
+RUN echo "deb http://ftp.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list.d/backports.list
 RUN apt-get update
-RUN apt-get install oracle-java8-installer -y  --force-yes --no-install-recommends
+RUN apt install -t jessie-backports openjdk-8-jre-headless ca-certificates-java -y --force-yes --no-install-recommends
 
+# tests java version, should be 1.8.x
 RUN java -version
-RUN apt-get install oracle-java8-set-default
 
 COPY ./web /web
 WORKDIR /web
 
-RUN npm update
-RUN npm install
+# updates npm and installs packages
 RUN npm update
 RUN npm install --unsafe-perm -g sqlite3
 RUN npm i --unsafe-perm ajv@^6.0.0 # something
+RUN npm update
 
 CMD ["make", "serve"]
