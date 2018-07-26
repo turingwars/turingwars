@@ -1,16 +1,15 @@
-JAR_VERSION=$(shell cat build.sbt | grep version | cut -d'"' -f 2)
-JAR=scala-2.12/turingwars-assembly-$(JAR_VARION).jar
+BIN=scala-2.12/turingwars-engine-fastopt.js
 
-$(JAR):
-	sbt assembly
+$(BIN):
+	sbt fastOptJS
 
 .PHONY: install-travis
 install-travis:
 	mkdir -p ${HOME}/.sbt/launchers/1.0.3/
 	curl -L -o ${HOME}/.sbt/launchers/1.0.3/sbt-launch.jar http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.9/sbt-launch.jar
 
-.PHONY: jar
-jar: $(JAR)
+.PHONY: js
+js: $(BIN)
 
 .PHONY: test
 test:
@@ -21,4 +20,4 @@ clean:
 	sbt clean
 
 .PHONY:all
-all: $(JAR)
+all: $(BIN)

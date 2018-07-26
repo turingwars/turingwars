@@ -5,7 +5,6 @@ import core.instructions._
 // main execution class
 class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequency: Int = 1) {
 
-
   def run(): Unit = {
     for (i <- 0 until nbCycles) {
       if((i % diffFrequency) == 0) {
@@ -18,9 +17,6 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
           process.eip = execute(process)
         }
       })
-
-
-
     }
   }
 
@@ -121,145 +117,6 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
 
     destInstruction.copy(newA, newB)
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   def outputState(): String = {
     var str: String = "{\"processes\": ["

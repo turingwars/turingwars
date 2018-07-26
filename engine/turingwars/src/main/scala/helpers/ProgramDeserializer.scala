@@ -1,20 +1,9 @@
 package helpers
 
-import com.google.gson.Gson
 import core.instructions._
-
-import scala.collection.JavaConverters._
-
+import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
 object ProgramDeserializer {
-
-  def main(args: Array[String]): Unit = {
-    //val json = "{\"program\":[{\"op\":\"ADD\",\"a\":{\"fieldType\":\"reference\",\"value\":1,\"field\":\"a\"},\"b\":{\"fieldType\":\"immediate\",\"value\":4,\"field\":\"a\"}},{\"op\":\"JMP\",\"a\":{\"fieldType\":\"immediate\",\"value\":1,\"field\":\"a\"},\"b\":{\"fieldType\":\"immediate\",\"value\":0,\"field\":\"a\"}},{\"op\":\"NOP\",\"a\":{\"fieldType\":\"immediate\",\"value\":0,\"field\":\"a\"},\"b\":{\"fieldType\":\"immediate\",\"value\":0,\"field\":\"a\"}}]}"
-    val json = "{\n  \"program\": [\n    {\n      \"type\": \"MOV\",\n      \"aField\": {\n        \"fieldType\": \"immediate\",\n        \"value\": 1,\n        \"field\": \"a\"\n      },\n      \"bField\": {\n        \"fieldType\": \"immediate\",\n        \"value\": 0,\n        \"field\": \"a\"\n      }\n    }\n  ]\n}";
-    val program = deserialize(json)
-    println(program)
-  }
-
 
   case class Field(fieldType: String, value: Int, field: String) {
     def toFieldValue(): FieldValue = {
@@ -27,9 +16,9 @@ object ProgramDeserializer {
   case class Instr(op: String, a: Field, b: Field) {
 
     def toInstruction(): Instruction = {
-      val aField = a.toFieldValue
-      val bField = b.toFieldValue
-      op toLowerCase match {
+      val aField = a.toFieldValue()
+      val bField = b.toFieldValue()
+      op.toLowerCase() match {
         case "add" => Add(aField, bField)
         case "sub" => Sub(aField, bField)
         case "subb" => Subb(aField, bField)
@@ -50,15 +39,14 @@ object ProgramDeserializer {
       }
     }
   }
-  class Program {
-    var program: java.util.ArrayList[Instr] = new java.util.ArrayList[Instr]
-    def setProgram(pro: java.util.ArrayList[Instr]) = program = pro
-  }
+  case class Program(program: List[Instr])
 
   def deserialize(json: String): List[Instruction] = {
-    val program = new Gson().fromJson(json, classOf[Program]).program
-    val programList: Iterable[Instr] = program.asScala
-    programList.map(_.toInstruction).toList
+    val program = decode[Program](json) match {
+      case Right(value) => value.program
+      case Left(error) => throw error
+    }
+    program.map(_.toInstruction())
   }
 
 
