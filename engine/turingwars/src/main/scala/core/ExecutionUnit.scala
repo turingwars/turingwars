@@ -1,5 +1,7 @@
 package core
 
+import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+import core.dto.{Instruction => InstructionDTO, _}
 import core.instructions._
 
 // main execution class
@@ -8,13 +10,16 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
   def run(): Unit = {
     for (i <- 0 until nbCycles) {
       if((i % diffFrequency) == 0) {
-        print(outputState())
+        println(outputState())
         state.memory.resetDiff()
       }
 
       state.processes.foreach(process => {
         if (process.isAlive) {
           process.eip = execute(process)
+          // Round off to keep process inside the core
+          val mod = process.eip % state.memory.size
+          process.eip = if (mod >= 0) mod else mod + state.memory.size
         }
       })
     }
@@ -119,52 +124,30 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
   }
 
   def outputState(): String = {
-    var str: String = "{\"processes\": ["
-    for (i <- 0 until state.processes.size) {
-      val mod = state.processes(i).eip % state.memory.size
-      val wrappedEip = if (mod >= 0) mod else mod + state.memory.size
-      str += "{\"processId\": " + i + ", \"instructionPointer\": " + wrappedEip + ", \"isAlive\": " + state.processes(i).isAlive + "}"
-      if (i < state.processes.size - 1) {
-        str += ","
-      }
-    }
-    str += "], "
-    str += "\"memory\": ["
-    for (diff <- state.memory.diff) {
-      str += "{ \"address\": " + diff.address + ","
-      str += "\"cause\": " + diff.cause + ","
-      str += "\"value\": {"
-      str += "\"op\": \"" + diff.value.instructionType + "\","
-      str += "\"a\": {"
-      str += "\"fieldType\": \"" + diff.value.aField.fieldType + "\","
-      str += "\"value\": " + diff.value.aField.value + ","
-      str +=  "\"field\": \"" + diff.value.aField.field + "\""
-      str += "},"
-      str += "\"b\": {"
-      str += "\"fieldType\": \"" + diff.value.bField.fieldType + "\","
-      str += "\"value\": " + diff.value.bField.value + ","
-      str += "\"field\": \"" + diff.value.bField.field + "\""
-      str += "}"
-      str += "}},"
-    }
-    if (state.memory.diff.size > 0) {
-      str = str.dropRight(1)
-    }
-    str += "],"
-    str += "\"score\": ["
-    var i = 0
-    for((playerId, score) <- state.scores) {
-      str += "{\"playerId\": " + playerId + ", \"score\": \"" + score + "\"},"
-      i += 1
-    }
-    if (!state.scores.isEmpty) {
-      str = str.dropRight(1)
-    }
-    str += "]"
-    str += "}"
-    str += "\n"
-
-    str
+    GameUpdate(
+      state.processes.zipWithIndex.map({ case (descriptor: ProcessDescriptor, id: Int) =>
+        Process(
+          id.toString, descriptor.eip, descriptor.isAlive
+        )
+      }),
+      state.memory.diff.map(diff => MemoryUpdate(
+        diff.address,
+        diff.cause,
+        InstructionDTO(
+          diff.value.instructionType,
+          InstructionField(
+            diff.value.aField.fieldType,
+            diff.value.aField.value,
+            diff.value.aField.field
+          ),
+          InstructionField(
+            diff.value.bField.fieldType,
+            diff.value.bField.value,
+            diff.value.bField.field
+          )
+        )
+      )),
+      state.scores.map(t => Score(t._1.toString, t._2)).toList
+    ).asJson.noSpaces
   }
-
 }
