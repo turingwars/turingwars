@@ -37,21 +37,15 @@
             "mine"
         ];
 
-        function nextUntilUnescaped(stream, end) {
-            var escaped = false, next;
-            while ((next = stream.next()) != null) {
-                if (next === end && !escaped) {
-                    return false;
-                }
-                escaped = !escaped && next === "\\";
-            }
-            return escaped;
-        }
+        var brackets = [ '(', ')', ':' ];
+
+        var opcodesWithLabel = [ 'jmp', 'jz', 'jnz' ];
 
         return {
             startState: function() {
                 return {
-                    expectIdent: false
+                    expectIdent: false,
+                    expectJumpLocation: false
                 };
             },
     
@@ -60,25 +54,28 @@
                 if (state.expectIdent) {
                     stream.eatWhile(/\w/);
                     state.expectIdent = false;
-                    return "variable";
+                    return "string";
                 }
         
                 if (stream.eatSpace()) {
                     return null;
                 }
+
+                let allowLabels = false;
+                if (state.expectJumpLocation) {
+                    console.log('Allow');
+                    state.expectJumpLocation = false;
+                    allowLabels = true;
+                }
         
-                var style, cur, ch = stream.next();
+                var cur, ch = stream.next();
 
                 if (ch === lineCommentStartSymbol) {
                     stream.skipToEnd();
                     return "comment";
                 }
 
-                if (ch === '(') {
-                    return "braket";
-                }
-        
-                if (ch === ')') {
+                if (brackets.indexOf(ch) !== -1) {
                     return "braket";
                 }
 
@@ -102,17 +99,21 @@
         
                 if (/\w/.test(ch)) {
                     stream.eatWhile(/\w/);
-                    if (stream.eat(":")) {
-                        return 'tag';
+                    if (stream.peek() === ":") {
+                        return allowLabels ? 'invalid' : 'variable';
                     }
                     cur = stream.current().toLowerCase();
                     if (cur === 'a' || cur === 'b') {
                         return 'property';
                     }
                     if (opcodes.indexOf(cur) !== -1) {
+                        if (opcodesWithLabel.indexOf(cur) !== -1) {
+                            state.expectJumpLocation = true;
+                            stream.eatSpace();
+                        }
                         return 'keyword';
                     }
-                    return 'invalid';
+                    return allowLabels ? 'variable' : 'invalid';
                 }
             },
         
