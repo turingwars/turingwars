@@ -1,14 +1,14 @@
-JAR_IN_WEBSERVER=web/jar/turingwars.jar
+JS_IN_WEBSERVER=web/js/turingwars.js
 
 .PHONY: engine
 engine:	
-	$(MAKE) -C engine/turingwars jar
+	$(MAKE) -C engine/turingwars js
 
-$(JAR_IN_WEBSERVER): engine
-	rm -f web/jar/turingwars.jar
-	cp engine/turingwars/target/scala-2.12/*.jar web/jar/turingwars.jar
+$(JS_IN_WEBSERVER): engine
+	rm -f $(JS_IN_WEBSERVER)
+	cp engine/turingwars/target/scala-2.12/turingwars-engine-fastopt.js $(JS_IN_WEBSERVER)
 
-copy-jar: $(JAR_IN_WEBSERVER)
+copy-jar: $(JS_IN_WEBSERVER)
 
 .PHONY: test
 test:
@@ -21,7 +21,7 @@ install-travis:
 	$(MAKE) -C web install
 
 .PHONY: serve
-serve: $(JAR_IN_WEBSERVER)
+serve: $(JS_IN_WEBSERVER)
 	$(MAKE) -C web serve
 
 .PHONY: clean

@@ -13,7 +13,7 @@ import * as uuid from 'uuid/v4';
 import { Assembler } from '../../assembler/Assembler';
 import { CompilerError } from '../../assembler/CompileError';
 import { CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../../config';
-import { JAR_LOCATION } from '../../config';
+import { BIN_LOCATION } from '../../config';
 import { IAPIParseError } from '../../dto/APIParseError';
 import { CreateMatchRequest } from '../../dto/CreateMatchRequest';
 import { CreateMatchResponse } from '../../dto/CreateMatchResponse';
@@ -25,9 +25,7 @@ import { GameLog } from '../entities/GameLog';
 import { orFail } from '../helpers';
 
 const engineCmdLine = [
-    '-cp',
-    path.join(process.cwd(), JAR_LOCATION),
-    'core.Application'
+    path.join(process.cwd(), BIN_LOCATION)
 ];
 
 class ChampionAssemblyError extends HttpError implements IAPIParseError {
@@ -91,7 +89,7 @@ export class APIController {
         const log: Array<Promise<GameUpdate>> = [];
 
         console.log([...engineCmdLine, ...programs]);
-        const vm = spawn('java', [...engineCmdLine, ...programs, '' + UPDATE_PERIOD, '' + NUM_CYCLES, '' + CORESIZE]);
+        const vm = spawn('node', [...engineCmdLine, ...programs, '' + UPDATE_PERIOD, '' + NUM_CYCLES, '' + CORESIZE]);
         const lines = byline(vm.stdout, {
             encoding: 'utf-8'
         });

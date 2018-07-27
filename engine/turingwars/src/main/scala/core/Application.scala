@@ -1,8 +1,8 @@
 package core
 
 import helpers.ProgramDeserializer
-
-import scala.io.Source
+import io.scalajs.nodejs.fs._
+import io.scalajs.nodejs.process
 
 object Application {
 
@@ -12,22 +12,22 @@ object Application {
   second program
   number of cycles between each mem diff
   number of cycles to play
+  size of the core
    */
   def main(args: Array[String]): Unit = {
+
     val prog1 = ProgramDeserializer.deserialize(
-      Source.fromFile(args(0)).getLines().toList.mkString(" ")
+      Fs.readFileSync(process.argv(2)).toString("utf-8")
     )
     val prog2 = ProgramDeserializer.deserialize(
-      Source.fromFile(args(1)).getLines().toList.mkString(" ")
+      Fs.readFileSync(process.argv(3)).toString("utf-8")
     )
 
+    val diffFrequency = process.argv(4).toInt
 
+    val nbCycles = process.argv(5).toInt
 
-    val diffFrequency = args(2).toInt
-
-    val nbCycles = args(3).toInt
-
-    val memorySize = args(4).toInt
+    val memorySize = process.argv(6).toInt
     val memory = new Memory(memorySize)
 
     val eip1 = 0
@@ -45,9 +45,6 @@ object Application {
     for (j <- eip2 until eip2 + prog2.size) {
       memory.setRelative(pd(1), j - eip2, prog2(j - eip2), pid2)
     }
-
-
-
 
 
     val state = new State(memory, pd, Map(0 -> 0, 1 -> 0))
