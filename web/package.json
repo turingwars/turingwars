@@ -8,7 +8,7 @@
     "url": "https://github.com/turingwars/turingwars"
   },
   "scripts": {
-    "start": "npm run build:views && ts-node src/server/main.ts",
+    "start": "ts-node src/server/main.ts",
     "test": "tslint -p . && jest",
     "test:watch": "jest --watch",
     "dev:frontend": "webpack-dev-server",
