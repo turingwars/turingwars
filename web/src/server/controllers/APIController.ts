@@ -5,19 +5,15 @@ import { validate } from 'class-validator';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { BadRequestError, Body, Get, HttpError, JsonController, Param, Post } from 'routing-controllers';
+import { BadRequestError, Body, Get, JsonController, Param, Post } from 'routing-controllers';
 import { Repository } from 'typeorm';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 import * as uuid from 'uuid/v4';
 
 import { Assembler } from '../../assembler/Assembler';
-import { CompilerError } from '../../assembler/CompileError';
-import { CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../../config';
-import { BIN_LOCATION } from '../../config';
-import { IAPIParseError } from '../../dto/APIParseError';
+import { BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../../config';
 import { CreateMatchRequest } from '../../dto/CreateMatchRequest';
 import { CreateMatchResponse } from '../../dto/CreateMatchResponse';
-import { CreateOrUpdateChampionRequest } from '../../dto/CreateOrUpdateChampionRequest';
 import { GetGameResponse } from '../../dto/GetGameResponse';
 import { GameUpdate } from '../../model/GameUpdate';
 import { Champion } from '../entities/Champion';
@@ -27,13 +23,6 @@ import { orFail } from '../helpers';
 const engineCmdLine = [
     path.join(process.cwd(), BIN_LOCATION)
 ];
-
-class ChampionAssemblyError extends HttpError implements IAPIParseError {
-
-    constructor(public compilerError: CompilerError) {
-        super(400);
-    }
-}
 
 @JsonController('/api')
 export class APIController {
@@ -58,20 +47,6 @@ export class APIController {
         response.log = JSON.parse(gameLog.log as string);
         await validate(response);
         return response;
-    }
-
-    @Post('/create-champion')
-    public async submitChampion(@Body() request: CreateOrUpdateChampionRequest): Promise<Champion> {
-        const ent = Champion.fromRequest(request);
-        validate(ent);
-        const asm = new Assembler();
-        try {
-            asm.assemble(ent.code); // Check the assembly code before saving
-        } catch (e) {
-            throw new ChampionAssemblyError(e);
-        }
-        await this.championsRepo.save(ent);
-        return ent;
     }
 
     @Post('/create-game')

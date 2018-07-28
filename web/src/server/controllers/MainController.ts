@@ -25,11 +25,9 @@ export class MainController {
         });
     }
 
-    @Get('/champion/:id')
-    public async championPage(@Param('id') id: string) {
-        return edit({
-            champion: orFail(await this.championsRepo.findOneById(id))
-        });
+    @Get('/champion')
+    public async championPage() {
+        return edit();
     }
 
     @Get('/replay/:id')

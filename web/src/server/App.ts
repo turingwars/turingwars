@@ -1,13 +1,19 @@
 import { json, urlencoded } from 'body-parser';
+import { validate } from 'class-validator';
 import * as cors from 'cors';
 import * as express from 'express';
+import { NotFoundHttpException, middleware as errorReporter } from 'express-http-exceptions';
 import * as path from 'path';
+import RestypedRouter from 'restyped-express-async';
 import { useExpressServer } from 'routing-controllers';
 import { Service } from 'typedi';
 import { createConnection } from 'typeorm';
 
+import { IAPIDefinition } from '../api';
+import { Assembler } from '../assembler/Assembler';
 import { SERVER_PORT } from '../config';
 import { BANNER } from './banner';
+import { Champion } from './entities/Champion';
 import { seedDatabase } from './seed';
 
 @Service()
@@ -27,7 +33,7 @@ export class App {
             synchronize: true,
         });
 
-        seedDatabase(connection);
+        await seedDatabase(connection);
 
         console.log('Initializing server...');
 
@@ -40,6 +46,39 @@ export class App {
                 path.join(__dirname, 'controllers/**/*'),
             ],
         });
+
+        const championsRepo = connection.getRepository(Champion);
+
+        const apiRouter = express.Router();
+        app.use('/api', apiRouter);
+        const router = RestypedRouter<IAPIDefinition>(apiRouter);
+        router.get('/hero/:id', async (req) => {
+            const champ = await championsRepo.findOneById(req.params.id);
+            if (champ == null) {
+                throw new NotFoundHttpException();
+            }
+            return {
+                id: champ.id,
+                name: champ.name,
+                program: champ.code
+            };
+        });
+
+        router.put('/hero/:id', async (req) => {
+            const ent = await championsRepo.findOneById(req.params.id);
+            if (ent === undefined) {
+                throw new NotFoundHttpException();
+            }
+            ent.code = req.body.program;
+            ent.name = req.body.name;
+            validate(ent);
+            const asm = new Assembler();
+            asm.assemble(ent.code); // Check the assembly code before saving
+            await championsRepo.save(ent);
+            return ent;
+        });
+
+        app.use(errorReporter());
 
         app.use(express.static(path.join(process.cwd(), 'public/')));
 

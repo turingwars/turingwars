@@ -13,7 +13,7 @@ module.exports = {
             './src/frontend/index.ts'
         ], 
         'edit': [
-            './src/frontend/edit.ts'
+            './src/frontend/editor/main.tsx'
         ]
     },
 
@@ -43,7 +43,13 @@ module.exports = {
     externals: {
         // 'jquery': 'jQuery'
         'd3': 'd3',
-        'underscore': '_'
+        'underscore': '_',
+        'react': 'React',
+        'redux': 'Redux',
+        'react-redux': 'ReactRedux',
+        'react-dom': 'ReactDOM',
+        'codemirror': 'CodeMirror',
+        'axios': 'axios'
     },
 
     // Add the loader for .ts files.

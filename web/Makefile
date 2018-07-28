@@ -21,7 +21,7 @@ serve: $(NODE_MODULES) views $(FRONTEND)
 views: $(SRC)
 	npm run build:views
 
-$(FRONTEND): $(SRC)
+$(FRONTEND): $(SRC) webpack.config.js
 	npm run build:frontend
 
 $(NODE_MODULES): package.json package-lock.json

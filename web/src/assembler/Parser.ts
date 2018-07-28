@@ -29,6 +29,18 @@ import TokensIterator from './TokensIterator';
 
 type ParserState = (this: Parser, eof: boolean) => ParserState;
 
+interface IBufferedToken<T> {
+    value: T;
+    token: Token;
+}
+
+function bufferToken<T>(tk: Token, t: T): IBufferedToken<T> {
+    return {
+        value: t,
+        token: tk
+    };
+}
+
 export class Parser {
 
     private it: TokensIterator;
@@ -38,8 +50,9 @@ export class Parser {
     private state: ParserState;
 
     private bufferOpcode: T_IDENT | null;
-    private bufferAField: InstructionField | null;
-    private bufferBField: InstructionField | null;
+    private bufferAField: IBufferedToken<InstructionField> | null;
+    private bufferBField: IBufferedToken<InstructionField> | null;
+    // TODO: remove sign tokens
     private bufferSign: number = 1;
     private bufferIdent: T_IDENT;
 
@@ -87,13 +100,13 @@ export class Parser {
 
     private state_field(eof: boolean): ParserState {
         if (eof) {
-            this.produceInstruction(this.it.current());
+            this.produceInstruction();
             return this.state;
         }
         const token = this.it.next();
         switch (token.name) {
             case T_NEWLINE.name:
-                this.produceInstruction(token);
+                this.produceInstruction();
                 return this.state_init;
             case T_PLUS.name:
                 return this.state_fieldImmediateNumber;
@@ -110,9 +123,9 @@ export class Parser {
                 try {
                     const intValue = parseInt(value, 10);
                     if (this.bufferAField == null) {
-                        this.bufferAField = immediate(intValue);
+                        this.bufferAField = bufferToken(token, immediate(intValue));
                     } else {
-                        this.bufferBField = immediate(intValue);
+                        this.bufferBField = bufferToken(token, immediate(intValue));
                     }
                     return this.state_endField;
                 } catch (e) {
@@ -137,7 +150,7 @@ export class Parser {
             case T_IDENT.name:
                 const value = this.variables[(token as T_IDENT).value];
                 if (this.bufferAField == null) {
-                    this.bufferAField = immediate(value);
+                    this.bufferAField = bufferToken(token, immediate(value));
                 }
                 return this.state_endField;
             default:
@@ -184,9 +197,9 @@ export class Parser {
                     const intValue = parseInt(value, 10);
                     const instr = ref(this.bufferIdent.value, intValue);
                     if (this.bufferAField == null) {
-                        this.bufferAField = instr;
+                        this.bufferAField = bufferToken(token, instr);
                     } else {
-                        this.bufferBField = instr;
+                        this.bufferBField = bufferToken(token, instr);
                     }
                     return this.state_endReference;
                 } catch (e) {
@@ -232,10 +245,10 @@ export class Parser {
                     const intValue = parseInt(value, 10) * this.bufferSign;
                     const instr = ref(this.bufferIdent.value, intValue);
                     if (this.bufferAField == null) {
-                        this.bufferAField = instr;
+                        this.bufferAField = bufferToken(token, instr);
                         this.bufferSign = 1;
                     } else {
-                        this.bufferBField = instr;
+                        this.bufferBField = bufferToken(token, instr);
                     }
                     return this.state_endReference;
                 } catch (e) {
@@ -260,10 +273,10 @@ export class Parser {
                 try {
                     const intValue = parseInt(value, 10) * this.bufferSign;
                     if (this.bufferAField == null) {
-                        this.bufferAField = immediate(intValue);
+                        this.bufferAField = bufferToken(token, immediate(intValue));
                         this.bufferSign = 1;
                     } else {
-                        this.bufferBField = immediate(intValue);
+                        this.bufferBField = bufferToken(token, immediate(intValue));
                     }
                     return this.state_endField;
                 } catch (e) {
@@ -277,7 +290,7 @@ export class Parser {
     }
 
     private state_endInstruction(eof: boolean): ParserState {
-        this.produceInstruction(this.it.current());
+        this.produceInstruction();
         if (eof) {
             return this.state;
         }
@@ -317,7 +330,7 @@ export class Parser {
         this.bufferSign = 1;
     }
 
-    private produceInstruction(currentToken: Token): void {
+    private produceInstruction(): void {
 
         if (this.bufferOpcode == null) {
             throw new Error('Assertion error: opcode is null');
@@ -327,68 +340,68 @@ export class Parser {
 
         switch (op) {
             case OpCode.ADD:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(add(aField, bField));
                 });
                 break;
             case OpCode.DAT:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     // TODO: check that aField and bField are immediate
                     this.program.program.push(dat(aField.value, bField.value));
                 });
                 break;
             case OpCode.DIV:
                 // TODO: check that aField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(div(aField, bField));
                 });
                 break;
             case OpCode.DIVB:
                 // TODO: check that bField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(divb(aField, bField));
                 });
                 break;
             case OpCode.JMP:
-                this.withAField(currentToken, (aField) => {
+                this.withAField(this.bufferOpcode, (aField) => {
                     this.program.program.push(jmp(aField));
                 });
                 break;
             case OpCode.JNZ:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(jnz(aField, bField));
                 });
                 break;
             case OpCode.JZ:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(jz(aField, bField));
                 });
                 break;
             case OpCode.MINE:
-                this.withAField(currentToken, (aField) => {
+                this.withAField(this.bufferOpcode, (aField) => {
                     this.program.program.push(mine(aField));
                 });
                 break;
             case OpCode.MOD:
                 // TODO: check that aField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mod(aField, bField));
                 });
                 break;
             case OpCode.MODB:
                 // TODO: check that bField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mod(aField, bField));
                 });
                 break;
             case OpCode.MOV:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mov(aField, bField));
                 });
                 break;
             case OpCode.MUL:
                 // TODO: check that aField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mul(aField, bField));
                 });
                 break;
@@ -397,24 +410,24 @@ export class Parser {
                 this.program.program.push(nop());
                 break;
             case OpCode.SE:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(se(aField, bField));
                 });
                 break;
             case OpCode.SNE:
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(sne(aField, bField));
                 });
                 break;
             case OpCode.SUB:
                 // TODO: check that aField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(sub(aField, bField));
                 });
                 break;
             case OpCode.SUBB:
                 // TODO: check that bField is not immediate
-                this.withAandBField(currentToken, (aField, bField) => {
+                this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(subb(aField, bField));
                 });
                 break;
@@ -424,29 +437,29 @@ export class Parser {
         }
     }
 
-    private withAField(currentToken: Token, cb: (aField: InstructionField) => void): void {
+    private withAField(opcodeToken: Token, cb: (aField: InstructionField) => void): void {
         if (this.bufferAField == null) {
-            this.errors.push(new ParseError(currentToken.pos, 'Missing a-field'));
+            this.errors.push(new ParseError(opcodeToken.pos, 'Missing a-field'));
             return;
         }
         if (this.bufferBField != null) {
-            this.errors.push(new ParseError(currentToken.pos, 'Extraneous b-field'));
+            this.errors.push(new ParseError(this.bufferAField.token.pos, 'Extraneous b-field'));
             return;
         }
-        cb(this.bufferAField);
+        cb(this.bufferAField.value);
     }
 
     private withAandBField(
-            currentToken: Token,
+            opcodeToken: Token,
             cb: (aField: InstructionField, bField: InstructionField) => void): void {
         if (this.bufferAField == null) {
-            this.errors.push(new ParseError(currentToken.pos, 'Missing a-field'));
+            this.errors.push(new ParseError(opcodeToken.pos, 'Missing a-field'));
             return;
         }
         if (this.bufferBField == null) {
-            this.errors.push(new ParseError(currentToken.pos, 'Missing b-field'));
+            this.errors.push(new ParseError(opcodeToken.pos, 'Missing b-field'));
             return;
         }
-        cb(this.bufferAField, this.bufferBField);
+        cb(this.bufferAField.value, this.bufferBField.value);
     }
 }

@@ -1,47 +1,25 @@
-@import { Champion } from '../entities/Champion'
 
 @extends './layout.top'
 
-@param champion: Champion
-
 @section(styles)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
+    <link rel="stylesheet" href="/css/editor.css">
     <link rel="stylesheet" href="/css/isotope.css">
 @endsection
 
 @section(content) 
 <div id="innerBody">
-        
-    <!-- Header bar -->
-    <h1 id="title1">Turing &nbsp; wars</h1>
-    <div id="backArrow"><a href="/">◄ back</a></div>
-
-    <p>
-        <span style="color: white;">Name of your champion:</span> <input id="editName" value="@(champion.name)" id="name" />
-    </p>
-
-    <p>
-        <span style="color: white;">Code</span>
-    </p>
-    <textarea id="code">@(champion.code)</textarea>
-
-    <p>
-        <center><input type="submit" id="submitButton" value="Send"/></center>
-    </p>
+    <div id="app"></div>
 </div>
 @endsection
 
 
 @section(scripts)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js"></script>
-<script src="/js/codemirror-grammar.js"></script>
-<script>
-  var editor = CodeMirror.fromTextArea(document.getElementsByTagName('textarea')[0], {
-    lineNumbers: true, 
-    theme: 'isotope',
-    mode: 'twc',
-  });
-  var CHAMPION_ID = @(champion.id);
-</script>
-<script src="/dist/edit.js"></script>
+<script src="https://unpkg.com/react@@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-redux@@5.0.7/dist/react-redux.js" crossorigin></script>
+<script src="https://unpkg.com/redux@@4.0.0/dist/redux.js" crossorigin></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//localhost:9000/dist/edit.js"></script>
 @endsection
