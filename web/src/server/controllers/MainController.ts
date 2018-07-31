@@ -4,7 +4,6 @@ import { OrmRepository } from 'typeorm-typedi-extensions';
 
 import { Champion } from '../entities/Champion';
 import { GameLog } from '../entities/GameLog';
-import { orFail } from '../helpers';
 import edit from '../views/edit.top';
 import index from '../views/index.top';
 import replay from '../views/replay.top';
@@ -32,7 +31,7 @@ export class MainController {
 
     @Get('/replay/:id')
     public async replayGame(@Param('id') gameId: string) {
-        const game = orFail(await this.gamesRepo.findOneById(gameId));
+        const game = await this.gamesRepo.findOneOrFail(gameId);
         return replay({
             GAME_ID: gameId,
             PLAYER_0_NAME: game.player1Name,

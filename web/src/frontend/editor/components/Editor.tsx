@@ -41,6 +41,9 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
             <div>
                 <h1 id="title1">Hello Editor</h1>
                 <div id="backArrow"><a href="/">◄ back</a></div>
+                <input type="text"
+                        value={this.state.championName}
+                        onChange={(championName) => this.setState({ championName: championName.target.value })} />
                 <CodeMirror
                     value={this.state.value}
                     options={{

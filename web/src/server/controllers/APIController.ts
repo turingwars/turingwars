@@ -18,7 +18,6 @@ import { GetGameResponse } from '../../dto/GetGameResponse';
 import { GameUpdate } from '../../model/GameUpdate';
 import { Champion } from '../entities/Champion';
 import { GameLog } from '../entities/GameLog';
-import { orFail } from '../helpers';
 
 const engineCmdLine = [
     path.join(process.cwd(), BIN_LOCATION)
@@ -40,7 +39,7 @@ export class APIController {
 
     @Get('/game/:id')
     public async getGame(@Param('id') id: string): Promise<GetGameResponse> {
-        const gameLog = orFail(await this.gamesRepo.findOneById(id));
+        const gameLog = await this.gamesRepo.findOneOrFail(id);
         const response = new GetGameResponse();
         response.id = gameLog.id as string;
         response.isOver = gameLog.isOver;
@@ -57,7 +56,7 @@ export class APIController {
 
         let championNr = 0;
         const champions = await Promise.all(
-            request.champions.map(async (id) => orFail(await this.championsRepo.findOneById(id))));
+            request.champions.map(async (id) => await this.championsRepo.findOneOrFail(id)));
         const programs = await Promise.all(
             champions.map(async (champion) => this.loadChampion(await champion, championNr++)));
 

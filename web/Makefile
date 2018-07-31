@@ -1,5 +1,4 @@
 NODE_MODULES=node_modules/.makets
-FRONTEND=public/dist/index.js
 SRC=$(shell find src/ -type f -name '*.ts')
 
 .PHONY:all
@@ -14,15 +13,12 @@ install: $(NODE_MODULES)
 	npm install
 
 .PHONY: serve
-serve: $(NODE_MODULES) views $(FRONTEND)
+serve: $(NODE_MODULES) views
 	npm start
 
 .PHONY: views
 views: $(SRC)
 	npm run build:views
-
-$(FRONTEND): $(SRC) webpack.config.js
-	npm run build:frontend
 
 $(NODE_MODULES): package.json package-lock.json
 	npm install

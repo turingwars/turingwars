@@ -5,6 +5,8 @@ const webpack = require('webpack');
 const REPO_ROOT = __dirname;
 
 module.exports = {
+
+    mode: process.env.NODE_ENV || 'development',
     entry: {
         'replay': [
             './src/frontend/replay.ts'
@@ -23,13 +25,13 @@ module.exports = {
         publicPath: '/dist'
     },
 
-    devServer: {
-        compress: true,
-        port: 9000,
-        hot: true,
-        contentBase: 'public',
-        allowedHosts: ['localhost']
-    },
+    // devServer: {
+    //     compress: true,
+    //     port: 9000,
+    //     hot: true,
+    //     contentBase: 'public',
+    //     allowedHosts: ['localhost']
+    // },
 
     // Currently we need to add '.ts' to the resolve.extensions array.
     resolve: {
@@ -41,7 +43,6 @@ module.exports = {
     devtool: 'source-map',
 
     externals: {
-        // 'jquery': 'jQuery'
         'd3': 'd3',
         'underscore': '_',
         'react': 'React',
