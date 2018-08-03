@@ -67,7 +67,6 @@ export class App {
         //     };
         // });
 
-
         // router.put('/hero/:id', async (req) => {
         //     const ent = await championsRepo.findOneOrFail(req.params.id);
         //     if (ent === undefined) {
@@ -82,7 +81,8 @@ export class App {
         //     return ent;
         // });
 
-        const apiRouter = createRouter(twAPI, (builder) => builder
+        app.use(createRouter(twAPI, (builder) => builder
+            // You must implement all route handlers defined in the API definition
             .getHero(async (req) => {
                 const champ = await championsRepo.findOneOrFail(req.params.id);
                 return {
@@ -91,12 +91,21 @@ export class App {
                     program: champ.code
                 };
             })
-        );
-        app.use(apiRouter);
+            .saveHero(async (req) => {
+                return {
+                    program: '',
+                    id: '',
+                    name: ''
+                };
+            })
+            .getAllHeros(async (req) => {
+                return [];
+            })
+        ));
 
         app.use(webpackDevServer(compiler, {
             publicPath: '/dist'
-        }))
+        }));
 
         app.use(express.static(path.join(process.cwd(), 'public/')));
 

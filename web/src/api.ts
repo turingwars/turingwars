@@ -22,7 +22,7 @@ export interface IAPIDefinition {
         GET: {
             response: IHero[]
         }
-    }
+    };
 }
 
 export class Hero {
@@ -39,5 +39,18 @@ export const twAPI = createAPI({
             id: 'string'
         },
         response: Hero
-    }
+    },
+    saveHero: {
+        path: '/hero',
+        method: 'PUT',
+        params: {
+            id: 'string' // TODO: This api sucks
+        },
+        response: Hero
+    },
+    getAllHeros: {
+        path: '/heros',
+        method: 'GET',
+        response: [Hero] // TODO: unpack arrays of constructors
+    },
 });
