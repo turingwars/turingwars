@@ -1,3 +1,4 @@
+import { createAPI } from './typed-apis/TypedApi';
 
 export interface IHero {
     program: string;
@@ -8,7 +9,7 @@ export interface IHero {
 export interface IAPIDefinition {
     '/hero/:id': {
         GET: {
-            response: IHero
+            response: IHero,
         },
         PUT: {
             body: IHero,
@@ -17,4 +18,26 @@ export interface IAPIDefinition {
             }
         }
     };
+    '/heros': {
+        GET: {
+            response: IHero[]
+        }
+    }
 }
+
+export class Hero {
+    public program: string;
+    public id: string;
+    public name: string;
+}
+
+export const twAPI = createAPI({
+    getHero: {
+        path: '/hero',
+        method: 'GET',
+        params: {
+            id: 'string'
+        },
+        response: Hero
+    }
+});

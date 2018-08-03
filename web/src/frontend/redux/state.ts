@@ -1,6 +1,9 @@
+import { IHero } from '../../api';
+
 export function initialState() {
     return {
-        message: 'Hello world'
+        message: 'Hello world',
+        heros: [] as IHero[]
     };
 }
 

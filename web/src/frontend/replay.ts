@@ -67,9 +67,6 @@ export class Replay {
     private displayWinnerDiv: HTMLDivElement;
     private displayFightDiv: HTMLDivElement;
 
-    private player1ProgressBar: HTMLDivElement;
-    private player2ProgressBar: HTMLDivElement;
-
     private player1ProgressBarUpdate: (x: number) => void;
     private player2ProgressBarUpdate: (x: number) => void;
 
@@ -79,8 +76,6 @@ export class Replay {
     private stopWavesAnimation: boolean;
 
     private gameFinished: boolean;
-
-    private nPlayers: number;
 
     private memorySize: number;
 
@@ -124,7 +119,6 @@ export class Replay {
             throw new Error('Memory size is not square, cannot represent');
         }
 
-        this.nPlayers = config.nPlayers;
         this.memorySize = config.memorySize;
         this.memoryWidth = Math.sqrt(this.memorySize);
 
@@ -218,8 +212,6 @@ export class Replay {
         this.player2Score = this.getDivFromDomOrDie(Replay.PLAYER2_SCORE_DIV_ID);
         this.displayWinnerDiv = this.getDivFromDomOrDie(Replay.DISPLAY_WINNER_DIV_ID);
         this.displayFightDiv = this.getDivFromDomOrDie(Replay.DISPLAY_FIGHT_DIV_ID);
-        this.player1ProgressBar = this.getDivFromDomOrDie(Replay.PLAYER1_PROGRESS_DIV_ID);
-        this.player2ProgressBar = this.getDivFromDomOrDie(Replay.PLAYER2_PROGRESS_DIV_ID);
 
         // binds progressbars
         this.player1ProgressBarUpdate = this.enableProgressBarOnDiv(Replay.PLAYER1_PROGRESS_DIV_ID,
@@ -242,7 +234,6 @@ export class Replay {
         }
 
         this.bufferedGameUpdates.push(update);
-        console.log('Received update', this.bufferedGameUpdates.length, 'in buffer');
     }
 
     public ready(cb: () => void) {
@@ -262,7 +253,6 @@ export class Replay {
         const update = this.bufferedGameUpdates.shift();
 
         if (update === undefined) {
-            console.log('Nothing to process !');
             return true;
         }
 
@@ -289,9 +279,6 @@ export class Replay {
     private processUpdate(update: GameUpdate) {
 
         for (const m of update.memory) {
-
-            console.log(m);
-
             this.currentMemory[m.address] = m.value;
             this.currentOwners[m.address] = m.cause;
         }
@@ -527,8 +514,6 @@ export class Replay {
         const index = row * this.memoryWidth + col;
         const memOp = this.currentMemory[index];
         const owner = this.currentOwners[index];
-
-        console.log(memOp.op);
 
         if (memOp.op === OpCode.MINE) {
             return Replay.CONSTANTS.gold;

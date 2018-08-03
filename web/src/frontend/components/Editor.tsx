@@ -1,14 +1,16 @@
 import '../codemirror-grammar';
 
+import { Link } from 'react-router-dom';
+
 import axios from 'axios';
 import * as React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import restyped from 'restyped-axios';
 
-import { IAPIDefinition } from '../../../api';
+import { IAPIDefinition } from '../../api';
 
-import { Assembler } from '../../../assembler/Assembler';
-import { CompilerError } from '../../../assembler/CompileError';
+import { Assembler } from '../../assembler/Assembler';
+import { CompilerError } from '../../assembler/CompileError';
 
 interface IEditorProps {
     championID: string;
@@ -40,7 +42,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         return (
             <div>
                 <h1 id="title1">Hello Editor</h1>
-                <div id="backArrow"><a href="/">◄ back</a></div>
+                <div id="backArrow"><Link to="/">◄ back</Link></div>
                 <input type="text"
                         value={this.state.championName}
                         onChange={(championName) => this.setState({ championName: championName.target.value })} />
@@ -68,7 +70,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         this.loadChampion();
     }
 
-    private checkCode(code) {
+    private checkCode(code: string) {
         this.markers.forEach((m) => m.clear());
         this.markers.length = 0;
 
@@ -85,7 +87,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private reportCompilerErrors(e: CompilerError) {
-        console.log(e.errors);
+        if (this.instance == null) return;
         for (const err of e.errors) {
             const pos = err.pos;
 

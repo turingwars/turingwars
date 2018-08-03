@@ -40,6 +40,7 @@
     "jquery": "^3.3.1",
     "loglevel": "^1.6.1",
     "react-codemirror2": "^5.1.0",
+    "react-router-dom": "^4.3.1",
     "reflect-metadata": "^0.1.12",
     "restyped-express-async": "^0.6.1",
     "routing-controllers": "^0.7.6",

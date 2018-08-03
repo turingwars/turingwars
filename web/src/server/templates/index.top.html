@@ -7,8 +7,9 @@
 @section(content)
 
     <div id="innerBody" class="index">
+        <div id="app"></div>
 
-    <!-- Header bar -->
+    <!-- Header bar
     <h1 id="title1">Turing &nbsp; wars</h1>
 
     <div id="champSelect">
@@ -51,7 +52,7 @@
 
         <h3 id="start">Go &#x25B8; &#x25B8;</h3>
 
-    </div>
+    </div> -->
 </div>
 <div style="display:none">
 @for (champ of champions)
@@ -61,5 +62,11 @@
 @endsection
     
 @section(scripts)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js"></script>
+    <script src="https://unpkg.com/react@@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/redux@@4.0.0/dist/redux.js" crossorigin></script>
+    <script src="https://unpkg.com/react-redux@@5.0.7/dist/react-redux.js" crossorigin></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/dist/index.js"></script>
 @endsection

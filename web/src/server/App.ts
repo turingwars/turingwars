@@ -1,22 +1,20 @@
+import { NotFoundHttpException } from '@senhung/http-exceptions';
 import { json, urlencoded } from 'body-parser';
-import { validate } from 'class-validator';
 import * as cors from 'cors';
 import * as express from 'express';
-import { NotFoundHttpException } from '@senhung/http-exceptions';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
-import RestypedRouter from 'restyped-express-async';
 import { useExpressServer } from 'routing-controllers';
 import { Service } from 'typedi';
 import { createConnection } from 'typeorm';
-
-import { IAPIDefinition } from '../api';
-import { Assembler } from '../assembler/Assembler';
+import * as webpack from 'webpack';
+import { twAPI } from '../api';
 import { SERVER_PORT } from '../config';
+import { createRouter } from '../typed-apis/TypedApi';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { seedDatabase } from './seed';
-import * as webpack from 'webpack';
+
 
 const webpackDevServer = require('webpack-dev-middleware');
 const compiler = webpack(require(path.join(__dirname, '../../webpack.config.js')));
@@ -54,34 +52,47 @@ export class App {
 
         const championsRepo = connection.getRepository(Champion);
 
-        const apiRouter = express.Router();
-        app.use('/api', apiRouter);
-        const router = RestypedRouter<IAPIDefinition>(apiRouter);
-        router.get('/hero/:id', async (req) => {
-            const champ = await championsRepo.findOneOrFail(req.params.id);
-            if (champ == null) {
-                throw new NotFoundHttpException();
-            }
-            return {
-                id: champ.id,
-                name: champ.name,
-                program: champ.code
-            };
-        });
+        // const apiRouter = express.Router();
+        // app.use('/api', apiRouter);
+        // const router = RestypedRouter<IAPIDefinition>(apiRouter);
+        // router.get('/hero/:id', async (req) => {
+        //     const champ = await championsRepo.findOneOrFail(req.params.id);
+        //     if (champ == null) {
+        //         throw new NotFoundHttpException();
+        //     }
+        //     return {
+        //         id: champ.id,
+        //         name: champ.name,
+        //         program: champ.code
+        //     };
+        // });
 
-        router.put('/hero/:id', async (req) => {
-            const ent = await championsRepo.findOneOrFail(req.params.id);
-            if (ent === undefined) {
-                throw new NotFoundHttpException();
-            }
-            ent.code = req.body.program;
-            ent.name = req.body.name;
-            validate(ent);
-            const asm = new Assembler();
-            asm.assemble(ent.code); // Check the assembly code before saving
-            await championsRepo.save(ent);
-            return ent;
-        });
+
+        // router.put('/hero/:id', async (req) => {
+        //     const ent = await championsRepo.findOneOrFail(req.params.id);
+        //     if (ent === undefined) {
+        //         throw new NotFoundHttpException();
+        //     }
+        //     ent.code = req.body.program;
+        //     ent.name = req.body.name;
+        //     validate(ent);
+        //     const asm = new Assembler();
+        //     asm.assemble(ent.code); // Check the assembly code before saving
+        //     await championsRepo.save(ent);
+        //     return ent;
+        // });
+
+        const apiRouter = createRouter(twAPI, (builder) => builder
+            .getHero(async (req) => {
+                const champ = await championsRepo.findOneOrFail(req.params.id);
+                return {
+                    id: champ.id,
+                    name: champ.name,
+                    program: champ.code
+                };
+            })
+        );
+        app.use(apiRouter);
 
         app.use(webpackDevServer(compiler, {
             publicPath: '/dist'
