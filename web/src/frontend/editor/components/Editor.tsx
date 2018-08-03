@@ -1,16 +1,10 @@
-import '../codemirror-grammar';
-
-import { Link } from 'react-router-dom';
-
-import axios from 'axios';
 import * as React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import restyped from 'restyped-axios';
+import { Assembler } from '../../../assembler/Assembler';
+import { CompilerError } from '../../../assembler/CompileError';
+import '../codemirror-grammar';
+import { api } from '../services/api';
 
-import { IAPIDefinition } from '../../api';
-
-import { Assembler } from '../../assembler/Assembler';
-import { CompilerError } from '../../assembler/CompileError';
 
 interface IEditorProps {
     championID: string;
@@ -21,16 +15,12 @@ interface IEditorState {
     championName: string;
 }
 
-const api = restyped.create<IAPIDefinition>({
-    baseURL: 'http://localhost:3000/api/'
-});
-
 const asm = new Assembler();
 
 export class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public readonly state = {
-        value: 'mov 0 1',
+        value: '',
         championName: ''
     };
 
@@ -42,7 +32,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         return (
             <div>
                 <h1 id="title1">Hello Editor</h1>
-                <div id="backArrow"><Link to="/">◄ back</Link></div>
+                <div id="backArrow"><a href="/">◄ back</a></div>
                 <input type="text"
                         value={this.state.championName}
                         onChange={(championName) => this.setState({ championName: championName.target.value })} />
@@ -100,7 +90,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private async loadChampion() {
-        const res = await api.get('/hero/' + this.props.championID);
+        const res = await api.getHero({ params: {id: this.props.championID }});
         this.setState({
             championName: res.data.name,
             value: res.data.program
@@ -114,6 +104,8 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
             name: this.state.championName
         };
 
-        await api.put('/hero/' + this.props.championID, championRequest);
+        await api.saveHero({
+            params: { id: this.props.championID },
+            body: championRequest });
     }
 }

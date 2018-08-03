@@ -24,7 +24,7 @@ export class MainController {
         });
     }
 
-    @Get('/champion')
+    @Get('/champion/:id')
     public async championPage() {
         return edit();
     }

@@ -20,7 +20,7 @@ $('td').click(function() {
         toRemove = 'player1';
         player1Id = $(this).attr('data-player-id');
         $('#editChamp').removeClass('disabled');
-        $('#editChamp').attr('href', '/champion#' + player1Id);
+        $('#editChamp').attr('href', '/champion/' + player1Id);
     } else {
         toRemove = 'player2';
         player2Id = $(this).attr('data-player-id');

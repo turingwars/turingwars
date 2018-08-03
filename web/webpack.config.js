@@ -12,9 +12,9 @@ module.exports = {
             './src/frontend/replay.ts'
         ],
         'index': [
-            './src/frontend/index.tsx'
-        ], 
-        'edit': [
+            './src/frontend/index.ts'
+        ],
+        'editor': [
             './src/frontend/editor/main.tsx'
         ]
     },

@@ -8,12 +8,14 @@ import { useExpressServer } from 'routing-controllers';
 import { Service } from 'typedi';
 import { createConnection } from 'typeorm';
 import * as webpack from 'webpack';
-import { twAPI } from '../api';
+import { Hero, twAPI } from '../api';
 import { SERVER_PORT } from '../config';
-import { createRouter } from '../typed-apis/TypedApi';
+import { createRouter, RouterDefinition } from '../typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { seedDatabase } from './seed';
+import { validate } from 'class-validator';
+import { Assembler } from '../assembler/Assembler';
 
 
 const webpackDevServer = require('webpack-dev-middleware');
@@ -51,57 +53,44 @@ export class App {
         });
 
         const championsRepo = connection.getRepository(Champion);
-
-        // const apiRouter = express.Router();
-        // app.use('/api', apiRouter);
-        // const router = RestypedRouter<IAPIDefinition>(apiRouter);
-        // router.get('/hero/:id', async (req) => {
-        //     const champ = await championsRepo.findOneOrFail(req.params.id);
-        //     if (champ == null) {
-        //         throw new NotFoundHttpException();
-        //     }
-        //     return {
-        //         id: champ.id,
-        //         name: champ.name,
-        //         program: champ.code
-        //     };
-        // });
-
-        // router.put('/hero/:id', async (req) => {
-        //     const ent = await championsRepo.findOneOrFail(req.params.id);
-        //     if (ent === undefined) {
-        //         throw new NotFoundHttpException();
-        //     }
-        //     ent.code = req.body.program;
-        //     ent.name = req.body.name;
-        //     validate(ent);
-        //     const asm = new Assembler();
-        //     asm.assemble(ent.code); // Check the assembly code before saving
-        //     await championsRepo.save(ent);
-        //     return ent;
-        // });
-
-        app.use(createRouter(twAPI, (builder) => builder
-            // You must implement all route handlers defined in the API definition
-            .getHero(async (req) => {
+    
+        const hash: RouterDefinition<typeof twAPI> = {
+            async getHero(req) {
                 const champ = await championsRepo.findOneOrFail(req.params.id);
                 return {
                     id: champ.id,
                     name: champ.name,
                     program: champ.code
                 };
-            })
-            .saveHero(async (req) => {
+            },
+            async saveHero(req): Promise<Hero> {
+                const champ = await championsRepo.findOneOrFail(req.params.id);
+                if (champ === undefined) {
+                    throw new NotFoundHttpException();
+                }
+                champ.code = req.body.program;
+                champ.name = req.body.name;
+                validate(champ);
+                const asm = new Assembler();
+                asm.assemble(champ.code); // Check the assembly code before saving
+                await championsRepo.save(champ);
                 return {
-                    program: '',
-                    id: '',
-                    name: ''
+                    id: champ.id,
+                    name: champ.name,
+                    program: champ.code
                 };
-            })
-            .getAllHeros(async (req) => {
-                return [];
-            })
-        ));
+            },
+            async getAllHeros(): Promise<Hero[]> {
+                return (await championsRepo.find()).map((champ) => {
+                    return {
+                        id: champ.id,
+                        name: champ.name,
+                        program: champ.code
+                    }
+                });
+            }
+        };
+        app.use('/api', createRouter(twAPI, hash));
 
         app.use(webpackDevServer(compiler, {
             publicPath: '/dist'
@@ -109,7 +98,13 @@ export class App {
 
         app.use(express.static(path.join(process.cwd(), 'public/')));
 
-        app.use((_req, _res, next) => next(new NotFoundHttpException()));
+        app.use((_req, res, next) => {
+            if (!res.headersSent) {
+                next(new NotFoundHttpException());
+            } else {
+                next();
+            }
+        });
 
         app.use(errorReporter());
 

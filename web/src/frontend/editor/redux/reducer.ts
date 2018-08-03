@@ -6,7 +6,7 @@ export function reducer(state: State, action: AppActions): State {
         return state;
     }
     switch (action.type) {
-        case 'setMessage':
-            return { ...state, message: action.payload };
+        case 'herosListLoadedAction':
+            return { ...state, heros: action.payload };
     }
 }

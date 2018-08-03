@@ -1,4 +1,4 @@
-import { createAPI } from './typed-apis/TypedApi';
+import { createAPI } from './typed-apis/typed-api';
 
 export interface IHero {
     program: string;
@@ -44,13 +44,14 @@ export const twAPI = createAPI({
         path: '/hero',
         method: 'PUT',
         params: {
-            id: 'string' // TODO: This api sucks
+            id: 'string' // TODO: This api sucks, plus needs optional parameters
         },
+        body: Hero,
         response: Hero
     },
     getAllHeros: {
         path: '/heros',
         method: 'GET',
-        response: [Hero] // TODO: unpack arrays of constructors
+        response: [Hero]
     },
 });

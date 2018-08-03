@@ -1,3 +1,4 @@
+import { IHero } from '../../api';
 
 export function baseAction<T extends string, PAYLOAD>(type: T, payload: PAYLOAD) {
     return {
@@ -6,12 +7,12 @@ export function baseAction<T extends string, PAYLOAD>(type: T, payload: PAYLOAD)
     };
 }
 
-export function setMessageAction(msg: string) {
-    return baseAction('setMessage', msg);
+export function herosListLoadedAction(heros: IHero[]) {
+    return baseAction('herosListLoadedAction', heros);
 }
 
 /**
  * Join here all possible actions
  */
 export type AppActions =
-        ReturnType<typeof setMessageAction>;
+        ReturnType<typeof herosListLoadedAction>;
