@@ -7,6 +7,8 @@
         "object-literal-sort-keys": false,
         "max-classes-per-file": false,
         "forin": false,
-        "variable-name": [ true, "allow-leading-underscore" ]
+        "variable-name": [ true, "allow-leading-underscore" ],
+        "no-consecutive-blank-lines": [ true, 2],
+        "interface-name": false
     }
 }

@@ -1,30 +1,30 @@
-import 'reflect-metadata';
-
 import { NotFoundHttpException } from '@senhung/http-exceptions';
 import { json, urlencoded } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
-import { createConnection, Connection } from 'typeorm';
-import * as webpack from 'webpack';
-import { twAPI } from '../api';
-import { createRouter } from '../typed-apis/express-typed-api';
+import 'reflect-metadata';
+import { Connection, createConnection } from 'typeorm';
 import edit from 'views/edit.top';
 import index from 'views/index.top';
 import replay from 'views/replay.top';
+import * as webpack from 'webpack';
+import { twAPI } from '../api';
+import { createRouter } from '../typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { AppRouter } from './router';
 import { seedDatabase } from './seed';
 
+
 class TuringWarsApplication {
 
     private connection: Connection;
     private webpackDevMiddleware: any;
 
-    async init() {
+    public async init() {
         console.log(BANNER);
 
         const wdm = require('webpack-dev-middleware');
@@ -32,7 +32,7 @@ class TuringWarsApplication {
         this.webpackDevMiddleware = wdm(compiler, {
             publicPath: '/dist'
         });
-    
+
         console.log('initializing DB...');
         this.connection = await createConnection({
             type: 'sqlite',
@@ -44,31 +44,31 @@ class TuringWarsApplication {
             logging: false,
             synchronize: true,
         });
-    
+
         await seedDatabase(this.connection);
-    
+
         console.log('Initializing server...');
-    
+
         const app = express();
         app.use(cors());
         app.use(json());
         app.use(urlencoded());
-    
+
         const championsRepo = this.connection.getRepository(Champion);
         const gamesRepo = this.connection.getRepository(GameLog);
-    
+
         // HTML pages
-    
+
         app.get('/', asyncRoute(async () => {
             return index({
                 champions: await championsRepo.find()
             });
         }));
-    
+
         app.get('/champion/:id', asyncRoute(async () => {
             return edit();
         }));
-    
+
         app.get('/replay/:id', asyncRoute(async (req) => {
             const gameId = req.params.id;
             const game = await gamesRepo.findOneOrFail(gameId);
@@ -78,11 +78,11 @@ class TuringWarsApplication {
                 PLAYER_1_NAME: game.player2Name
             });
         }));
-    
+
         const appRouter = AppRouter(championsRepo, gamesRepo);
         app.use('/api', createRouter(twAPI, appRouter));
-    
-    
+
+
         app.use(this.webpackDevMiddleware);
         app.use(express.static(path.join(process.cwd(), 'public/')));
         app.use((_req, res, next) => {
@@ -97,7 +97,7 @@ class TuringWarsApplication {
         return app;
     }
 
-    async teardown() {
+    public async teardown() {
         await this.connection.close();
         await new Promise((resolve) => this.webpackDevMiddleware.close(resolve));
     }

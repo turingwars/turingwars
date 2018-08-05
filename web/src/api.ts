@@ -1,7 +1,7 @@
-import { createAPI } from './typed-apis/typed-api';
-import { GetGameResponse } from './dto/GetGameResponse';
 import { CreateMatchRequest } from './dto/CreateMatchRequest';
 import { CreateMatchResponse } from './dto/CreateMatchResponse';
+import { GetGameResponse } from './dto/GetGameResponse';
+import { createAPI } from './typed-apis/typed-api';
 
 export interface IHero {
     program: string;

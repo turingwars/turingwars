@@ -1,12 +1,11 @@
 import * as http from 'http';
-import application from './server';
 import { SERVER_PORT } from '../config';
-
+import application from './server';
 
 async function boot() {
     const handler = await application.init();
     const server = http.createServer(handler);
-    
+
     let currentHandler = handler;
     let currentApp = application;
 
@@ -15,27 +14,24 @@ async function boot() {
     });
 
     if (module.hot) {
-        module.hot.accept('./server', function () {
-            console.log('Called with arguments')
-            console.log(arguments);
+        module.hot.accept('./server', () => {
             replace();
         });
     }
     async function replace() {
-        const application = require('./server').default;
+        const newApplication = require('./server').default;
         console.log('Receiving update');
         server.removeListener('request', currentHandler);
         console.log('reoved');
         await currentApp.teardown();
         console.log('torn down');
-    
-        currentApp = application;
+
+        currentApp = newApplication;
         console.log('will init');
-        currentHandler = await application.init();
+        currentHandler = await newApplication.init();
         console.log('done');
         server.on('request', currentHandler);
     }
 }
-
 
 boot();

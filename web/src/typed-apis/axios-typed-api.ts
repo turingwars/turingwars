@@ -1,5 +1,5 @@
-import { EndpointDefinition, ApiDefinition, makePathWithParams } from './typed-api';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { ApiDefinition, EndpointDefinition, makePathWithParams } from './typed-api';
 
 
 type IsInRecord<T, Key extends keyof T> = T extends Record<Key, any> ? Key : never;
@@ -19,7 +19,7 @@ type RouteConsumer<T extends EndpointDefinition> = KeyIfDefined<T, 'params' | 'q
 
 export type ApiConsumer<T extends ApiDefinition> = {
     [K in keyof T]: RouteConsumer<T[K]>;
-}
+};
 
 export function createConsumer<T extends ApiDefinition>(baseURL: string, def: T): ApiConsumer<T> {
     const ret: ApiConsumer<T> = {} as any;
@@ -40,6 +40,6 @@ function makeAxiosEndpoint<T extends EndpointDefinition>(baseURL: string, def: T
             url: makePathWithParams(def, params),
             params: query,
             data: body
-        })
+        });
     });
 }

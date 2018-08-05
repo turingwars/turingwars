@@ -21,7 +21,7 @@ export type RouteHandler<T extends EndpointDefinition> =
 
 export type RouterDefinition<T extends ApiDefinition> = {
     [K in keyof T]: RouteHandler<T[K]>;
-}
+};
 
 export function createRouter<T extends ApiDefinition>(def: T, hash: RouterDefinition<T>): express.Router {
     const router = express.Router();

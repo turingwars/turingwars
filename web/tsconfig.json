@@ -23,7 +23,10 @@
       ],
       "paths": {
         "views/*": [ "server/.views/*" ]
-      }
+      },
+      "plugins": [
+        { "name": "tslint-language-service"}
+      ]
     },
     "include": [
       "src/**/*.ts",

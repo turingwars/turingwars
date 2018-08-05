@@ -1,4 +1,4 @@
-import { NotFoundHttpException, BadRequestHttpException } from '@senhung/http-exceptions';
+import { BadRequestHttpException, NotFoundHttpException } from '@senhung/http-exceptions';
 import * as byline from 'byline';
 import { spawn } from 'child_process';
 import { transformAndValidate } from 'class-transformer-validator';
@@ -62,7 +62,7 @@ export function AppRouter(
                     id: champ.id,
                     name: champ.name,
                     program: champ.code
-                }
+                };
             });
         },
 
@@ -71,17 +71,22 @@ export function AppRouter(
             if (request.champions.length !== 2) {
                 throw new BadRequestHttpException('You must send exactly two champion IDs');
             }
-    
+
             let championNr = 0;
             const champions = await Promise.all(
                 request.champions.map(async (id) => await championsRepo.findOneOrFail(id)));
             const programs = await Promise.all(
                 champions.map(async (champion) => loadChampion(await champion, championNr++)));
-    
+
             const log: Array<Promise<GameUpdate>> = [];
-    
+
             console.log([...engineCmdLine, ...programs]);
-            const vm = spawn('node', [...engineCmdLine, ...programs, '' + UPDATE_PERIOD, '' + NUM_CYCLES, '' + CORESIZE]);
+            const vm = spawn('node', [
+                ...engineCmdLine,
+                ...programs,
+                '' + UPDATE_PERIOD,
+                '' + NUM_CYCLES,
+                '' + CORESIZE]);
             const lines = byline(vm.stdout, {
                 encoding: 'utf-8'
             });
@@ -90,11 +95,11 @@ export function AppRouter(
                 p.catch((e) => console.error(e));
                 log.push(p);
             });
-    
+
             vm.stderr.on('data', (d) => {
                 console.log(d.toString());
             });
-    
+
             vm.on('exit', async (code) => {
                 if (code === 0) {
                     const resolved = await Promise.all(log);
@@ -106,12 +111,12 @@ export function AppRouter(
                     console.log(`Failed to bake game ${theGame.id}; status: ${code}`);
                 }
             });
-    
+
             const theGame = gamesRepo.create();
             theGame.player1Name = champions[0].name;
             theGame.player2Name = champions[1].name;
             await gamesRepo.save(theGame);
-    
+
             return {
                 url: `/replay/${theGame.id}`
             };

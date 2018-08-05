@@ -46,11 +46,11 @@ export type UnwrappedEndpoint<T extends EndpointDefinition> = {
     [K in KeyIfDefined<T, 'params' | 'query'>]: T[K];
 } & {
     [K in KeyIfDefined<T, 'body' | 'response'>]: UnwrapBlueprintType<T[K]>;
-}
+};
 
 export type UnwrappedApiDefinition<T extends ApiDefinition> = {
     [K in keyof T]: UnwrappedEndpoint<T[K]>;
-}
+};
 
 export function createAPI<T extends ApiDefinition>(def: T): UnwrappedApiDefinition<T> {
     return def as any as UnwrappedApiDefinition<T>;
