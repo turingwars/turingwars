@@ -50,13 +50,9 @@ Awesome, we want to include it in the game. Just open an issue with the code.
 
 ### Manual
 
-You only need NodeJS to run the server, java to execute the .jar that simulates the programs, and sbt (which fetches scala) to compile the .jar. Make sure you have at least 10GB of space on your drive for `node_modules`. Just kidding.
+You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt](https://www.scala-sbt.org/) to build and run stuff.
 
-Run `make install` in the main folder once to fetch everything. This will download about the whole internet via sbt and node packages.
-
-Then, simply run `make serve` in the main folder to get started.
-
-TODO: instruction on how to develop with watches
+Then just run `make serve` from the root of the repo and you are good to go. This command is intended for development purposes only. There is no "production" build yet.
 
 ## Authors
 
