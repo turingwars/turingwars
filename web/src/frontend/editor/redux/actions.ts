@@ -1,4 +1,4 @@
-import { IHero } from '../../api';
+import { IHero } from '../../../api';
 
 export function baseAction<T extends string, PAYLOAD>(type: T, payload: PAYLOAD) {
     return {

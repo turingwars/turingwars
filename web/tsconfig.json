@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
       "outDir": "dist",
+      "baseUrl": "src",
       "declaration": true,
       "noImplicitAny": true,
       "strict": true,
@@ -19,7 +20,10 @@
       "lib": [
         "es2015",
         "dom"
-      ]
+      ],
+      "paths": {
+        "views/*": [ "server/.views/*" ]
+      }
     },
     "include": [
       "src/**/*.ts",

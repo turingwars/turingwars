@@ -9,25 +9,6 @@ export interface IHero {
     name: string;
 }
 
-export interface IAPIDefinition {
-    '/hero/:id': {
-        GET: {
-            response: IHero,
-        },
-        PUT: {
-            body: IHero,
-            response: {
-                id: string
-            }
-        }
-    };
-    '/heros': {
-        GET: {
-            response: IHero[]
-        }
-    };
-}
-
 export class Hero {
     public program: string;
     public id: string;

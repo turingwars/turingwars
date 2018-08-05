@@ -2,34 +2,12 @@
 
 ## Quick start
 
-_Prerequisite_: Node.JS, `npm install`
-
-Chose the option depending on what you want to do:
-
-### I just want to run the damn shit
 ```sh
-npm run build:frontend
-npm start
+# Install all dependencies, builds and runs in watch mode for development
+make serve
 ```
 
-### I want to code on the server
-
-```sh
-`npm start`
-# test stuff at localhost:3000/
-# change code in src/server
-# kill the server
-# repeat
-```
-
-### I want to code on the frontend
-
-```sh
-npm run watch:frontend
-# Then run the server as well. The frontend files will be built whenever frontend sources change.
-# Change stuff in src/frontend
-# The server will watch files, recompile and refresh your browser page
-```
+In theory, you should never have to restart the server once it is started. All files are watched and everything is reloaded when needed (frontend and backend).
 
 ### I want to TDD stuff
 

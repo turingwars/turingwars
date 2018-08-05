@@ -56,7 +56,7 @@ module.exports = {
     // Add the loader for .ts files.
     module: {
         rules: [{
-            include: path.join(REPO_ROOT, '.'),
+            include: path.join(process.cwd(), '.'),
             test: /\.tsx?$/,
             use: [
                 {
