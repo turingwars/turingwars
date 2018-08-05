@@ -31,12 +31,16 @@ export function createRouter<T extends ApiDefinition>(def: T, hash: RouterDefini
         switch (endpoint.method) {
             case 'GET':
                 router.get(path, makeHandler(hash[i].bind(hash)));
+                break;
             case 'POST':
                 router.post(path, makeHandler(hash[i].bind(hash)));
+                break;
             case 'PUT':
                 router.put(path, makeHandler(hash[i].bind(hash)));
+                break;
             case 'DELETE':
                 router.delete(path, makeHandler(hash[i].bind(hash)));
+                break;
         }
     }
     return router;

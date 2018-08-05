@@ -1,4 +1,7 @@
 import { createAPI } from './typed-apis/typed-api';
+import { GetGameResponse } from './dto/GetGameResponse';
+import { CreateMatchRequest } from './dto/CreateMatchRequest';
+import { CreateMatchResponse } from './dto/CreateMatchResponse';
 
 export interface IHero {
     program: string;
@@ -54,4 +57,18 @@ export const twAPI = createAPI({
         method: 'GET',
         response: [Hero]
     },
+    getGame: {
+        path: '/game',
+        method: 'GET',
+        params: {
+            id: 'string',
+        },
+        response: GetGameResponse
+    },
+    createGame: {
+        path: '/create-game',
+        method: 'POST',
+        body: CreateMatchRequest,
+        response: CreateMatchResponse
+    }
 });
