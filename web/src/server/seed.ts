@@ -23,7 +23,9 @@ export async function seedDatabase(connection: Connection): Promise<void> {
 function minerChampion(): Champion {
     const champion = new Champion();
     champion.name = 'Miner';
-    champion.code = `mine %id`;
+    champion.code = `
+mine %id
+jmp -1`;
     return champion;
 }
 

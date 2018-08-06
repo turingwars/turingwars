@@ -1,5 +1,7 @@
 {
-    "extends": "tslint:recommended",
+    "extends": [
+        "tslint:recommended"
+    ],
     "rules": {
         "quotemark": [ true, "single", "jsx-double", "avoid-escape" ],
         "no-console": false,

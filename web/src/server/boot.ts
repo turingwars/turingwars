@@ -1,8 +1,8 @@
 import * as http from 'http';
-import { SERVER_PORT } from '../config';
 import application from './server';
 
 async function boot() {
+    const SERVER_PORT = process.env.PORT || 3000;
     const handler = await application.init();
     const server = http.createServer(handler);
 

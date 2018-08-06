@@ -16,6 +16,6 @@ export const NUM_CYCLES = 5000;
 /**
  * Number of scheduler cwles
  */
-export const UPDATE_PERIOD = 10;
+export const UPDATE_PERIOD = 4;
 
 export const BIN_LOCATION = 'js/turingwars.js';
