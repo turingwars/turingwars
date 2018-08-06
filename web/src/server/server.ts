@@ -1,5 +1,5 @@
 import { NotFoundHttpException } from '@senhung/http-exceptions';
-import { json } from 'body-parser';
+import { json, urlencoded } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import { errorReporter } from 'express-youch';
@@ -52,6 +52,7 @@ class TuringWarsApplication {
         const app = express();
         app.use(cors());
         app.use(json());
+        app.use(urlencoded({ extended: true }));
 
         const championsRepo = this.connection.getRepository(Champion);
         const gamesRepo = this.connection.getRepository(GameLog);
