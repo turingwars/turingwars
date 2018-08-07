@@ -5,8 +5,8 @@
 @endsection
 
 @param GAME_ID: string
-@param PLAYER_0_NAME: string
 @param PLAYER_1_NAME: string
+@param PLAYER_2_NAME: string
 
 @section(content)
 
@@ -52,5 +52,11 @@
     <script src="https://unpkg.com/redux@@4.0.0/dist/redux.js" crossorigin></script>
     <script src="https://unpkg.com/react-redux@@5.0.7/dist/react-redux.js" crossorigin></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    @-- inject preloaded values
+    <script>
+        var PLAYER_1_NAME = "@(PLAYER_1_NAME)";
+        var PLAYER_2_NAME = "@(PLAYER_2_NAME)";
+    </script>
     <script src="/dist/replay.js"></script>
 @endsection

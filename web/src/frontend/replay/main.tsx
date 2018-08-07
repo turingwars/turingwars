@@ -9,11 +9,17 @@ import { initialState, State } from './redux/state';
 import { player } from './services/player';
 
 declare global {
-    interface Window { __REDUX_DEVTOOLS_EXTENSION__: undefined | Function; }
+    interface Window {
+        __REDUX_DEVTOOLS_EXTENSION__: undefined | Function;
+        PLAYER_1_NAME: string;
+        PLAYER_2_NAME: string;
+    }
 }
 
 const store = createStore(reducer, initialState({
-    gameId: getGameID()
+    gameId: getGameID(),
+    player1Name: window.PLAYER_1_NAME,
+    player2Name: window.PLAYER_2_NAME
 }),
 window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) as Store<State, AppActions>;
 store.dispatch(clearMemory());

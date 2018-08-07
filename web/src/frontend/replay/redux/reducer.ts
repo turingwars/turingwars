@@ -1,14 +1,15 @@
+import { CORESIZE } from 'config';
 import { nop } from 'model/Instruction';
-import { CONSTANTS } from '../constants';
+import * as CONSTANTS from '../constants';
 import { AppActions } from './actions';
 import { IPrintableMemoryCell, State } from './state';
 
 export function reducer(state: State, action: AppActions): State {
     switch (action.type) {
         case 'clearMemory': {
-            const memory: IPrintableMemoryCell[] = new Array(2116);
+            const memory: IPrintableMemoryCell[] = new Array(CORESIZE);
             const NOP = nop();
-            for (let i = 0 ; i < 2116 ; i++) {
+            for (let i = 0 ; i < CORESIZE ; i++) {
                 memory[i] = {
                     instr: NOP,
                     owner: -1,
@@ -18,9 +19,7 @@ export function reducer(state: State, action: AppActions): State {
             return { ...state, memory };
         }
         case 'publishGameUpdate': {
-            // TODO: An immutable array implementation would be much more memory efficient here
             const memory = state.memory.slice();
-
             // Clear old changed cells
             if (state.changedCells.length >= CONSTANTS.changeBufferLength) {
                 for (const address of state.changedCells[0]) {
@@ -44,7 +43,25 @@ export function reducer(state: State, action: AppActions): State {
                 changedNow.push(m.address);
             }
             changedCells.push(changedNow);
-            return { ...state, id: state.id + 1, memory, processes: action.payload.processes, changedCells };
+
+            // Update players
+            const player1 = {
+                name: state.player1.name,
+                score: action.payload.score[0].score
+            };
+
+            const player2 = {
+                name: state.player2.name,
+                score: action.payload.score[1].score
+            };
+
+            return { ...state,
+                id: state.id + 1,
+                memory,
+                processes: action.payload.processes,
+                changedCells,
+                player1, player2
+            };
         }
     }
     return state;

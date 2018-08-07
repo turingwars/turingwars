@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Instruction, nop, OpCode } from '../../../model/Instruction';
-import { CONSTANTS } from '../constants';
+import * as CONSTANTS from '../constants';
 import { Process } from '../../../model/GameUpdate';
 import { IPrintableMemoryCell } from '../redux/state';
 
@@ -19,40 +19,37 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
     componentDidMount() {
         const canvas = this.refs.thecanvas as HTMLCanvasElement;
         this.ctx = canvas.getContext('2d');
+        this.ctx.lineWidth = CONSTANTS.lineWidth;
         this.drawAll();
     }
 
     componentDidUpdate(oldProps: IMemoryMapProps, newProps: IMemoryMapProps) {
-        this.drawChanged(oldProps);
-
-        for (const i in this.props.processes) {
-            this.drawIP(this.props.processes[i], oldProps.processes[i]);
-        }
-    }
-
-    render() {
-        return <canvas id="memoryMapCanvas" ref="thecanvas" width="600" height="600"></canvas>
-    }
-
-    private drawAll() {
-        const drawFullBoxes = false;
-        for (let line = 0; line < this.props.memoryWidth; line++) {
-            for (let col = 0; col < this.props.memoryWidth; col++) {
-                this.eraseAtPosition(line, col);
-                this.drawOneMemoryRegion(line, col, drawFullBoxes);
-            }
-        }
-    }
-
-    private drawChanged(oldProps: IMemoryMapProps) {
-
-        let drawFullBoxes = false;
         for (let line = 0; line < this.props.memoryWidth; line++) {
             for (let col = 0; col < this.props.memoryWidth; col++) {
                 const address = line * this.props.memoryWidth + col;
                 if (this.hasDifferenceAtAddress(oldProps, address)) {
-                    this.drawCellDiff(col, line, oldProps);
+                    this.drawCellDiff(col, line);
                 }
+            }
+        }
+
+        for (const i in oldProps.processes) {
+            this.eraseIP(oldProps.processes[i]);
+        }
+        for (const i in this.props.processes) {
+            this.drawIP(this.props.processes[i]);
+        }
+    }
+
+    render() {
+        return <canvas id="memoryMapCanvas" ref="thecanvas" width={CONSTANTS.canvasSize} height={CONSTANTS.canvasSize}></canvas>
+    }
+
+    private drawAll() {
+        for (let line = 0; line < this.props.memoryWidth; line++) {
+            for (let col = 0; col < this.props.memoryWidth; col++) {
+                this.eraseAtPosition(line, col);
+                this.drawOneMemoryRegion(line, col, false, this.getCaseColor(col, line));
             }
         }
     }
@@ -61,36 +58,29 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         return oldProps.memory[address] !== this.props.memory[address]; 
     }
 
-    private drawCellDiff(col: number, line: number, oldProps: IMemoryMapProps) {
+    private drawCellDiff(col: number, line: number) {
         const address = line * this.props.memoryWidth + col;
 
         // draw new changes
+        this.eraseAtPosition(col, line);
         if (this.props.memory[address].changed > 0) {
-            const col = address % this.props.memoryWidth;
-            const line = (address - col) / this.props.memoryWidth;
-            this.eraseAtPosition(col, line);
-            this.drawOneMemoryRegion(col, line, true, undefined);
+            this.drawOneMemoryRegion(col, line, true, CONSTANTS.lightGray);
+            this.drawOneMemoryRegion(col, line, false, this.getCaseColor(col, line));
         } else {
-            this.eraseAtPosition(col, line);
-            this.drawOneMemoryRegion(col, line, false, undefined);
+            this.drawOneMemoryRegion(col, line, false, this.getCaseColor(col, line));
         }
     }
 
-    private drawIP(proc: Process, prevProc: Process | undefined) {
-        let col: number;
-        let line: number;
+    private eraseIP(proc: Process) {
+        const col = proc.instructionPointer % this.props.memoryWidth;
+        const line = (proc.instructionPointer - col) / this.props.memoryWidth;
+        this.drawCellDiff(col, line);
+    }
 
-        if (prevProc) {
-            col = prevProc.instructionPointer % this.props.memoryWidth;
-            line = (prevProc.instructionPointer - col) / this.props.memoryWidth;
-
-            this.eraseAtPosition(col, line);
-            this.drawOneMemoryRegion(col, line, this.props.memory[prevProc.instructionPointer].changed > 0, undefined);
-        }
-
-        col = proc.instructionPointer % this.props.memoryWidth;
-        line = (proc.instructionPointer - col) / this.props.memoryWidth;
-        this.drawOneMemoryRegion(col, line, false, '#fff');
+    private drawIP(proc: Process) {
+        const col = proc.instructionPointer % this.props.memoryWidth;
+        const line = (proc.instructionPointer - col) / this.props.memoryWidth;
+        this.drawOneMemoryRegion(col, line, true, CONSTANTS.ipColor[proc.processId]);
     }
 
     private eraseAtPosition(col: number, line: number) {
@@ -109,10 +99,10 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private getCaseColor(col: number, row: number) {
         const index = row * this.props.memoryWidth + col;
-        const {instr, owner } = this.props.memory[index];
+        const { instr, owner } = this.props.memory[index];
 
         if (instr.op === OpCode.MINE) {
-            return CONSTANTS.gold;
+            return instr.a.value === 0 ? CONSTANTS.blueGold : CONSTANTS.purpleGold;
         }
         if (owner === 0) {
             return CONSTANTS.blue;
@@ -124,12 +114,7 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         return CONSTANTS.gray;
     }
 
-    private drawOneMemoryRegion(col: number, line: number, isFull: boolean, color?: string) {
-
-        if (color === undefined) {
-            color = this.getCaseColor(col, line);
-        }
-
+    private drawOneMemoryRegion(col: number, line: number, isFull: boolean, color: string) {
         this.ctx.beginPath();
         this.ctx.strokeStyle = color;
 
@@ -137,12 +122,14 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         const y = 2 + line * CONSTANTS.outerBoxSize;
         const width = CONSTANTS.boxSize;
 
-        this.ctx.rect(x, y, width, width);
-        this.ctx.stroke();
-
+        
         if (isFull) {
+            this.ctx.rect(x + 1, y + 1, width - 2, width - 2);
             this.ctx.fillStyle = color;
             this.ctx.fill();
+        } else {
+            this.ctx.rect(x, y, width, width);
+            this.ctx.stroke();
         }
     }
 }
