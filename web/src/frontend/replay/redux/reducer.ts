@@ -63,6 +63,35 @@ export function reducer(state: State, action: AppActions): State {
                 player1, player2
             };
         }
+        case 'publishGameEnd':
+            return {
+                ...state,
+                gameResult: action.payload
+            };
+        case 'publishGameOver':
+            if (state.player1.score == state.player2.score) {
+                return {
+                    ...state,
+                    gameResult: {
+                        type: 'DRAW'
+                    }
+                };
+            }
+            const winner = state.player1.score > state.player2.score ? '0' : '1';
+            return {
+                ...state,
+                gameResult: {
+                    type: 'VICTORY',
+                    winner: winner
+                }
+            }
+        default:
+            catchUnhandledAction(action);
     }
     return state;
+}
+
+function catchUnhandledAction(_name: never) {
+    // Throws a type error at compile time if an action is missing, but doesn't do
+    // anything at runtime to prevent crashing for no good reason.
 }

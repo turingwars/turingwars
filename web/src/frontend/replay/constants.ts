@@ -38,7 +38,7 @@ export const lightGray = '#fff';
 export const blueGold = '#1dd300';
 export const purpleGold = '#ff6a00';
 
-export const ipColor = [
+export const playerColor = [
     blue,
     purple,
 ];

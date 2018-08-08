@@ -67,7 +67,6 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private drawCell(address: number) {
         const cell = this.addrToCell(address);
-        // draw new changes
         this.eraseAtPosition(cell);
         if (this.props.memory[address].changed > 0) {
             this.fillCell(cell, CONSTANTS.lightGray);
@@ -89,14 +88,14 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
         // Draw first process
         const cell1 = this.addrToCell(proc1.instructionPointer);
-        this.fillCell(cell1, CONSTANTS.ipColor[proc1.processId]);
+        this.fillCell(cell1, CONSTANTS.playerColor[proc1.processId]);
 
         // Draw second process
         const cell2 = this.addrToCell(proc2.instructionPointer);
         if (proc1.instructionPointer === proc2.instructionPointer) {
-            this.fillHalfCell(cell2, CONSTANTS.ipColor[proc2.processId]);
+            this.fillHalfCell(cell2, CONSTANTS.playerColor[proc2.processId]);
         } else {
-            this.fillCell(cell2, CONSTANTS.ipColor[proc2.processId]);
+            this.fillCell(cell2, CONSTANTS.playerColor[proc2.processId]);
         }
     }
 

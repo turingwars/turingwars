@@ -14,39 +14,10 @@
     <div id="app"></div>
 </div>
 
-@--( <div id="innerBody">
-
-    <!-- Header bar -->
-    <h1 id="title1">Turing &nbsp; wars</h1>
-    <div id="backArrow"><a href="/">◄ back</a></div>
-
-    <!-- Left col -->
-    <div id="player1progressbar" class="playerBoard">
-        <div id="player1score" class="playerscore">0</div>
-        <div class="bubbles"></div>
-    </div>
-
-    <!-- Middle col -->
-    <canvas id="memoryMapCanvas" width="600" height="600"></canvas>
-
-    <!-- Right col -->
-    <div id="player2progressbar" class="playerBoard">
-        <div id="player2score" class="playerscore">0</div>
-    </div>
-
-    <!-- Bottom bar -->
-    <div id="versus">
-        <div id="player2name" class="playerName">@(PLAYER_0_NAME)</div>
-        <div id="player1name" class="playerName">@(PLAYER_1_NAME)</div>
-        <div class="bubbles"></div>
-    </div>
-</div>
-<div id="displayFight" class="gold" style="display:none"></div>
-<div id="displayWinner" class="gold" style="display:none">Goliath &nbsp; wins</div> )
-
 @endsection
 
 @section(scripts)
+    @-- TODO: If running in prod, serve the production version of the dependencies
     <script src="https://unpkg.com/react@@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/redux@@4.0.0/dist/redux.js" crossorigin></script>

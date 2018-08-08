@@ -13,12 +13,21 @@ export interface IPrintableMemoryCell {
     changed: number;
 }
 
+export type GameResult = {
+    type: 'DRAW'
+} | {
+    type: 'VICTORY',
+    winner: string
+};
+
 function playerState(name: string) {
     return {
         name,
         score: 0
     };
 }
+
+export type PlayerState = ReturnType<typeof playerState>;
 
 export function initialState(props: IStartupProps) {
     return {
@@ -29,6 +38,7 @@ export function initialState(props: IStartupProps) {
         processes: [] as Process[],
         player1: playerState(props.player1Name),
         player2: playerState(props.player2Name),
+        gameResult: null as GameResult | null
     };
 }
 

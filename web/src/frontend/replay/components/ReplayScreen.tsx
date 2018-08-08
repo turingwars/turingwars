@@ -1,26 +1,71 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+
+import * as CONSTANTS from '../constants';
 import { State } from '../redux/state';
-import { MemoryMap } from './MemoryMap';
 import { api } from '../services/api';
 import { player } from '../services/player';
-import * as CONSTANTS from '../constants';
+import { MemoryMap } from './MemoryMap';
 import { ScoreIndicator } from './ScoreIndicator';
+import { PlayerBoard } from './PlayerBoard';
 
 const mapStateToProps = (state: State) => {
     return state;
 };
 
 const mapDispatchToProps = {
-    
+
 };
 
-export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
-    class extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps> {
+type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-        componentDidMount() {
-            (this.refs.displayFightDiv as HTMLElement).style.display = "none";
+export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
+    class extends React.Component<ReplaySreenProps> {
+
+        public componentDidMount() {
             this.pollServerForGame();
+        }
+
+        public componentDidUpdate(oldProps: ReplaySreenProps) {
+            if (oldProps.gameResult == null && this.props.gameResult != null) {
+                // The game just ended
+                this.showEndGameSplash();
+            }
+        }
+
+        public render() {
+            return (
+                <div>
+                    {/* Header bar */}
+                    <h1 id="title1">Turing &nbsp; wars</h1>
+                    <div id="backArrow"><a href="/">◄ back</a></div>
+
+                    <div style={{ display: 'flex'}}>
+                        {/* Left col */}
+                        <PlayerBoard player={ this.props.player1 } playerID={0} hasWon={this.playerHasWon('0')} />
+
+                        {/* Middle col */}
+                        <MemoryMap 
+                            stateID={this.props.id}
+                            memory={this.props.memory}
+                            processes={this.props.processes}
+                            changedCells={this.props.changedCells}
+                            memoryWidth={CONSTANTS.memoryWidth} />
+
+                        {/* Right col */}
+                        <PlayerBoard player={ this.props.player2 } playerID={1} hasWon={this.playerHasWon('1')} />
+                    </div>
+
+                    {/* FX */}
+                    <div id="displayFight" ref="displayFight" className="gold"></div>
+                    <div id="displayWinner" ref="displayWinner" className="gold"></div>
+                </div>
+            );
+        }
+
+        private playerHasWon(playerId: string) {
+            const gameResult = this.props.gameResult;
+            return gameResult && gameResult.type === 'VICTORY' && gameResult.winner === playerId;
         }
 
         private async pollServerForGame() {
@@ -38,11 +83,27 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             }
         }
 
+        private showEndGameSplash() {
+            const displayWinnerDiv = this.refs.displayWinner as HTMLElement;
+            displayWinnerDiv.innerText = this.getEndGameText();
+            displayWinnerDiv.style.display = 'block';
+            $(displayWinnerDiv).animate({
+                'font-size': CONSTANTS.drawWinnerFinalFontSize},
+                CONSTANTS.drawWinnerAnimationLengthInMs);
+        }
+
+        private getEndGameText() {
+            if (this.props.gameResult.type === 'DRAW') {
+                return 'Draw!';
+            } else if(this.props.gameResult.winner === '0') {
+                return `${this.props.player1.name} wins!`;
+            } else {
+                return `${this.props.player2.name} wins!`;
+            }
+        }
+
         private startReplay() {
-
-            // TODO: display ready
-
-            const displayFightDiv = this.refs.displayFightDiv as HTMLElement;
+            const displayFightDiv = this.refs.displayFight as HTMLElement;
             displayFightDiv.innerText = 'Fight !';
             displayFightDiv.style.fontSize = CONSTANTS.drawFightStartFontSize + 'px';
             displayFightDiv.style.display = '';
@@ -56,45 +117,6 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                     displayFightDiv.style.display = 'none';
                     player.start();
                 });
-        }
-
-        public render() {
-            return (
-                <div>
-                    {/* Header bar */}
-                    <h1 id="title1">Turing &nbsp; wars</h1>
-                    <div id="backArrow"><a href="/">◄ back</a></div>
-
-                    {/* Left col */}
-                    <div id="player1progressbar" className="playerBoard">
-                        <ScoreIndicator score={ this.props.player1.score } />
-                        <div className="bubbles"></div>
-                    </div>
-
-                    {/* Middle col */}
-                    <MemoryMap 
-                            stateID={this.props.id}
-                            memory={this.props.memory}
-                            processes={this.props.processes}
-                            changedCells={this.props.changedCells}
-                            memoryWidth={CONSTANTS.memoryWidth} />
-
-                    {/* Right col */}
-                    <div id="player2progressbar" className="playerBoard">
-                        <ScoreIndicator score={ this.props.player2.score } />
-                    </div>
-
-                    {/* Bottom bar */}
-                    <div id="versus">
-                        <div id="player1name" className="playerName">{ this.props.player1.name }</div>
-                        <div id="player2name" className="playerName">{ this.props.player2.name }</div>
-                        <div className="bubbles"></div>
-                    </div>
-
-                    {/* FX */}
-                    <div id="displayFight" ref="displayFightDiv" className="gold"></div>
-                </div>
-            );
         }
     }
 );
