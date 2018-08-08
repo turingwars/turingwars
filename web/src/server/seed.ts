@@ -89,7 +89,7 @@ jmp -3
 
 ; This is the tunnel that is being copied around.
 ; Note that victims will actually land on the "mine" and not
-; on "jmp* two instructions below because we initialize the
+; on "jmp" two instructions below because we initialize the
 ; "mov" above with an offset of 1
 jmp 2
 

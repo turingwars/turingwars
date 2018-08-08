@@ -20,6 +20,10 @@ serve: $(NODE_MODULES) views
 views: $(SRC)
 	npm run build:views
 
+.PHONY: clean
+clean:
+	rm -rf .tmp src/server/.views
+
 $(NODE_MODULES): package.json package-lock.json
 	npm install
 	touch $(NODE_MODULES)

@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Instruction, nop, OpCode } from '../../../model/Instruction';
+
+import { Process } from '../../../model/GameUpdate';
+import { OpCode } from '../../../model/Instruction';
 import * as CONSTANTS from '../constants';
-import { Process } from '../../../model/GameUpdate';
 import { IPrintableMemoryCell } from '../redux/state';
 
 interface IMemoryMapProps {
@@ -12,124 +13,158 @@ interface IMemoryMapProps {
     stateID: number;
 }
 
+interface CellCoordinates {
+    col: number;
+    line: number;
+}
+
+interface CellPixelRect {
+    left: number;
+    top: number;
+    width: number;
+    // height: number = width;
+}
+
 export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private ctx: CanvasRenderingContext2D;
 
-    componentDidMount() {
+    public componentDidMount() {
         const canvas = this.refs.thecanvas as HTMLCanvasElement;
         this.ctx = canvas.getContext('2d');
         this.ctx.lineWidth = CONSTANTS.lineWidth;
         this.drawAll();
     }
 
-    componentDidUpdate(oldProps: IMemoryMapProps, newProps: IMemoryMapProps) {
-        for (let line = 0; line < this.props.memoryWidth; line++) {
-            for (let col = 0; col < this.props.memoryWidth; col++) {
-                const address = line * this.props.memoryWidth + col;
-                if (this.hasDifferenceAtAddress(oldProps, address)) {
-                    this.drawCellDiff(col, line);
-                }
+    public componentDidUpdate(oldProps: IMemoryMapProps, newProps: IMemoryMapProps) {
+        for (let address = 0; address < this.props.memory.length; address++) {
+            if (this.hasDifferenceAtAddress(oldProps, address)) {
+                this.drawCell(address);
             }
         }
 
-        for (const i in oldProps.processes) {
-            this.eraseIP(oldProps.processes[i]);
-        }
-        for (const i in this.props.processes) {
-            this.drawIP(this.props.processes[i]);
-        }
+        this.eraseIPs(oldProps.processes);
+        this.drawIPs(this.props.processes);
     }
 
-    render() {
-        return <canvas id="memoryMapCanvas" ref="thecanvas" width={CONSTANTS.canvasSize} height={CONSTANTS.canvasSize}></canvas>
+    public render() {
+        return <canvas
+                id="memoryMapCanvas"
+                ref="thecanvas"
+                width={CONSTANTS.canvasSize}
+                height={CONSTANTS.canvasSize}></canvas>;
     }
 
     private drawAll() {
-        for (let line = 0; line < this.props.memoryWidth; line++) {
-            for (let col = 0; col < this.props.memoryWidth; col++) {
-                this.eraseAtPosition(line, col);
-                this.drawOneMemoryRegion(line, col, false, this.getCaseColor(col, line));
-            }
+        for (let address = 0; address < this.props.memory.length; address++) {
+            this.drawCell(address);
         }
     }
 
     private hasDifferenceAtAddress(oldProps: IMemoryMapProps, address: number) {
-        return oldProps.memory[address] !== this.props.memory[address]; 
+        return oldProps.memory[address] !== this.props.memory[address];
     }
 
-    private drawCellDiff(col: number, line: number) {
-        const address = line * this.props.memoryWidth + col;
-
+    private drawCell(address: number) {
+        const cell = this.addrToCell(address);
         // draw new changes
-        this.eraseAtPosition(col, line);
+        this.eraseAtPosition(cell);
         if (this.props.memory[address].changed > 0) {
-            this.drawOneMemoryRegion(col, line, true, CONSTANTS.lightGray);
-            this.drawOneMemoryRegion(col, line, false, this.getCaseColor(col, line));
+            this.fillCell(cell, CONSTANTS.lightGray);
+            this.strokeCell(cell, this.getCellColor(this.props.memory[address]));
         } else {
-            this.drawOneMemoryRegion(col, line, false, this.getCaseColor(col, line));
+            this.strokeCell(cell, this.getCellColor(this.props.memory[address]));
         }
     }
 
-    private eraseIP(proc: Process) {
-        const col = proc.instructionPointer % this.props.memoryWidth;
-        const line = (proc.instructionPointer - col) / this.props.memoryWidth;
-        this.drawCellDiff(col, line);
+    private eraseIPs(procs: Process[]) {
+        for (const proc of procs) {
+            this.drawCell(proc.instructionPointer);
+        }
     }
 
-    private drawIP(proc: Process) {
-        const col = proc.instructionPointer % this.props.memoryWidth;
-        const line = (proc.instructionPointer - col) / this.props.memoryWidth;
-        this.drawOneMemoryRegion(col, line, true, CONSTANTS.ipColor[proc.processId]);
+    private drawIPs(procs: Process[]) {
+        const proc1 = procs[0];
+        const proc2 = procs[1];
+
+        // Draw first process
+        const cell1 = this.addrToCell(proc1.instructionPointer);
+        this.fillCell(cell1, CONSTANTS.ipColor[proc1.processId]);
+
+        // Draw second process
+        const cell2 = this.addrToCell(proc2.instructionPointer);
+        if (proc1.instructionPointer === proc2.instructionPointer) {
+            this.fillHalfCell(cell2, CONSTANTS.ipColor[proc2.processId]);
+        } else {
+            this.fillCell(cell2, CONSTANTS.ipColor[proc2.processId]);
+        }
     }
 
-    private eraseAtPosition(col: number, line: number) {
-        const eraseColor = 'black';
-        const x = 1 + col * CONSTANTS.outerBoxSize;
-        const y = 1 + line * CONSTANTS.outerBoxSize;
-        const width = CONSTANTS.boxSize + 2;
-
+    private eraseAtPosition(cell: CellCoordinates) {
+        const rect = this.cellRect(cell);
+        this.ctx.fillStyle = 'black';
         this.ctx.beginPath();
-        this.ctx.strokeStyle = eraseColor;
-        this.ctx.fillStyle = eraseColor;
-        this.ctx.rect(x, y, width, width);
-        this.ctx.stroke();
+        // Extra offsets: 1 px for the border width and 1px to clean the inter-cell gap
+        this.ctx.rect(rect.left - 2, rect.top - 2, rect.width + 4, rect.width + 4);
         this.ctx.fill();
     }
 
-    private getCaseColor(col: number, row: number) {
-        const index = row * this.props.memoryWidth + col;
-        const { instr, owner } = this.props.memory[index];
-
-        if (instr.op === OpCode.MINE) {
-            return instr.a.value === 0 ? CONSTANTS.blueGold : CONSTANTS.purpleGold;
+    private getCellColor(cell: IPrintableMemoryCell) {
+        if (cell.instr.op === OpCode.MINE) {
+            return cell.instr.a.value === 0 ? CONSTANTS.blueGold : CONSTANTS.purpleGold;
         }
-        if (owner === 0) {
+        if (cell.owner === 0) {
             return CONSTANTS.blue;
         }
-        if (owner === 1) {
+        if (cell.owner === 1) {
             return CONSTANTS.purple;
         }
-
         return CONSTANTS.gray;
     }
 
-    private drawOneMemoryRegion(col: number, line: number, isFull: boolean, color: string) {
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = color;
+    private strokeCell(cell: CellCoordinates, color: string) {
+        const rect = this.cellRect(cell);
 
-        const x = 2 + col * CONSTANTS.outerBoxSize;
-        const y = 2 + line * CONSTANTS.outerBoxSize;
+        this.ctx.strokeStyle = color;
+        this.ctx.beginPath();
+        this.ctx.rect(rect.left, rect.top, rect.width, rect.width);
+        this.ctx.stroke();
+    }
+
+    private fillCell(cell: CellCoordinates, color: string) {
+        const rect = this.cellRect(cell);
+
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        // Inset by 1 px to leave space for the 2px-wide border which follows the rect
+        this.ctx.rect(rect.left + 1, rect.top + 1, rect.width - 2, rect.width - 2);
+        this.ctx.fill();
+    }
+
+    private fillHalfCell(cell: CellCoordinates, color: string) {
+        const { left, top, width} = this.cellRect(cell);
+        const right = left + width - 1;
+        const bottom = top + width - 1;
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(right, top);
+        this.ctx.lineTo(right, bottom);
+        this.ctx.lineTo(left + 1, bottom);
+        this.ctx.fillStyle = color;
+        this.ctx.fill();
+    }
+
+    private addrToCell(addr: number): CellCoordinates {
+        const col = addr % this.props.memoryWidth;
+        const line = (addr - col) / this.props.memoryWidth;
+        return { col, line };
+    }
+
+    private cellRect(cell: CellCoordinates): CellPixelRect {
+        const left = 1 + cell.col * CONSTANTS.outerBoxSize;
+        const top = 1 + cell.line * CONSTANTS.outerBoxSize;
         const width = CONSTANTS.boxSize;
 
-        
-        if (isFull) {
-            this.ctx.rect(x + 1, y + 1, width - 2, width - 2);
-            this.ctx.fillStyle = color;
-            this.ctx.fill();
-        } else {
-            this.ctx.rect(x, y, width, width);
-            this.ctx.stroke();
-        }
+        return { left, top, width };
     }
 }

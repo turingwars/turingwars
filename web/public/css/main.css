@@ -151,8 +151,8 @@ td.hidden, td.hidden:hover {
 }
 
 #memoryMapCanvas {
-    width:500px;
-    height: 500px;
+    width:520px;
+    height: 520px;
     display: inline-block;
     border: 15px solid #222;
     padding: 0px;
@@ -160,13 +160,12 @@ td.hidden, td.hidden:hover {
 }
 
 .playerBoard{
-
-    width: 200px;
-    height: 500px;
+    width: 185px;;
+    height: 520px;
     display: inline-block;
     border: 15px solid #222;
     padding: 0px;
-    margin: 0px;
+    margin: 0px 5px;
 }
 
 .playerBoard svg {
