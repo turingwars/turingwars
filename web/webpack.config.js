@@ -8,14 +8,8 @@ module.exports = {
 
     mode: process.env.NODE_ENV || 'development',
     entry: {
-        'replay': [
-            './src/frontend/replay/main.tsx'
-        ],
-        'index': [
-            './src/frontend/index.ts'
-        ],
-        'editor': [
-            './src/frontend/editor/main.tsx'
+        'app': [
+            './src/frontend/main.tsx'
         ]
     },
 

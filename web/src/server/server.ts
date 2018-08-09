@@ -59,12 +59,6 @@ class TuringWarsApplication {
 
         // HTML pages
 
-        app.get('/', asyncRoute(async () => {
-            return index({
-                champions: await championsRepo.find()
-            });
-        }));
-
         app.get('/champion/:id', asyncRoute(async () => {
             return edit();
         }));
