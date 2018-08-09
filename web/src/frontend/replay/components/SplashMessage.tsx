@@ -8,11 +8,11 @@ interface ISplashMessageProps {
 
 export class SplashMessage extends React.Component<ISplashMessageProps> {
 
-    state = {
+    /** @override */ public state = {
         visible: true
     };
 
-    componentDidMount() {
+    /** @override */ public componentDidMount() {
         if (this.props.oneShot) {
             setTimeout(() => this.setState({
                 visible: false
@@ -20,7 +20,7 @@ export class SplashMessage extends React.Component<ISplashMessageProps> {
         }
     }
 
-    render() {
+    /** @override */ public render() {
         return (this.state.visible) ?
                 this.renderActualElement() :
                 <div />; // Return a dummy because react still expects you to return something

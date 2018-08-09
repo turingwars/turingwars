@@ -73,7 +73,6 @@ class TuringWarsApplication {
             const gameId = req.params.id;
             const game = await gamesRepo.findOneOrFail(gameId);
             return replay({
-                GAME_ID: gameId,
                 PLAYER_1_NAME: game.player1Name,
                 PLAYER_2_NAME: game.player2Name
             });

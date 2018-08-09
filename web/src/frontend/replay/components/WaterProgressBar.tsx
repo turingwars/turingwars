@@ -13,7 +13,7 @@ const WAVE_HEIGHT = 0.01;
 
 export class WaterProgressBar extends React.Component<IWaterProgressBar> {
 
-    state = {
+    /** @override */ public state = {
         waveOffset: 0
     };
 
@@ -26,16 +26,16 @@ export class WaterProgressBar extends React.Component<IWaterProgressBar> {
 
     private _clipPathId: string | null;
 
-    componentDidMount() {
+    /** @override */ public componentDidMount() {
         this.isLive = true;
         this.animate();
     }
 
-    componentWillUnmount() {
+    /** @override */ public componentWillUnmount() {
         this.isLive = false;
     }
 
-    render() {
+    /** @override */ public render() {
         return (
             <svg    className="waterProgressBar"
                     viewBox={`0 0 500 1000`}

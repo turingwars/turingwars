@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as CONSTANTS from '../constants';
 
 interface IScoreIndicatorProps {
     score: number;
@@ -8,19 +7,19 @@ interface IScoreIndicatorProps {
 
 export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pumping: boolean }> {
 
-    state = {
+    /** @override */ public state = {
         pumping: false
     };
 
     private resetTimer: number | null;
 
-    componentWillReceiveProps(prevProps: IScoreIndicatorProps) {
+    /** @override */ public componentWillReceiveProps(prevProps: IScoreIndicatorProps) {
         if (prevProps.score !== this.props.score) {
             this.triggerPumping();
         }
     }
 
-    render() {
+    /** @override */ public render() {
         return <div className={this.generateClassName()}>
             { this.props.score }
         </div>;
@@ -47,7 +46,7 @@ export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pump
         if (this.resetTimer != null) {
             clearTimeout(this.resetTimer);
         }
-        this.resetTimer = setTimeout(() => {
+        this.resetTimer = window.setTimeout(() => {
             this.setState({
                 pumping: false
             });

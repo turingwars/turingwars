@@ -12,7 +12,7 @@ interface IPlayerBoardProps {
 
 export class PlayerBoard extends React.Component<IPlayerBoardProps> {
 
-    render() {
+    /** @override */ public render() {
         return (<div className="playerBoardContainer">
             <div style={{position: "relative"}} className="playerBoard">
                 <WaterProgressBar percent= { this.props.player.score / CONSTANTS.scoreMaxValue } color={CONSTANTS.playerColor[this.props.playerID] } />

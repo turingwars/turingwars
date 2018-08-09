@@ -11,8 +11,8 @@ export function herosListLoadedAction(heros: IHero[]) {
     return baseAction('herosListLoadedAction', heros);
 }
 
+
 /**
  * Join here all possible actions
  */
-export type AppActions =
-        ReturnType<typeof herosListLoadedAction>;
+export type AppActions = ReturnType<typeof herosListLoadedAction>;

@@ -4,7 +4,10 @@ import * as CONSTANTS from '../constants';
 import { AppActions } from './actions';
 import { IPrintableMemoryCell, State } from './state';
 
-export function reducer(state: State, action: AppActions): State {
+export function reducer(state: State | undefined, action: AppActions): State {
+    if (state == undefined) {
+        throw new Error('Unexpected undefined state!');
+    }
     switch (action.type) {
         case 'clearMemory': {
             const memory: IPrintableMemoryCell[] = new Array(CORESIZE);
@@ -56,7 +59,6 @@ export function reducer(state: State, action: AppActions): State {
             };
 
             return { ...state,
-                id: state.id + 1,
                 memory,
                 processes: action.payload.processes,
                 changedCells,
@@ -93,7 +95,7 @@ export function reducer(state: State, action: AppActions): State {
     return state;
 }
 
-function catchUnhandledAction(_name: never) {
+function catchUnhandledAction(_action: never) {
     // Throws a type error at compile time if an action is missing, but doesn't do
     // anything at runtime to prevent crashing for no good reason.
 }

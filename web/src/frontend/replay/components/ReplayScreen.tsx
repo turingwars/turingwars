@@ -2,11 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import * as CONSTANTS from '../constants';
-import { State } from '../redux/state';
+import { State, GameResult } from '../redux/state';
 import { api } from '../services/api';
 import { player } from '../services/player';
 import { MemoryMap } from './MemoryMap';
-import { ScoreIndicator } from './ScoreIndicator';
 import { PlayerBoard } from './PlayerBoard';
 import { SplashMessage } from './SplashMessage';
 import { startGame } from '../redux/actions';
@@ -24,11 +23,11 @@ type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
     class extends React.Component<ReplaySreenProps> {
 
-        public componentDidMount() {
-            this.pollServerForGame();
+        /** @override */ public componentDidMount() {
+            this.pollServerForGame().catch((e) => {throw e;});
         }
 
-        public render() {
+        /** @override */ public render() {
             return (
                 <div style={{position: 'relative'}}>
                     {/* Header bar */}
@@ -40,8 +39,7 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                         <PlayerBoard player={ this.props.player1 } playerID={0} hasWon={this.playerHasWon('0')} />
 
                         {/* Middle col */}
-                        <MemoryMap 
-                            stateID={this.props.id}
+                        <MemoryMap
                             memory={this.props.memory}
                             processes={this.props.processes}
                             changedCells={this.props.changedCells}
@@ -53,14 +51,14 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
 
                     {/* FX */}
                     { this.props.gameStarted ? <SplashMessage message="Fight!" oneShot={true}/> : null }
-                    { this.props.gameResult != null ? <SplashMessage message={this.getEndGameText()} /> : ''}
+                    { this.props.gameResult != null ? <SplashMessage message={this.getEndGameText(this.props.gameResult)} /> : ''}
                 </div>
             );
         }
 
         private playerHasWon(playerId: string) {
             const gameResult = this.props.gameResult;
-            return gameResult && gameResult.type === 'VICTORY' && gameResult.winner === playerId;
+            return gameResult != null && gameResult.type === 'VICTORY' && gameResult.winner === playerId;
         }
 
         private async pollServerForGame() {
@@ -78,10 +76,10 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             }
         }
 
-        private getEndGameText() {
-            if (this.props.gameResult.type === 'DRAW') {
+        private getEndGameText(gameResult: GameResult) {
+            if (gameResult.type === 'DRAW') {
                 return 'Draw!';
-            } else if(this.props.gameResult.winner === '0') {
+            } else if(gameResult.winner === '0') {
                 return `${this.props.player1.name} wins!`;
             } else {
                 return `${this.props.player2.name} wins!`;

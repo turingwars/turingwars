@@ -10,7 +10,6 @@ interface IMemoryMapProps {
     memoryWidth: number;
     processes: Process[];
     changedCells: number[][];
-    stateID: number;
 }
 
 interface CellCoordinates {
@@ -29,14 +28,13 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private ctx: CanvasRenderingContext2D;
 
-    public componentDidMount() {
-        const canvas = this.refs.thecanvas as HTMLCanvasElement;
-        this.ctx = canvas.getContext('2d');
+    /** @override */ public componentDidMount() {
+        this.ctx = this.getRenderingContext();
         this.ctx.lineWidth = CONSTANTS.lineWidth;
         this.drawAll();
     }
 
-    public componentDidUpdate(oldProps: IMemoryMapProps, newProps: IMemoryMapProps) {
+    /** @override */ public componentDidUpdate(oldProps: IMemoryMapProps, _newProps: IMemoryMapProps) {
         for (let address = 0; address < this.props.memory.length; address++) {
             if (this.hasDifferenceAtAddress(oldProps, address)) {
                 this.drawCell(address);
@@ -47,12 +45,21 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         this.drawIPs(this.props.processes);
     }
 
-    public render() {
+    /** @override */ public render() {
         return <canvas
                 id="memoryMapCanvas"
                 ref="thecanvas"
                 width={CONSTANTS.canvasSize}
                 height={CONSTANTS.canvasSize}></canvas>;
+    }
+
+    private getRenderingContext() {
+        const canvas = this.refs.thecanvas as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d');
+        if (ctx == null) {
+            throw new Error("Cannot obtain the canvas rendering context!");
+        }
+        return ctx;
     }
 
     private drawAll() {
@@ -91,14 +98,14 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
         // Draw first process
         const cell1 = this.addrToCell(proc1.instructionPointer);
-        this.fillCell(cell1, CONSTANTS.playerColor[proc1.processId]);
+        this.fillCell(cell1, CONSTANTS.playerColor[0]);
 
         // Draw second process
         const cell2 = this.addrToCell(proc2.instructionPointer);
         if (proc1.instructionPointer === proc2.instructionPointer) {
-            this.fillHalfCell(cell2, CONSTANTS.playerColor[proc2.processId]);
+            this.fillHalfCell(cell2, CONSTANTS.playerColor[1]);
         } else {
-            this.fillCell(cell2, CONSTANTS.playerColor[proc2.processId]);
+            this.fillCell(cell2, CONSTANTS.playerColor[1]);
         }
     }
 

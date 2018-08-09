@@ -19,7 +19,7 @@ const asm = new Assembler();
 
 export class Editor extends React.Component<IEditorProps, IEditorState> {
 
-    public readonly state = {
+    /** @override */ public state = {
         value: '',
         championName: ''
     };
@@ -28,7 +28,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private instance: CodeMirror.Editor | undefined;
 
-    public render() {
+    /** @override */ public render() {
         return (
             <div>
                 <h1 id="title1">Hello Editor</h1>
@@ -43,10 +43,10 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
                         theme: 'isotope',
                         lineNumbers: true
                     }}
-                    onBeforeChange={(editor, data, value) => {
+                    onBeforeChange={(_editor, _data, value) => {
                         this.setState({value});
                     }}
-                    onChange={(editor, data, value) => {
+                    onChange={(_editor, _data, value) => {
                         this.checkCode(value);
                     }}
                     editorDidMount={(editor) => this.instance = editor }
@@ -56,8 +56,8 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         );
     }
 
-    public componentDidMount() {
-        this.loadChampion();
+    /** @override */ public componentDidMount() {
+        this.loadChampion().catch((e) => { throw e; });
     }
 
     private checkCode(code: string) {

@@ -31,7 +31,6 @@ export type PlayerState = ReturnType<typeof playerState>;
 
 export function initialState(props: IStartupProps) {
     return {
-        id: 0,
         gameId: props.gameId,
         memory: [] as IPrintableMemoryCell[],
         changedCells: [] as number[][],

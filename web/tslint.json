@@ -1,8 +1,10 @@
 {
     "extends": [
-        "typestrict"
+        "typestrict",
+        "tslint-override"
     ],
     "rules": {
-        "no-unused-variable": false
+        "no-unused-variable": false,
+        "member-access": true
     }
 }
