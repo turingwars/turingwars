@@ -1,22 +1,5 @@
 import { Assembler } from '../../src/assembler/Assembler';
-import {
-    add,
-    dat,
-    div,
-    divb,
-    jmp,
-    jnz,
-    jz,
-    mine,
-    mod,
-    mov,
-    mul,
-    nop,
-    se,
-    sne,
-    sub,
-    subb,
-} from '../../src/model/Instruction';
+import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, se, sne, sub, subb } from '../../src/model/Instruction';
 import { immediate, ref } from '../../src/model/InstructionField';
 import { Program } from '../../src/model/Program';
 
@@ -106,7 +89,7 @@ describe('Basic operations', () => {
         const asm = new Assembler();
         const program = new Program();
         program.program = [
-            mod(immediate(2), immediate(4))
+            modb(immediate(2), immediate(4))
         ];
         expect(asm.assemble('modb 2 4')).toEqual(program);
     });

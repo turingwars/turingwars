@@ -45,7 +45,7 @@ export function AppRouter(
             console.log(req.body);
             champ.code = req.body.program;
             champ.name = req.body.name;
-            validate(champ);
+            await validate(champ);
             const asm = new Assembler();
             asm.assemble(champ.code); // Check the assembly code before saving
             await championsRepo.save(champ);
@@ -76,17 +76,18 @@ export function AppRouter(
             const champions = await Promise.all(
                 request.champions.map(async (id) => await championsRepo.findOneOrFail(id)));
             const programs = await Promise.all(
-                champions.map(async (champion) => loadChampion(await champion, championNr++)));
+                champions.map(async (champion) => loadChampion(champion, championNr++)));
 
             const log: Array<Promise<GameUpdate>> = [];
+            const theGame = gamesRepo.create();
 
             console.log([...engineCmdLine, ...programs]);
             const vm = spawn('node', [
                 ...engineCmdLine,
                 ...programs,
-                '' + UPDATE_PERIOD,
-                '' + NUM_CYCLES,
-                '' + CORESIZE]);
+                `${UPDATE_PERIOD}`,
+                `${NUM_CYCLES}`,
+                `${CORESIZE}`]);
             const lines = byline(vm.stdout, {
                 encoding: 'utf-8'
             });
@@ -112,7 +113,6 @@ export function AppRouter(
                 }
             });
 
-            const theGame = gamesRepo.create();
             theGame.player1Name = champions[0].name;
             theGame.player2Name = champions[1].name;
             await gamesRepo.save(theGame);
@@ -146,7 +146,7 @@ export function AppRouter(
 
         const dest = path.join(os.tmpdir(), uuid());
 
-        await new Promise((resolve, reject) => fs.writeFile(dest, JSON.stringify(program), (err) => {
+        await new Promise<void>((resolve, reject) => fs.writeFile(dest, JSON.stringify(program), (err) => {
             if (err) {
                 reject(err);
             } else {

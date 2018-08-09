@@ -15,7 +15,7 @@ async function boot() {
 
     if (module.hot) {
         module.hot.accept('./server', () => {
-            replace();
+            replace().catch((e) => { throw e; });;
         });
     }
     async function replace() {
@@ -34,4 +34,4 @@ async function boot() {
     }
 }
 
-boot();
+boot().catch((e) => { throw e; });

@@ -99,7 +99,7 @@ class TuringWarsApplication {
 
     public async teardown() {
         await this.connection.close();
-        await new Promise((resolve) => this.webpackDevMiddleware.close(resolve));
+        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
     }
 }
 

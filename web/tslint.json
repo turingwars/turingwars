@@ -3,5 +3,6 @@
         "typestrict"
     ],
     "rules": {
+        "no-unused-variable": false
     }
 }
