@@ -38,7 +38,8 @@ export function initialState(props: IStartupProps) {
         processes: [] as Process[],
         player1: playerState(props.player1Name),
         player2: playerState(props.player2Name),
-        gameResult: null as GameResult | null
+        gameResult: null as GameResult | null,
+        gameStarted: false
     };
 }
 

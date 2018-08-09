@@ -16,7 +16,7 @@ export class PlayerBoard extends React.Component<IPlayerBoardProps> {
         return (<div className="playerBoardContainer">
             <div style={{position: "relative"}} className="playerBoard">
                 <WaterProgressBar percent= { this.props.player.score / CONSTANTS.scoreMaxValue } color={CONSTANTS.playerColor[this.props.playerID] } />
-                <ScoreIndicator score={ this.props.player.score } />
+                <ScoreIndicator score={ this.props.player.score } hasWon={this.props.hasWon} />
             </div>
             <div className={`playerName ${this.props.hasWon ? 'gold' : ''}`}>{ this.props.player.name }</div>
         </div>);

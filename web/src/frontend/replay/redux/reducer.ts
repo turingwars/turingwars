@@ -85,6 +85,8 @@ export function reducer(state: State, action: AppActions): State {
                     winner: winner
                 }
             }
+        case 'startGame':
+            return { ...state, gameStarted: true };
         default:
             catchUnhandledAction(action);
     }

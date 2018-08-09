@@ -8,13 +8,15 @@ import { player } from '../services/player';
 import { MemoryMap } from './MemoryMap';
 import { ScoreIndicator } from './ScoreIndicator';
 import { PlayerBoard } from './PlayerBoard';
+import { SplashMessage } from './SplashMessage';
+import { startGame } from '../redux/actions';
 
 const mapStateToProps = (state: State) => {
     return state;
 };
 
 const mapDispatchToProps = {
-
+    startGame
 };
 
 type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -26,16 +28,9 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             this.pollServerForGame();
         }
 
-        public componentDidUpdate(oldProps: ReplaySreenProps) {
-            if (oldProps.gameResult == null && this.props.gameResult != null) {
-                // The game just ended
-                this.showEndGameSplash();
-            }
-        }
-
         public render() {
             return (
-                <div>
+                <div style={{position: 'relative'}}>
                     {/* Header bar */}
                     <h1 id="title1">Turing &nbsp; wars</h1>
                     <div id="backArrow"><a href="/">◄ back</a></div>
@@ -57,8 +52,8 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                     </div>
 
                     {/* FX */}
-                    <div id="displayFight" ref="displayFight" className="gold"></div>
-                    <div id="displayWinner" ref="displayWinner" className="gold"></div>
+                    { this.props.gameStarted ? <SplashMessage message="Fight!" oneShot={true}/> : null }
+                    { this.props.gameResult != null ? <SplashMessage message={this.getEndGameText()} /> : ''}
                 </div>
             );
         }
@@ -83,15 +78,6 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             }
         }
 
-        private showEndGameSplash() {
-            const displayWinnerDiv = this.refs.displayWinner as HTMLElement;
-            displayWinnerDiv.innerText = this.getEndGameText();
-            displayWinnerDiv.style.display = 'block';
-            $(displayWinnerDiv).animate({
-                'font-size': CONSTANTS.drawWinnerFinalFontSize},
-                CONSTANTS.drawWinnerAnimationLengthInMs);
-        }
-
         private getEndGameText() {
             if (this.props.gameResult.type === 'DRAW') {
                 return 'Draw!';
@@ -103,20 +89,10 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
         }
 
         private startReplay() {
-            const displayFightDiv = this.refs.displayFight as HTMLElement;
-            displayFightDiv.innerText = 'Fight !';
-            displayFightDiv.style.fontSize = CONSTANTS.drawFightStartFontSize + 'px';
-            displayFightDiv.style.display = '';
-
-            $(displayFightDiv).animate(
-                {
-                    'font-size': CONSTANTS.drawFightStopFontSize
-                },
-                CONSTANTS.drawFightDuration,
-                () => {
-                    displayFightDiv.style.display = 'none';
-                    player.start();
-                });
+            this.props.startGame();
+            // Delay the start of the game by one second so we can appreciate the magnificent wordart
+            // in the middle of the screen.
+            setTimeout(() => player.start(), CONSTANTS.drawFightDuration);
         }
     }
 );

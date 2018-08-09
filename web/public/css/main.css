@@ -235,16 +235,25 @@ td.hidden, td.hidden:hover {
     display:block;
 }
 
-#displayWinner {
-
+.splash-message {
     z-index: 1000;
-    font-size:1px;
+    font-size: 100px;
     position:absolute;
     top: 300px;
     text-align:center;
-    margin: 0 auto; left: 0; right: 0;
-    width:1000px;
-    display:none;
+    width:100%;
+    animation-duration: 1000ms;
+    animation-name: splashing;
+}
+
+@keyframes splashing {
+    from {
+        font-size: 1px;
+    }
+  
+    to {
+        font-size: 100px;
+    }
 }
 
 .gold {

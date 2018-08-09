@@ -3,6 +3,7 @@ import * as CONSTANTS from '../constants';
 
 interface IScoreIndicatorProps {
     score: number;
+    hasWon: boolean;
 }
 
 export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pumping: boolean }> {
@@ -20,10 +21,21 @@ export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pump
     }
 
     render() {
-        return <div
-                className={`playerscore${this.state.pumping ? ' pumping gold' : ''}`} >
+        return <div className={this.generateClassName()}>
             { this.props.score }
         </div>;
+    }
+
+    private generateClassName() {
+        let className = 'playerscore';
+
+        if (this.state.pumping) {
+            className += ' pumping';
+        }
+        if (this.props.hasWon || this.state.pumping) {
+            className += ' gold';
+        }
+        return className;
     }
 
     // This function debounces the transition to "pumping" state, such that rapid sequences of mining and not mining don't

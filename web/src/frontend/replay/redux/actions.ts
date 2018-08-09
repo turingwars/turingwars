@@ -26,6 +26,10 @@ export function publishGameOver() {
     return baseAction('publishGameOver', null);
 }
 
+export function startGame() {
+    return baseAction('startGame', null);
+}
+
 export function clearMemory() {
     return baseAction('clearMemory', null);
 }
@@ -34,6 +38,7 @@ export function clearMemory() {
  * Join here all possible actions
  */
 export type AppActions =
+        ReturnType<typeof startGame> |
         ReturnType<typeof publishGameUpdate> |
         ReturnType<typeof publishVictory> |
         ReturnType<typeof publishGameOver> |

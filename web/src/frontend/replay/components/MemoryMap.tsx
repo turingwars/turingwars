@@ -83,6 +83,9 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
     }
 
     private drawIPs(procs: Process[]) {
+        if (procs.length < 2) {
+            return;
+        }
         const proc1 = procs[0];
         const proc2 = procs[1];
 
