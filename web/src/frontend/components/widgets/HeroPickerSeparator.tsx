@@ -2,10 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { COLOR_PRIMARY_1, CRT_GLITCH_TEXT_LG, WHITE } from '../../style';
 
-export const PICKER_HEIGHT = 500;
-
-
-
 export const HeroPickerSeparator = (() => {
 
     const width = 100;
@@ -35,7 +31,7 @@ export const HeroPickerSeparator = (() => {
     const VersusText = styled.div`
         position: absolute;
         color: ${WHITE};
-        font-size: 35px;
+        font-size: 47px;
 
         /* Adjust magic if changing the font or font size so the text is centered */
         top: ${(height - 15) / 2}px;

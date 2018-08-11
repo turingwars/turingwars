@@ -7,11 +7,22 @@ interface IScoreIndicatorProps {
 
 export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pumping: boolean }> {
 
+    // `isMounted` is already used for some obscure internal react API on which we don't want to rely.
+    private mounted: boolean = false;
+
     /** @override */ public state = {
         pumping: false
     };
 
     private resetTimer: number | null;
+
+    /** @override */ public componentDidMount = () => {
+        this.mounted = true;
+    }
+
+    /** @override */ public componentWillUnmount() {
+        this.mounted = false;
+    }
 
     /** @override */ public componentWillReceiveProps(prevProps: IScoreIndicatorProps) {
         if (prevProps.score !== this.props.score) {
@@ -47,10 +58,12 @@ export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pump
             clearTimeout(this.resetTimer);
         }
         this.resetTimer = window.setTimeout(() => {
-            this.setState({
-                pumping: false
-            });
-            this.resetTimer = null;
+            if (this.mounted) {
+                this.setState({
+                    pumping: false
+                });
+                this.resetTimer = null;
+            }
         }, 200);
     }
 }

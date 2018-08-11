@@ -1,6 +1,6 @@
 import { GameUpdate } from 'model/GameUpdate';
 import { Store } from 'redux';
-import { publishGameUpdate, publishVictory, publishGameOver, AppActions } from '../redux/actions';
+import { publishGameUpdate, publishVictory, publishGameOver, AppActions, resetReplay } from '../redux/actions';
 import { State } from '../redux/state';
 
 // AnimationFrame fires at 60 or 30 FPS. 60FPS is too fast so we artificially cap the framerate
@@ -16,8 +16,16 @@ class Player {
 
     private lastTime = 0;
 
+    private isRunning = false;
+    private animFramePending = false;
+
     public init(store: Store<State, AppActions>) {
         this.store = store;
+    }
+
+    public reset() {
+        this.isRunning = false;
+        this.store.dispatch(resetReplay());
     }
 
     public load(updates: GameUpdate[]) {
@@ -25,10 +33,22 @@ class Player {
     }
 
     public start() {
-        window.requestAnimationFrame(() => this.onAnimationFrame());
+        if (this.isRunning) {
+            throw new Error('The player is already running. Something must be buggy...');
+        }
+        this.isRunning = true;
+        if (!this.animFramePending) {
+            this.animFramePending = true;
+            window.requestAnimationFrame(() => this.onAnimationFrame());
+        }
     }
 
     private onAnimationFrame() {
+        this.animFramePending = false;
+        if (this.isRunning === false) {
+            return;
+        }
+
         let shouldContinue = true;
         
         // Artificially limit the number of FPS
@@ -39,7 +59,10 @@ class Player {
         }
         
         if (shouldContinue) {
+            this.animFramePending = true;
             window.requestAnimationFrame(() => this.onAnimationFrame());
+        } else {
+            this.isRunning = false;
         }
     }
 
@@ -54,7 +77,7 @@ class Player {
         }
         this.store.dispatch(publishGameUpdate(update));
 
-        if (this.store.getState().gameResult == null) {
+        if (this.store.getState().replay.gameResult == null) {
             this.checkScores(update);
         }
         

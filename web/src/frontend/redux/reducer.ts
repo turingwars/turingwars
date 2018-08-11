@@ -1,30 +1,23 @@
-import { CORESIZE } from 'config';
-import { nop } from 'model/Instruction';
-import * as CONSTANTS from '../constants';
+import { CHANGE_BUFFER_LENGTH } from '../style';
 import { AppActions } from './actions';
-import { IPrintableMemoryCell, State } from './state';
+import { playerState, State, replayInitialState } from './state';
 
 export function reducer(state: State | undefined, action: AppActions): State {
     if (state == undefined) {
         throw new Error('Unexpected undefined state!');
     }
+    return {
+        ...state,
+        replay: replayReducer(state.replay, action)
+    };
+}
+
+function replayReducer(state: State['replay'], action: AppActions): State['replay'] {
     switch (action.type) {
-        case 'clearMemory': {
-            const memory: IPrintableMemoryCell[] = new Array(CORESIZE);
-            const NOP = nop();
-            for (let i = 0 ; i < CORESIZE ; i++) {
-                memory[i] = {
-                    instr: NOP,
-                    owner: -1,
-                    changed: 0
-                };
-            }
-            return { ...state, memory };
-        }
         case 'publishGameUpdate': {
             const memory = state.memory.slice();
             // Clear old changed cells
-            if (state.changedCells.length >= CONSTANTS.changeBufferLength) {
+            if (state.changedCells.length >= CHANGE_BUFFER_LENGTH) {
                 for (const address of state.changedCells[0]) {
                     memory[address] = {
                         ...memory[address],
@@ -32,8 +25,8 @@ export function reducer(state: State | undefined, action: AppActions): State {
                     };
                 }
             }
-            const changedCells = state.changedCells.length >= CONSTANTS.changeBufferLength ?
-                state.changedCells.slice(state.changedCells.length - CONSTANTS.changeBufferLength + 1) :
+            const changedCells = state.changedCells.length >= CHANGE_BUFFER_LENGTH ?
+                state.changedCells.slice(state.changedCells.length - CHANGE_BUFFER_LENGTH + 1) :
                 state.changedCells.slice();
             const changedNow: number[] = [];
             // populate new changes
@@ -89,6 +82,13 @@ export function reducer(state: State | undefined, action: AppActions): State {
             }
         case 'startGame':
             return { ...state, gameStarted: true };
+        case 'resetReplay':
+            return replayInitialState();
+        case 'initPlayers':
+            return { ...state,
+                player1: playerState(action.payload.p1Name),
+                player2: playerState(action.payload.p2Name)
+            };
         default:
             catchUnhandledAction(action);
     }

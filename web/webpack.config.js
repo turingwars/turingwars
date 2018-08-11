@@ -10,9 +10,6 @@ module.exports = {
     entry: {
         'app': [
             './src/frontend/main.tsx'
-        ],
-        'replay': [
-            './src/frontend/replay/main.tsx'
         ]
     },
 

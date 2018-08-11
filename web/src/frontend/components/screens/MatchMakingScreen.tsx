@@ -3,11 +3,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../services/api';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
-import { Right } from '../layout/Right';
 import { Button } from '../widgets/Button';
-import { HeroPickerSeparator } from '../widgets/HeroPicker';
+import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
 import { HeroPickerList } from '../widgets/HeroPickerList';
 import { BaseScreen } from './BaseScreen';
+import { BackButton } from '../widgets/BackButton';
+import { ROUTE_REPLAY } from '../../navigation';
+import { player } from '../../services/player';
 
 const Row = styled.div`
     display: flex;
@@ -30,6 +32,14 @@ const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
         color: ${props => props.playerId === 1 ? COLOR_P1 : COLOR_P2};
     }
 `;
+
+const FightButton = Button.extend`
+    margin-top: 20px;
+`;
+
+const ActionsRow = Row.extend`
+    height: 60px;
+`
 
 export class MatchMakingScreen extends React.Component<{}> {
 
@@ -66,9 +76,10 @@ export class MatchMakingScreen extends React.Component<{}> {
                             onSelect={this.p2SelectHandler} />
                 </Column>
             </Row>
-            <Right>
-                <Button size="lg" enabled={this.canStartGame()} animate={true} onClick={this.startGameHandler}>Fight!</Button>
-            </Right>
+            <ActionsRow>
+                <BackButton />
+                <FightButton size="lg" enabled={this.canStartGame()} animate={true} onClick={this.startGameHandler}>Fight!</FightButton>
+            </ActionsRow>
         </BaseScreen>
     }
 
@@ -107,6 +118,8 @@ export class MatchMakingScreen extends React.Component<{}> {
             return;
         }
 
+        // TODO: Wrap the starting a game in a service
+
         // TODO: show a loader and handle errors
         const result = await api.createGame({
             body: {
@@ -117,7 +130,9 @@ export class MatchMakingScreen extends React.Component<{}> {
             }
         });
 
+        const gameId = result.data.gameId;
+        player.reset();
         // TODO: merge replay app with the main app
-        window.location.href = result.data.url;
+        window.location.hash = `${ROUTE_REPLAY}/${gameId}`;
     }
 }

@@ -4,5 +4,5 @@ export class CreateMatchResponse {
 
     @IsDefined()
     @IsString()
-    public url: string;
+    public gameId: string;
 }

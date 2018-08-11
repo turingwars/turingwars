@@ -1,5 +1,5 @@
 
-/* Base palette. This is not exported so we force users have to think about a color's function */
+/* Base palette. This is not exported so we force users have to think about a color's function. */
 
 const GOLD = '#f09609';
 const GOLD_0 = '#C97F08';
@@ -28,6 +28,7 @@ export const COLOR_SECONDARY_0 = PURPLE_0;
 export const COLOR_SECONDARY_1 = PURPLE_1;
 export const COLOR_SECONDARY_2 = PURPLE_2;
 
+
 /* Grayscale */
 
 export const GRAY = '#666';
@@ -50,6 +51,19 @@ export const COLOR_P2_0 = PURPLE_0;
 export const COLOR_P2_1 = PURPLE_1;
 export const COLOR_P2_2 = PURPLE_2;
 
+
+/* Memory map colors */
+
+const BLUEGOLD = '#1dd300';
+const PURPLEGOLD = '#ff6a00';
+export const COLOR_INSTR_MINE = GOLD;
+export const COLOR_INSTR_MINE_P1 = BLUEGOLD;
+export const COLOR_INSTR_MINE_P2 = PURPLEGOLD;
+export const COLOR_INSTR_NOP = GRAY;
+export const COLOR_CHANGED_INSTR = WHITE;
+
+// Legacy, to remove
+export const CHANGE_BUFFER_LENGTH = 1;
 
 /* Effects */
 

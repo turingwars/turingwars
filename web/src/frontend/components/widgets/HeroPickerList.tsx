@@ -2,11 +2,11 @@ import { Hero } from 'api';
 import * as color from 'color';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { COLOR_P1_0, COLOR_P1_2, COLOR_P2_0, COLOR_P2_2, WHITE, COLOR_P2, COLOR_P1 } from '../../style';
-import { PICKER_HEIGHT } from './HeroPicker';
+import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
 import { Label } from './Label';
 
-const ENTRIES_PER_PAGE = 20;
+const ENTRIES_PER_PAGE = 15;
+const PICKER_HEIGHT = 500;
 
 const scanFrames = keyframes`
     from {
@@ -63,23 +63,29 @@ const largeScanFrames = keyframes`
     }
 `;
 
-const ListBackgroundScan = styled.div`
-    background: repeating-linear-gradient(
-        #000 0%,
-        #fff 10%,
-        #fff 23%,
-        #000 25%,
-        #fff 30%,
-        #fff 48%,
-        #000 50%);
-    position: absolute;
-    height: 200%;
-    width: 100%;
-    top: -100%;
-    z-index: 102;
-    animation: ${largeScanFrames} 5s linear infinite;
-    mix-blend-mode: multiply;
-`;
+
+// Create two scan patterns so they don't awkwardly run synchronously
+const makeListBackgroundScan = () => styled.div`
+        background: repeating-linear-gradient(
+            #000 0%,
+            #fff 10%,
+            #666 36%,
+            #fff 23%,
+            #444 25%,
+            #fff 30%,
+            #444 36%,
+            #fff 48%,
+            #000 50%);
+        position: absolute;
+        height: 200%;
+        width: 100%;
+        top: -100%;
+        z-index: 102;
+        animation: ${largeScanFrames} ${5 + Math.random()/2 }s linear infinite;
+        mix-blend-mode: multiply;
+    `;
+const ListBackgroundScan1 = makeListBackgroundScan();
+const ListBackgroundScan2 = makeListBackgroundScan();
 
 const ListContainer = styled.div<{baseColor: string}>`
     border: ${props => props.baseColor} 3px solid;
@@ -95,8 +101,7 @@ const StyledElement = styled.div<{
         baseColor: string;
         selected: boolean;
     }>`
-    font-family: monospace;
-    font-size: ${PICKER_HEIGHT / ENTRIES_PER_PAGE - 8}px; /* The magic offset depends on the font used */
+    font-size: ${PICKER_HEIGHT / ENTRIES_PER_PAGE - 6}px; /* The magic offset depends on the font used */
     color: #eee;
     width: 100%;
     height: ${PICKER_HEIGHT / ENTRIES_PER_PAGE}px;
@@ -163,7 +168,7 @@ export const HeroPickerList = (props: HeroPickerListProps) => {
                 )}
             <ListBackground1 baseColor={baseColor}/>
             <ListBackground2 />
-            <ListBackgroundScan />
+            {props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
             <Glow baseColor={baseColor} />
     </ListContainer>
 };

@@ -9,7 +9,7 @@
 
 body {
     color:#222;
-    font-family: Lazer;
+    font-family: 'VT323', monospace;
     background-image: url('../images/background.jpg');
     background-size: 100%;
 }
@@ -239,26 +239,7 @@ td.hidden, td.hidden:hover {
     display:block;
 }
 
-.splash-message {
-    z-index: 1000;
-    font-size: 100px;
-    position:absolute;
-    top: 300px;
-    text-align:center;
-    width:100%;
-    animation-duration: 1000ms;
-    animation-name: splashing;
-}
 
-@keyframes splashing {
-    from {
-        font-size: 1px;
-    }
-  
-    to {
-        font-size: 100px;
-    }
-}
 
 .gold {
     color: #f09609;

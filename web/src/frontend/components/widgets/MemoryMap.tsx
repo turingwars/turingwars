@@ -1,9 +1,29 @@
 import * as React from 'react';
-
 import { Process } from '../../../model/GameUpdate';
 import { OpCode } from '../../../model/Instruction';
-import * as CONSTANTS from '../constants';
-import { IPrintableMemoryCell } from '../redux/state';
+// TODO: Widgets should not reference Redux
+import { IPrintableMemoryCell } from '../../redux/state';
+import { COLOR_INSTR_MINE, COLOR_INSTR_MINE_P1, COLOR_INSTR_MINE_P2, COLOR_INSTR_NOP, COLOR_P1, COLOR_P2, COLOR_CHANGED_INSTR } from '../../style';
+
+
+
+
+const LINE_WIDTH = 1;
+const BOX_SIZE = 10;
+const OUTER_BOX_SIZE = 13;
+const CANVAS_SIZE = 520;
+
+function playerColor(playerId: 0 | 1) {
+    return playerId === 0 ? COLOR_P1 : COLOR_P2;
+}
+
+function playerMineInstructionColor(playerId: 0 | 1) {
+    return playerId === 0 ? COLOR_INSTR_MINE_P1 : COLOR_INSTR_MINE_P2;
+}
+
+function isValidPlayerNumber(p: number): p is 0 | 1 {
+    return p === 0 || p === 1;
+}
 
 interface IMemoryMapProps {
     memory: IPrintableMemoryCell[];
@@ -30,7 +50,7 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     /** @override */ public componentDidMount() {
         this.ctx = this.getRenderingContext();
-        this.ctx.lineWidth = CONSTANTS.lineWidth;
+        this.ctx.lineWidth = LINE_WIDTH;
         this.drawAll();
     }
 
@@ -49,8 +69,8 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         return <canvas
                 id="memoryMapCanvas"
                 ref="thecanvas"
-                width={CONSTANTS.canvasSize}
-                height={CONSTANTS.canvasSize}></canvas>;
+                width={CANVAS_SIZE}
+                height={CANVAS_SIZE}></canvas>;
     }
 
     private getRenderingContext() {
@@ -76,7 +96,7 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         const cell = this.addrToCell(address);
         this.eraseAtPosition(cell);
         if (this.props.memory[address].changed > 0) {
-            this.fillCell(cell, CONSTANTS.lightGray);
+            this.fillCell(cell, COLOR_CHANGED_INSTR);
             this.strokeCell(cell, this.getCellColor(this.props.memory[address]));
         } else {
             this.strokeCell(cell, this.getCellColor(this.props.memory[address]));
@@ -98,14 +118,14 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
         // Draw first process
         const cell1 = this.addrToCell(proc1.instructionPointer);
-        this.fillCell(cell1, CONSTANTS.playerColor[0]);
+        this.fillCell(cell1, playerColor(0));
 
         // Draw second process
         const cell2 = this.addrToCell(proc2.instructionPointer);
         if (proc1.instructionPointer === proc2.instructionPointer) {
-            this.fillHalfCell(cell2, CONSTANTS.playerColor[1]);
+            this.fillHalfCell(cell2, playerColor(1));
         } else {
-            this.fillCell(cell2, CONSTANTS.playerColor[1]);
+            this.fillCell(cell2, playerColor(1));
         }
     }
 
@@ -120,15 +140,17 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private getCellColor(cell: IPrintableMemoryCell) {
         if (cell.instr.op === OpCode.MINE) {
-            return cell.instr.a.value === 0 ? CONSTANTS.blueGold : CONSTANTS.purpleGold;
+            const playerId = cell.instr.a.value;
+            if (isValidPlayerNumber(playerId)) {
+                return playerMineInstructionColor(playerId);
+            }
+            return COLOR_INSTR_MINE;
         }
-        if (cell.owner === 0) {
-            return CONSTANTS.blue;
+        if (isValidPlayerNumber(cell.owner)) {
+            return playerColor(cell.owner);
         }
-        if (cell.owner === 1) {
-            return CONSTANTS.purple;
-        }
-        return CONSTANTS.gray;
+        return COLOR_INSTR_NOP;
+
     }
 
     private strokeCell(cell: CellCoordinates, color: string) {
@@ -170,9 +192,9 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
     }
 
     private cellRect(cell: CellCoordinates): CellPixelRect {
-        const left = 1 + cell.col * CONSTANTS.outerBoxSize;
-        const top = 1 + cell.line * CONSTANTS.outerBoxSize;
-        const width = CONSTANTS.boxSize;
+        const left = 1 + cell.col * OUTER_BOX_SIZE;
+        const top = 1 + cell.line * OUTER_BOX_SIZE;
+        const width = BOX_SIZE;
 
         return { left, top, width };
     }

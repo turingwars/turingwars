@@ -17,11 +17,11 @@ const Link = styled.a<{
     }
 `;
 
-type FatMenuButtonProps = React.ReactPropTypes & {
+type FatMenuButtonProps = {
     href: string;
     smaller?: boolean;
 };
 
-export const FatMenuButton = (props: FatMenuButtonProps & { children?: React.Component }) => <li>
+export const FatMenuButton = (props: FatMenuButtonProps & { children?: React.Component | string }) => <li>
     <Link smaller={props.smaller} href={props.href}>{props.children}</Link>
 </li>;

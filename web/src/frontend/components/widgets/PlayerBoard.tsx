@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ScoreIndicator } from './ScoreIndicator';
-import * as CONSTANTS from '../constants';
+import * as CONSTANTS from '../../replay/constants';
 import { WaterProgressBar } from './WaterProgressBar';
-import { PlayerState } from '../redux/state';
+import { PlayerState } from '../../redux/state';
 
 interface IPlayerBoardProps {
     player: PlayerState;
@@ -18,7 +18,6 @@ export class PlayerBoard extends React.Component<IPlayerBoardProps> {
                 <WaterProgressBar percent= { this.props.player.score / CONSTANTS.scoreMaxValue } color={CONSTANTS.playerColor[this.props.playerID] } />
                 <ScoreIndicator score={ this.props.player.score } hasWon={this.props.hasWon} />
             </div>
-            <div className={`playerName ${this.props.hasWon ? 'gold' : ''}`}>{ this.props.player.name }</div>
         </div>);
     }
 }

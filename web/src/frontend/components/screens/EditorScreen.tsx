@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { Assembler } from '../../../assembler/Assembler';
 import { CompilerError } from '../../../assembler/CompileError';
-import '../codemirror-grammar';
-import { api } from '../services/api';
+import '../../codemirror-grammar';
+import { api } from '../../services/api';
+import { BackButton } from '../widgets/BackButton';
 
 
 interface IEditorProps {
@@ -17,7 +18,7 @@ interface IEditorState {
 
 const asm = new Assembler();
 
-export class Editor extends React.Component<IEditorProps, IEditorState> {
+export class EditorScreen extends React.Component<IEditorProps, IEditorState> {
 
     /** @override */ public state = {
         value: '',
@@ -32,7 +33,6 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         return (
             <div>
                 <h1 id="title1">Hello Editor</h1>
-                <div id="backArrow"><a href="/">◄ back</a></div>
                 <input type="text"
                         value={this.state.championName}
                         onChange={(championName) => this.setState({ championName: championName.target.value })} />
@@ -51,6 +51,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
                     }}
                     editorDidMount={(editor) => this.instance = editor }
                 />
+                <BackButton />
                 <button onClick={this._saveChampion}>Save</button>
             </div>
         );

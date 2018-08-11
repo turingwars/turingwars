@@ -10,8 +10,7 @@ import { Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
 import { twAPI } from '../api';
 import { Assembler } from '../assembler/Assembler';
-import { BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD, API_RESULTS_PER_PAGE } from '../config';
-import { GetGameResponse } from '../dto/GetGameResponse';
+import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../config';
 import { GameUpdate } from '../model/GameUpdate';
 import { RouterDefinition } from '../typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
@@ -135,18 +134,17 @@ export function AppRouter(
             await gamesRepo.save(theGame);
 
             return {
-                url: `/replay/${theGame.id}`
+                gameId: `${theGame.id}`
             };
         },
 
         getGame: async (req) => {
             const gameLog = await gamesRepo.findOneOrFail(req.params.id);
-            const response = new GetGameResponse();
-            response.id = gameLog.id as string;
-            response.isOver = gameLog.isOver;
-            response.log = JSON.parse(gameLog.log as string);
-            await validate(response);
-            return response;
+            const resp = {
+                ...gameLog,
+                log: JSON.parse(gameLog.log || '[]')
+            };
+            return resp;
         }
     };
 

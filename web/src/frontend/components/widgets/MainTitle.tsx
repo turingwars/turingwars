@@ -6,4 +6,5 @@ export const MainTitle = styled.h1`
     color: ${COLOR_PRIMARY}
     font-size: 100px;
     text-align: center;
+    font-weight: 100;
 `;

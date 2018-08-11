@@ -30,8 +30,14 @@ export function startGame() {
     return baseAction('startGame', null);
 }
 
-export function clearMemory() {
-    return baseAction('clearMemory', null);
+export function resetReplay() {
+    return baseAction('resetReplay', null);
+}
+
+export function initPlayers(p1Name: string, p2Name: string) {
+    return baseAction('initPlayers', {
+        p1Name, p2Name
+    });
 }
 
 /**
@@ -42,4 +48,5 @@ export type AppActions =
         ReturnType<typeof publishGameUpdate> |
         ReturnType<typeof publishVictory> |
         ReturnType<typeof publishGameOver> |
-        ReturnType<typeof clearMemory>;
+        ReturnType<typeof resetReplay> |
+        ReturnType<typeof initPlayers>;

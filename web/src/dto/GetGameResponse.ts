@@ -6,5 +6,8 @@ export class GetGameResponse {
 
     public isOver: boolean = false;
 
-    public log: GameUpdate[];
+    public player1Name: string;
+    public player2Name: string;
+
+    public log?: GameUpdate[];
 }

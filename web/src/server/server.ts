@@ -74,7 +74,6 @@ class TuringWarsApplication {
         const appRouter = AppRouter(championsRepo, gamesRepo);
         app.use('/api', createRouter(twAPI, appRouter));
 
-
         app.use(this.webpackDevMiddleware);
         app.use(express.static(path.join(process.cwd(), 'public/')));
         app.use((_req, res, next) => {
