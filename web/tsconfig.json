@@ -1,21 +1,31 @@
 {
     "compilerOptions": {
       "outDir": "dist",
+      "baseUrl": "src",
       "declaration": true,
       "noImplicitAny": true,
-      "strictNullChecks": true,
-      "sourceMap": true,
+      "strict": true,
+      "strictPropertyInitialization": false,
+      "sourceMap": false,
       "module": "commonjs",
       "target": "es5",
       "allowJs": false,
+      "importHelpers": true,
       "noUnusedParameters": true,
       "noImplicitReturns": true,
       "noUnusedLocals": true,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
+      "jsx": "react",
       "lib": [
         "es2015",
         "dom"
+      ],
+      "paths": {
+        "views/*": [ "server/.views/*" ]
+      },
+      "plugins": [
+        { "name": "tslint-language-service"}
       ]
     },
     "include": [
@@ -23,6 +33,6 @@
       "test/**/*.ts"
     ],
     "exclude": [
-      "./node_modules"
+      "node_modules"
     ]
 }

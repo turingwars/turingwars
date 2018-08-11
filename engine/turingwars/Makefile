@@ -2,7 +2,7 @@ BIN=target/scala-2.12/turingwars-engine-fastopt.js
 SRC=$(shell find src/ -type f -name '*.scala')
 
 $(BIN): $(SRC)
-	sbt fastOptJS
+	sbt clean fastOptJS
 
 .PHONY: install-travis
 install-travis:

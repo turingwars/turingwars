@@ -5,15 +5,17 @@ const webpack = require('webpack');
 const REPO_ROOT = __dirname;
 
 module.exports = {
+
+    mode: process.env.NODE_ENV || 'development',
     entry: {
         'replay': [
             './src/frontend/replay.ts'
         ],
         'index': [
             './src/frontend/index.ts'
-        ], 
-        'edit': [
-            './src/frontend/edit.ts'
+        ],
+        'editor': [
+            './src/frontend/editor/main.tsx'
         ]
     },
 
@@ -23,13 +25,13 @@ module.exports = {
         publicPath: '/dist'
     },
 
-    devServer: {
-        compress: true,
-        port: 9000,
-        hot: true,
-        contentBase: 'public',
-        allowedHosts: ['localhost']
-    },
+    // devServer: {
+    //     compress: true,
+    //     port: 9000,
+    //     hot: true,
+    //     contentBase: 'public',
+    //     allowedHosts: ['localhost']
+    // },
 
     // Currently we need to add '.ts' to the resolve.extensions array.
     resolve: {
@@ -41,15 +43,20 @@ module.exports = {
     devtool: 'source-map',
 
     externals: {
-        // 'jquery': 'jQuery'
         'd3': 'd3',
-        'underscore': '_'
+        'underscore': '_',
+        'react': 'React',
+        'redux': 'Redux',
+        'react-redux': 'ReactRedux',
+        'react-dom': 'ReactDOM',
+        'codemirror': 'CodeMirror',
+        'axios': 'axios'
     },
 
     // Add the loader for .ts files.
     module: {
         rules: [{
-            include: path.join(REPO_ROOT, '.'),
+            include: path.join(process.cwd(), '.'),
             test: /\.tsx?$/,
             use: [
                 {

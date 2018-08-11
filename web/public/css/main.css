@@ -26,7 +26,6 @@ body {
     color: #f09609;
     font-size: 100px !important;
     text-align: center;
-    text-shadow:-1px 0 #ff0097, 0 1px #ff0097, 1px 0 #ff0097, 0 -1px #ff0097 !important;
 }
 
 #innerBody.index {
@@ -146,7 +145,7 @@ td.hidden, td.hidden:hover {
 }
 
 #title1 {
-    text-shadow: 5px 2px 5px #ff0097, -1px 2px 1px #1ba1e2,  0px 0px 2px #ccc,  0px 1px 1px #fff;
+    text-shadow: 2px 2px 2px #ff0097, -1px 2px 1px #1ba1e2, 0px 0px 2px #ccc, 0px 1px 1px #fff;
     font-size:40px;
     letter-spacing:2px;
 }

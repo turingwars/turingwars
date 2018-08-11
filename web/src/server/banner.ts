@@ -1,4 +1,4 @@
-// tslint:disable:no-trailing-whitespace
+// tslint:disable
 export const BANNER = `___________           .__                  __      __                      
 \\__    ___/_ _________|__| ____    ____   /  \\    /  \\_____ _______  ______
   |    | |  |  \\_  __ \\  |/    \\  / ___\\  \\   \\/\\/   /\\__  \\\\_  __ \\/  ___/
