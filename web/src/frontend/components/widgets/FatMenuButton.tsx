@@ -1,35 +1,27 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { COLOR_PRIMARY, COLOR_SECONDARY, CRT_GLITCH_LG } from '../../style';
+import { COLOR_PRIMARY, CRT_GLITCH_TEXT_LG } from '../../style';
 
-const Link = styled.a`
+const Link = styled.a<{
+    smaller?: boolean
+}>`
     color: ${COLOR_PRIMARY};
     text-decoration: none;
-    font-size: 40px;
+    font-size: ${props => props.smaller ? '30px' : '40px' };
     margin: 50px 0;
     display: block;
 
-    &:hover {
-        ${CRT_GLITCH_LG}
+    &:hover, &:focus {
+        ${CRT_GLITCH_TEXT_LG}
+        outline: none;
     }
 `;
 
-const LinkSmaller = Link.extend`
-    font-size: 30px;
-`;
-
-interface IFatMenuButtonProps {
+type FatMenuButtonProps = React.ReactPropTypes & {
     href: string;
     smaller?: boolean;
-}
+};
 
-export class FatMenuButton extends React.Component<IFatMenuButtonProps> {
-    /** @override */ public render() {
-        const A = this.getLinkComponent();
-        return <li><A href={this.props.href}>{this.props.children}</A></li>;
-    }
-
-    private getLinkComponent() {
-        return this.props.smaller ? LinkSmaller : Link;
-    }
-}
+export const FatMenuButton = (props: FatMenuButtonProps & { children?: React.Component }) => <li>
+    <Link smaller={props.smaller} href={props.href}>{props.children}</Link>
+</li>;

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { GRAY, LIGHTGRAY } from '../../style';
+import { GRAY, GRAY_2 } from '../../style';
 
 const BackArrow = styled.a`
     color: ${GRAY};
 
     &:hover {
-        color: ${LIGHTGRAY};
+        color: ${GRAY_2};
     }
 `;
 

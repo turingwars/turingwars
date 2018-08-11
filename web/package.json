@@ -21,6 +21,7 @@
   "dependencies": {
     "@senhung/http-exceptions": "1.1.1",
     "@types/codemirror": "0.0.58",
+    "@types/color": "^3.0.0",
     "@types/d3": "5.0.0",
     "@types/d3-shape": "1.2.3",
     "@types/jquery": "3.3.5",
@@ -32,6 +33,7 @@
     "class-transformer-validator": "0.5.0",
     "class-validator": "0.9.1",
     "codemirror": "5.39.2",
+    "color": "^3.0.0",
     "d3": "5.5.0",
     "d3-shape": "1.2.0",
     "express": "4.16.3",

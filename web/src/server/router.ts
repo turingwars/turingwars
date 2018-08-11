@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
 import { twAPI } from '../api';
 import { Assembler } from '../assembler/Assembler';
-import { BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../config';
+import { BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD, API_RESULTS_PER_PAGE } from '../config';
 import { GetGameResponse } from '../dto/GetGameResponse';
 import { GameUpdate } from '../model/GameUpdate';
 import { RouterDefinition } from '../typed-apis/express-typed-api';
@@ -56,14 +56,31 @@ export function AppRouter(
             };
         },
 
-        getAllHeros: async () => {
-            return (await championsRepo.find()).map((champ) => {
+        getAllHeros: async (req) => {
+            // TODO: Factor the pagination out in a helper if we are likely to use it more than once
+            const page = parseInt(req.query.page || '0', 10);
+            const [ heros, total ] = await championsRepo.findAndCount({
+                take: API_RESULTS_PER_PAGE,
+                skip: page * API_RESULTS_PER_PAGE,
+            });
+            const data = heros.map((champ) => {
                 return {
                     id: champ.id,
                     name: champ.name,
                     program: champ.code
                 };
+
             });
+            const nextPage = (page * API_RESULTS_PER_PAGE > total - API_RESULTS_PER_PAGE) ? null : page + 1;
+            const previousPage = page > 0 ? page - 1 : null;
+            return {
+                data,
+                page,
+                nextPage,
+                previousPage,
+                total,
+                perPage: API_RESULTS_PER_PAGE
+            };
         },
 
         createGame: async (req) => {

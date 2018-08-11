@@ -11,8 +11,8 @@ export class BaseScreen extends React.Component<IBaseScreenProps> {
     /** @override */ public render() {
         return <div>
             <ScreenTitle>{ this.props.title }</ScreenTitle>
-            <BackButton />
             { this.props.children }
+            <BackButton />
         </div>
     }
 }

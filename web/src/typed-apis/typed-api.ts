@@ -13,7 +13,7 @@ type Construtor<T> = { new (...args: any[]): T };
 /**
  * The instance type of a constructor or the identity if T is not a constructor.
  */
-type UnwrapConstructor<T> = T extends Construtor<infer F> ? F : T;
+export type UnwrapConstructor<T> = T extends Construtor<infer F> ? F : T;
 
 type UnwrapBlueprintType<T> = T extends Array<infer U> ? Array<UnwrapConstructor<U>> : UnwrapConstructor<T>;
 

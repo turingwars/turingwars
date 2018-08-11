@@ -3,6 +3,10 @@
   src: url('../fonts/Lazer84.ttf');
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     color:#222;
     font-family: Lazer;

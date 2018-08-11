@@ -7,7 +7,6 @@ import * as path from 'path';
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
 import edit from 'views/edit.top';
-import index from 'views/index.top';
 import replay from 'views/replay.top';
 import * as webpack from 'webpack';
 import { twAPI } from '../api';
