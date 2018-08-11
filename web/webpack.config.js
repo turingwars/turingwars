@@ -9,7 +9,7 @@ module.exports = {
     mode: process.env.NODE_ENV || 'development',
     entry: {
         'replay': [
-            './src/frontend/replay.ts'
+            './src/frontend/replay/main.tsx'
         ],
         'index': [
             './src/frontend/index.ts'

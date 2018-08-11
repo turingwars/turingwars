@@ -1,14 +1,10 @@
 {
-    "extends": "tslint:recommended",
+    "extends": [
+        "typestrict",
+        "tslint-override"
+    ],
     "rules": {
-        "quotemark": [ true, "single", "jsx-double", "avoid-escape" ],
-        "no-console": false,
-        "trailing-comma": false,
-        "object-literal-sort-keys": false,
-        "max-classes-per-file": false,
-        "forin": false,
-        "variable-name": [ true, "allow-leading-underscore" ],
-        "no-consecutive-blank-lines": [ true, 2],
-        "interface-name": false
+        "no-unused-variable": false,
+        "member-access": true
     }
 }

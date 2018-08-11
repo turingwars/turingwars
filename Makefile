@@ -27,6 +27,7 @@ serve: $(JS_IN_WEBSERVER)
 .PHONY: clean
 clean:
 	$(MAKE) -C engine/turingwars clean
+	$(MAKE) -C web clean
 
 .PHONY:all
 all: engine

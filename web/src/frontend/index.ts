@@ -1,6 +1,8 @@
 import { CreateMatchRequest } from '../dto/CreateMatchRequest';
 import { CreateMatchResponse } from '../dto/CreateMatchResponse';
 
+// tslint:disable
+
 function beep() {
     ($ as any).playSound('/sounds/beep-21.mp3');
 }

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run watch:server\" \"npm run watch:views\"",
-    "test": "tslint -p . && jest",
+    "test": "npm run build:views && tsc --noEmit && tslint -p . && jest",
     "test:watch": "jest --watch",
     "build:views": "topside --outDir src/server/.views --baseDir src/server/templates src/server/templates/**/*.top.html",
     "watch:server": "webpack --config webpack-server.config.js",
@@ -71,7 +71,9 @@
     "ts-node": "7.0.0",
     "tslint": "5.11.0",
     "tslint-language-service": "0.9.9",
+    "tslint-override": "^0.3.0",
     "typescript": "3.0.1",
+    "typestrict": "0.0.9",
     "watch": "1.0.2",
     "webpack": "4.16.5",
     "webpack-cli": "3.1.0",

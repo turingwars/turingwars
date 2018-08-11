@@ -73,9 +73,8 @@ class TuringWarsApplication {
             const gameId = req.params.id;
             const game = await gamesRepo.findOneOrFail(gameId);
             return replay({
-                GAME_ID: gameId,
-                PLAYER_0_NAME: game.player1Name,
-                PLAYER_1_NAME: game.player2Name
+                PLAYER_1_NAME: game.player1Name,
+                PLAYER_2_NAME: game.player2Name
             });
         }));
 
@@ -99,7 +98,7 @@ class TuringWarsApplication {
 
     public async teardown() {
         await this.connection.close();
-        await new Promise((resolve) => this.webpackDevMiddleware.close(resolve));
+        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
     }
 }
 

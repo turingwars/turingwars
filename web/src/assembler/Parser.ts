@@ -1,30 +1,11 @@
 import { T_PERCENT } from '../assembler/tokens';
-import {
-    add,
-    dat,
-    div,
-    divb,
-    jmp,
-    jnz,
-    jz,
-    mine,
-    mod,
-    mov,
-    mul,
-    nop,
-    OpCode,
-    se,
-    sne,
-    sub,
-    subb,
-} from '../model/Instruction';
+import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, OpCode, se, sne, sub, subb } from '../model/Instruction';
 import { immediate, InstructionField, ref } from '../model/InstructionField';
 import { Program } from '../model/Program';
 import { CompilerError } from './CompileError';
 import { IVariableStore } from './IVariableStore';
 import { ParseError } from './ParseError';
-import {
-    T_CLOSE_PARENT, T_COMMENT, T_IDENT, T_MINUS, T_NEWLINE, T_NUMBER, T_OPEN_PARENT, T_PLUS, Token } from './tokens';
+import { Token, T_CLOSE_PARENT, T_COMMENT, T_IDENT, T_MINUS, T_NEWLINE, T_NUMBER, T_OPEN_PARENT, T_PLUS } from './tokens';
 import TokensIterator from './TokensIterator';
 
 type ParserState = (this: Parser, eof: boolean) => ParserState;
@@ -391,7 +372,7 @@ export class Parser {
             case OpCode.MODB:
                 // TODO: check that bField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
-                    this.program.program.push(mod(aField, bField));
+                    this.program.program.push(modb(aField, bField));
                 });
                 break;
             case OpCode.MOV:

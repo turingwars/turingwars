@@ -151,22 +151,23 @@ td.hidden, td.hidden:hover {
 }
 
 #memoryMapCanvas {
-    width:500px;
-    height: 500px;
-    display: inline-block;
+    width:520px;
+    height: 520px;
     border: 15px solid #222;
     padding: 0px;
-    margin: 0px;
+    margin: 0px 5px;
 }
 
 .playerBoard{
-
-    width: 200px;
-    height: 500px;
-    display: inline-block;
+    width: 185px;;
+    height: 520px;
     border: 15px solid #222;
     padding: 0px;
-    margin: 0px;
+}
+
+.playerBoardContainer {
+    width: 215px;
+    overflow: hidden;
 }
 
 .playerBoard svg {
@@ -180,13 +181,9 @@ td.hidden, td.hidden:hover {
 
 .playerName {
     text-shadow: 0px 0px 2px #ccc;
-    text-align:center;
-    display:inline-block;
-    width:230px;
-}
-
-#player2name {
-    float: right;
+    text-align: center;
+    font-size: 30px;
+    margin-top: 5px;
 }
 
 .playerscore {
@@ -195,6 +192,36 @@ td.hidden, td.hidden:hover {
     text-align:center;
     font-size:30px;
     position:absolute;
+    transition-property: color, font-size;
+    transition-duration: 300ms;
+    line-height: 45px; /* Leaves enough room for the pumping animation to fill */
+}
+
+.playerscore.pumping {
+    animation-duration: 1000ms;
+    animation-name: pumping;
+    animation-iteration-count: infinite;
+}
+
+@keyframes pumping {
+    from {
+        font-size: 30px;
+    }
+
+    /* The randomized pattern makes the animation look more organic than a simple one-hit loop */
+    5% { font-size: 40px; }
+    20% { font-size: 30px; }
+    25% { font-size: 43px; }
+    39% { font-size: 28px; }
+    45% { font-size: 40px; }
+    60% { font-size: 30px; }
+    64% { font-size: 38px; }
+    80% { font-size: 30px; }
+    85% { font-size: 40px; }
+  
+    to {
+        font-size: 30px;
+    }
 }
 
 #displayFight {
@@ -208,16 +235,25 @@ td.hidden, td.hidden:hover {
     display:block;
 }
 
-#displayWinner {
-
+.splash-message {
     z-index: 1000;
-    font-size:1px;
+    font-size: 100px;
     position:absolute;
     top: 300px;
     text-align:center;
-    margin: 0 auto; left: 0; right: 0;
-    width:1000px;
-    display:none;
+    width:100%;
+    animation-duration: 1000ms;
+    animation-name: splashing;
+}
+
+@keyframes splashing {
+    from {
+        font-size: 1px;
+    }
+  
+    to {
+        font-size: 100px;
+    }
 }
 
 .gold {
