@@ -1,18 +1,13 @@
-import { CHANGE_BUFFER_LENGTH } from '../style';
-import { AppActions } from './actions';
-import { playerState, State, replayInitialState } from './state';
+import { CHANGE_BUFFER_LENGTH } from '../../style';
+import { ReplayActions } from './actions';
+import { playerState, ReplayState, replayInitialState } from './state';
+import { catchUnhandledAction } from '../utils';
 
-export function reducer(state: State | undefined, action: AppActions): State {
-    if (state == undefined) {
-        throw new Error('Unexpected undefined state!');
+
+export function replayReducer(state: ReplayState | undefined, action: ReplayActions): ReplayState {
+    if (state === undefined) {
+        return replayInitialState();
     }
-    return {
-        ...state,
-        replay: replayReducer(state.replay, action)
-    };
-}
-
-function replayReducer(state: State['replay'], action: AppActions): State['replay'] {
     switch (action.type) {
         case 'publishGameUpdate': {
             const memory = state.memory.slice();
@@ -93,9 +88,4 @@ function replayReducer(state: State['replay'], action: AppActions): State['repla
             catchUnhandledAction(action);
     }
     return state;
-}
-
-function catchUnhandledAction(_action: never) {
-    // Throws a type error at compile time if an action is missing, but doesn't do
-    // anything at runtime to prevent crashing for no good reason.
 }

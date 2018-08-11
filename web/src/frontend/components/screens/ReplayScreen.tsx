@@ -2,8 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
-import { initPlayers, startGame } from '../../redux/actions';
-import { GameResult, State } from '../../redux/state';
+import { State } from '../../redux/state';
 import { api } from '../../services/api';
 import { player } from '../../services/player';
 import { GRAY, GRAY_2, COLOR_PRIMARY } from '../../style';
@@ -12,6 +11,10 @@ import { MemoryMap } from '../widgets/MemoryMap';
 import { PlayerBoard } from '../widgets/PlayerBoard';
 import { SplashMessage } from '../widgets/SplashMessage';
 import { BaseScreen } from './BaseScreen';
+import { Row } from '../layout/Row';
+import { startGame, initPlayers } from '../../redux/replay/actions';
+import { GameResult } from '../../redux/replay/state';
+import { ActionsRow } from '../layout/ActionsRow';
 
 const MEMORY_WIDTH = 40;
 const START_DELAY_MS = 1000;
@@ -24,12 +27,6 @@ const mapDispatchToProps = {
     startGame,
     initPlayers,
 };
-
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
 
 const PlayerName = styled.div<{winner: boolean}>`
     text-shadow: 0px 0px 2px ${GRAY};
@@ -82,7 +79,9 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                             <PlayerBoard player={ this.props.player2 } playerID={1} hasWon={this.playerHasWon('1')} />
                         </Row>
                     </Contents>
-                    <BackButton />
+                    <ActionsRow>
+                        <BackButton />
+                    </ActionsRow>
 
                     {/* FX */}
                     { this.props.gameStarted ? <SplashMessage message="Fight!" oneShot={true}/> : null }

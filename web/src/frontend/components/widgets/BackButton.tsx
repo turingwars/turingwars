@@ -10,6 +10,16 @@ const BackArrow = styled.a`
     }
 `;
 
+interface IBackButtonProps {
+    onClick?: () => void;
+}
+
 // Warning: This is a temporary solution. If the user comes from another website, going back will not bring
 // him to the home page!
-export const BackButton = () => <BackArrow href="javascript:history.back()">◄ back</BackArrow>
+export const BackButton = (props: IBackButtonProps) => (
+    <BackArrow
+            onClick={props.onClick}
+            href="javascript:history.back()">
+        ◄ back
+    </BackArrow>
+);

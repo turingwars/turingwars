@@ -20,8 +20,9 @@ const Link = styled.a<{
 type FatMenuButtonProps = {
     href: string;
     smaller?: boolean;
+    onClick?: (evt: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 export const FatMenuButton = (props: FatMenuButtonProps & { children?: React.Component | string }) => <li>
-    <Link smaller={props.smaller} href={props.href}>{props.children}</Link>
+    <Link onClick={props.onClick} smaller={props.smaller} href={props.href}>{props.children}</Link>
 </li>;

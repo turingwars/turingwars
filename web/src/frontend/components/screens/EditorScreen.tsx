@@ -1,64 +1,65 @@
 import * as React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import { connect } from 'react-redux';
 import { Assembler } from '../../../assembler/Assembler';
 import { CompilerError } from '../../../assembler/CompileError';
 import '../../codemirror-grammar';
-import { api } from '../../services/api';
-import { BackButton } from '../widgets/BackButton';
+import { loadCode, unloadCode } from '../../redux/editor/actions';
+import { State } from '../../redux/state';
+import { navigateTo, ROUTE_HOME } from '../../services/navigation';
+import { ActionsRow } from '../layout/ActionsRow';
+import { Button } from '../widgets/Button';
+import { BaseScreen } from './BaseScreen';
 
-
-interface IEditorProps {
-    championID: string;
-}
-
-interface IEditorState {
-    value: string;
-    championName: string;
-}
 
 const asm = new Assembler();
 
-export class EditorScreen extends React.Component<IEditorProps, IEditorState> {
+const mapStateToProps = (state: State) => {
+    return state.editor;
+};
 
-    /** @override */ public state = {
-        value: '',
-        championName: ''
-    };
+const mapDispatchToProps = {
+    unloadCode,
+    loadCode
+};
+
+type EditorSreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
+    class extends React.Component<EditorSreenProps> {
 
     private markers: CodeMirror.TextMarker[] = [];
 
     private instance: CodeMirror.Editor | undefined;
 
     /** @override */ public render() {
-        return (
-            <div>
-                <h1 id="title1">Hello Editor</h1>
-                <input type="text"
-                        value={this.state.championName}
-                        onChange={(championName) => this.setState({ championName: championName.target.value })} />
-                <CodeMirror
-                    value={this.state.value}
-                    options={{
-                        mode: 'twc',
-                        theme: 'isotope',
-                        lineNumbers: true
-                    }}
-                    onBeforeChange={(_editor, _data, value) => {
-                        this.setState({value});
-                    }}
-                    onChange={(_editor, _data, value) => {
-                        this.checkCode(value);
-                    }}
-                    editorDidMount={(editor) => this.instance = editor }
-                />
-                <BackButton />
-                <button onClick={this._saveChampion}>Save</button>
-            </div>
-        );
+        return <BaseScreen title="Hero creator">
+            <CodeMirror
+                value={this.props.code || ''}
+                options={{
+                    mode: 'twc',
+                    theme: 'isotope',
+                    lineNumbers: true
+                }}
+                onBeforeChange={(_editor, _data, value) => {
+                    this.props.loadCode(value);
+                }}
+                onChange={(_editor, _data, value) => {
+                    this.checkCode(value);
+                }}
+                editorDidMount={(editor) => this.instance = editor }
+            />
+            <ActionsRow>
+                <Button href={`#${ROUTE_HOME}`}>◄ Home</Button>>
+                <Button onClick={this.discardHandler}>Discard</Button>
+                <Button>Test ►</Button>
+            </ActionsRow>
+        </BaseScreen>
     }
 
-    /** @override */ public componentDidMount() {
-        this.loadChampion().catch((e) => { throw e; });
+    private discardHandler = () => {
+        this.props.unloadCode();
+        navigateTo(ROUTE_HOME);
     }
 
     private checkCode(code: string) {
@@ -90,23 +91,15 @@ export class EditorScreen extends React.Component<IEditorProps, IEditorState> {
         }
     }
 
-    private async loadChampion() {
-        const res = await api.getHero({ params: {id: this.props.championID }});
-        this.setState({
-            championName: res.data.name,
-            value: res.data.program
-        });
-    }
+    // private _saveChampion = async () => {
+    //     const championRequest = {
+    //         id: this.props.championID,
+    //         program: this.state.value,
+    //         name: this.state.championName
+    //     };
 
-    private _saveChampion = async () => {
-        const championRequest = {
-            id: this.props.championID,
-            program: this.state.value,
-            name: this.state.championName
-        };
-
-        await api.saveHero({
-            params: { id: this.props.championID },
-            body: championRequest });
-    }
-}
+    //     await api.saveHero({
+    //         params: { id: this.props.championID },
+    //         body: championRequest });
+    // }
+});

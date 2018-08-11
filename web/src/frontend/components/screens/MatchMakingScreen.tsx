@@ -3,19 +3,17 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../services/api';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
-import { Button } from '../widgets/Button';
 import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
 import { HeroPickerList } from '../widgets/HeroPickerList';
 import { BaseScreen } from './BaseScreen';
 import { BackButton } from '../widgets/BackButton';
-import { ROUTE_REPLAY } from '../../navigation';
+import { ROUTE_REPLAY } from '../../services/navigation';
 import { player } from '../../services/player';
+import { ScreenActionButton } from '../widgets/ScreenActionButton';
+import { Row } from '../layout/Row';
+import { ActionsRow } from '../layout/ActionsRow';
 
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
+
 
 const Column = styled.div`
     flex-grow: 1;
@@ -33,13 +31,7 @@ const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
     }
 `;
 
-const FightButton = Button.extend`
-    margin-top: 20px;
-`;
 
-const ActionsRow = Row.extend`
-    height: 60px;
-`
 
 export class MatchMakingScreen extends React.Component<{}> {
 
@@ -78,7 +70,7 @@ export class MatchMakingScreen extends React.Component<{}> {
             </Row>
             <ActionsRow>
                 <BackButton />
-                <FightButton size="lg" enabled={this.canStartGame()} animate={true} onClick={this.startGameHandler}>Fight!</FightButton>
+                <ScreenActionButton enabled={this.canStartGame()} onClick={this.startGameHandler}>Fight!</ScreenActionButton>
             </ActionsRow>
         </BaseScreen>
     }

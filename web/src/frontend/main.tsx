@@ -3,13 +3,14 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { createStore, Store } from 'redux';
+import { EditMenuScreen } from './components/screens/EditMenuScreen';
 import { EditorScreen } from './components/screens/EditorScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
+import { LoadHeroScreen } from './components/screens/LoadHeroScreen';
 import { MatchMakingScreen } from './components/screens/MatchMakingScreen';
 import { ReplayScreen } from './components/screens/ReplayScreen';
-import { ROUTE_EDITOR, ROUTE_MATCHMAKING, ROUTE_REPLAY } from './navigation';
-import { AppActions } from './redux/actions';
-import { reducer } from './redux/reducer';
+import { ROUTE_CREATE_HERO, ROUTE_EDITOR, ROUTE_IMPORT_HERO, ROUTE_MATCHMAKING, ROUTE_REPLAY } from './services/navigation';
+import { AppActions, reducer } from './redux/reduer';
 import { initialState, State } from './redux/state';
 import { player } from './services/player';
 
@@ -29,9 +30,11 @@ ReactDOM.render(
         <Provider store={store}>
             <div>
                 <Route exact path="/" component={HomeScreen} />
-                <Route path={`${ROUTE_MATCHMAKING}`} component={MatchMakingScreen} />
+                <Route exact path={ROUTE_MATCHMAKING} component={MatchMakingScreen} />
                 <Route path={`${ROUTE_REPLAY}/:gameId`} component={ReplayScreen} />
-                <Route path={`${ROUTE_EDITOR}`} component={EditorScreen} />
+                <Route exact path={ROUTE_IMPORT_HERO} component={LoadHeroScreen} />
+                <Route exact path={ROUTE_EDITOR} component={EditorScreen} />
+                <Route exact path={ROUTE_CREATE_HERO} component={EditMenuScreen} />
             </div>
         </Provider>
     </Router>,

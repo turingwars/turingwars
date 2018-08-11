@@ -8,16 +8,7 @@ import { Label } from './Label';
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
 
-const scanFrames = keyframes`
-    from {
-        transform: translate(0px, 0px);
-    }
-    to {
-        transform: translate(0px, 4px);
-    }
-`;
-
-const ListBackground1 = styled.div<{baseColor: string}>`
+const HorizontalPixelGridBackground = styled.div<{baseColor: string}>`
     background: repeating-linear-gradient(
         ${props => color(props.baseColor).fade(1).string()} 0px,
         ${props => color(props.baseColor).fade(0.8).string()} 3px,
@@ -27,7 +18,6 @@ const ListBackground1 = styled.div<{baseColor: string}>`
     height: 100%;
     top: 0;
     z-index: 100;
-    /* animation: ${scanFrames} 1s cubic-bezier(0.43, 0.29, 0.57, 0.76) infinite; */
 `;
 
 const Glow = styled.div<{baseColor: string}>`
@@ -39,13 +29,13 @@ const Glow = styled.div<{baseColor: string}>`
     z-index: 105;
 `;
 
-const ListBackground2 = styled.div`
+const RGBPixelGridBackground = styled.div`
     background: repeating-linear-gradient(90deg,
-        #000 0,
+        #aaa 0,
         #f00 1px,
         #0f0 3px,
         #00f 4px,
-        #000 6px);
+        #aaa 6px);
     position: absolute;
     width: 100%;
     height: 100%;
@@ -67,21 +57,20 @@ const largeScanFrames = keyframes`
 // Create two scan patterns so they don't awkwardly run synchronously
 const makeListBackgroundScan = () => styled.div`
         background: repeating-linear-gradient(
-            #000 0%,
-            #fff 10%,
-            #666 36%,
-            #fff 23%,
-            #444 25%,
-            #fff 30%,
-            #444 36%,
+            #535 0%,
+            #dfd ${10 + Math.random() * 10}%,
+            #dcf 23%,
+            #888 25%,
+            #aff 30%,
+            #845 ${36 + Math.random() * 4}%,
             #fff 48%,
-            #000 50%);
+            #535 50%);
         position: absolute;
         height: 200%;
         width: 100%;
         top: -100%;
         z-index: 102;
-        animation: ${largeScanFrames} ${5 + Math.random()/2 }s linear infinite;
+        animation: ${largeScanFrames} ${5 + Math.random() }s linear infinite;
         mix-blend-mode: multiply;
     `;
 const ListBackgroundScan1 = makeListBackgroundScan();
@@ -166,8 +155,8 @@ export const HeroPickerList = (props: HeroPickerListProps) => {
                     hero={hero} selected={hero.id === props.selectedHeroId}
                     onClick={props.onSelect} />
                 )}
-            <ListBackground1 baseColor={baseColor}/>
-            <ListBackground2 />
+            <HorizontalPixelGridBackground baseColor={baseColor}/>
+            <RGBPixelGridBackground />
             {props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
             <Glow baseColor={baseColor} />
     </ListContainer>

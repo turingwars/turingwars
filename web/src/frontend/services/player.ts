@@ -1,6 +1,7 @@
 import { GameUpdate } from 'model/GameUpdate';
 import { Store } from 'redux';
-import { publishGameUpdate, publishVictory, publishGameOver, AppActions, resetReplay } from '../redux/actions';
+import { AppActions } from '../redux/reduer';
+import { publishGameOver, publishGameUpdate, publishVictory, resetReplay } from '../redux/replay/actions';
 import { State } from '../redux/state';
 
 // AnimationFrame fires at 60 or 30 FPS. 60FPS is too fast so we artificially cap the framerate
