@@ -2,6 +2,7 @@ import { CreateMatchRequest } from './dto/CreateMatchRequest';
 import { CreateMatchResponse } from './dto/CreateMatchResponse';
 import { GetGameResponse } from './dto/GetGameResponse';
 import { createAPI, UnwrapConstructor } from './typed-apis/typed-api';
+import { PlaytestRequest } from './dto/PlaytestRequest';
 
 
 // This is an experiment to provide a comfortable way to define typed APIs to tie together
@@ -62,6 +63,12 @@ export const twAPI = createAPI({
         path: '/create-game',
         method: 'POST',
         body: CreateMatchRequest,
+        response: CreateMatchResponse
+    },
+    playTest: {
+        path: '/playtest',
+        method: 'POST',
+        body: PlaytestRequest,
         response: CreateMatchResponse
     }
 });

@@ -6,7 +6,7 @@ import { CompilerError } from '../../../assembler/CompileError';
 import '../../codemirror-grammar';
 import { loadCode, unloadCode } from '../../redux/editor/actions';
 import { State } from '../../redux/state';
-import { navigateTo, ROUTE_HOME } from '../../services/navigation';
+import { navigateTo, ROUTE_HOME, ROUTE_PLAYTEST } from '../../services/navigation';
 import { ActionsRow } from '../layout/ActionsRow';
 import { Button } from '../widgets/Button';
 import { BaseScreen } from './BaseScreen';
@@ -52,7 +52,7 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
             <ActionsRow>
                 <Button href={`#${ROUTE_HOME}`}>◄ Home</Button>>
                 <Button onClick={this.discardHandler}>Discard</Button>
-                <Button>Test ►</Button>
+                <Button onClick={this.playtestHandler}>Test ►</Button>
             </ActionsRow>
         </BaseScreen>
     }
@@ -60,6 +60,10 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
     private discardHandler = () => {
         this.props.unloadCode();
         navigateTo(ROUTE_HOME);
+    }
+
+    private playtestHandler = () => {
+        navigateTo(ROUTE_PLAYTEST);
     }
 
     private checkCode(code: string) {

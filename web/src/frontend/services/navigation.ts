@@ -4,6 +4,7 @@ export const ROUTE_EDITOR = "/editor";
 export const ROUTE_IMPORT_HERO = "/editor/load";
 export const ROUTE_REPLAY = "/replay";
 export const ROUTE_MATCHMAKING = "/match";
+export const ROUTE_PLAYTEST = "/playtest";
 export const URL_ABOUT = "https://github.com/turingwars/turingwars#readme";
 
 export function navigateTo(target: string) {

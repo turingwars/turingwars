@@ -7,7 +7,7 @@ import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
 import { HeroPickerList } from '../widgets/HeroPickerList';
 import { BaseScreen } from './BaseScreen';
 import { BackButton } from '../widgets/BackButton';
-import { ROUTE_REPLAY } from '../../services/navigation';
+import { ROUTE_REPLAY, navigateTo } from '../../services/navigation';
 import { player } from '../../services/player';
 import { ScreenActionButton } from '../widgets/ScreenActionButton';
 import { Row } from '../layout/Row';
@@ -124,7 +124,6 @@ export class MatchMakingScreen extends React.Component<{}> {
 
         const gameId = result.data.gameId;
         player.reset();
-        // TODO: merge replay app with the main app
-        window.location.hash = `${ROUTE_REPLAY}/${gameId}`;
+        navigateTo(`${ROUTE_REPLAY}/${gameId}`);
     }
 }

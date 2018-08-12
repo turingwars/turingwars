@@ -36,7 +36,6 @@ export const LoadHeroScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <BaseScreen title="Load a hero">
-            TODO
             <HeroPickerList player={1} heros={this.state.heros} selectedHeroId={this.state.chosen} onSelect={this.selectHeroHandler} />
             <ActionsRow>
                 <BackButton />
