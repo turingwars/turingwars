@@ -1,7 +1,8 @@
+import { storage } from '../../services/storage';
 
 export function editorInitialState() {
     return {
-        code: null as string | null
+        code: storage.loadCode()
     }
 }
 
