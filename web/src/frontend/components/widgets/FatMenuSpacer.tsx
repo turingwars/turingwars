@@ -1,5 +1,5 @@
 import styled from 'styled-components';
 
-export const MenuSpacer = styled.li`
+export const FatMenuSpacer = styled.div`
     height: 20px;
 `;

@@ -6,7 +6,7 @@ import { navigateTo, ROUTE_EDITOR, ROUTE_IMPORT_HERO } from '../../services/navi
 import { FatMenu } from '../widgets/FatMenu';
 import { FatMenuButton } from '../widgets/FatMenuButton';
 import { MainTitle } from '../widgets/MainTitle';
-import { MenuSpacer } from '../widgets/MenuSpacer';
+import { FatMenuSpacer } from '../widgets/FatMenuSpacer';
 
 const DEFAULT_CODE = `; Type your code here
 
@@ -40,7 +40,7 @@ export const EditMenuScreen = connect(mapStateToProps, mapDispatchToProps)(
             <FatMenu>
                 <FatMenuButton href={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
                 <FatMenuButton href={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>
-                <MenuSpacer />
+                <FatMenuSpacer />
                 <FatMenuButton href="#/" smaller={true}>Main menu</FatMenuButton>
             </FatMenu>
         </div>

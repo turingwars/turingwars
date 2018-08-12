@@ -25,6 +25,8 @@ export class ResultPage<T> {
     public nextPage: number | null;
 }
 
+// TODO: specifying a wrong property does not trigger an error...
+
 export const twAPI = createAPI({
     getHero: {
         path: '/hero',
@@ -34,13 +36,13 @@ export const twAPI = createAPI({
         },
         response: Hero
     },
-    saveHero: {
-        path: '/hero',
-        method: 'PUT',
-        params: {
-            id: 'string' // TODO: This api sucks, plus needs optional parameters
+    commitHero: {
+        method: 'POST',
+        path: '/commitHero',
+        body: {
+            name: 'string',
+            program: 'string'
         },
-        body: Hero,
         response: Hero
     },
     getAllHeros: {

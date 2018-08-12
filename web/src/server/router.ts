@@ -36,12 +36,27 @@ export function AppRouter(
             };
         },
 
-        saveHero: async (req) => {
-            const champ = await championsRepo.findOneOrFail(req.params.id);
-            if (champ === undefined) {
-                throw new NotFoundHttpException();
-            }
-            console.log(req.body);
+        // saveHero: async (req) => {
+        //     const champ = await championsRepo.findOneOrFail(req.params.id);
+        //     if (champ === undefined) {
+        //         throw new NotFoundHttpException();
+        //     }
+        //     console.log(req.body);
+        //     champ.code = req.body.program;
+        //     champ.name = req.body.name;
+        //     await validate(champ);
+        //     const asm = new Assembler();
+        //     asm.assemble(champ.code); // Check the assembly code before saving
+        //     await championsRepo.save(champ);
+        //     return {
+        //         id: champ.id,
+        //         name: champ.name,
+        //         program: champ.code
+        //     };
+        // },
+
+        commitHero: async (req) => {
+            const champ = championsRepo.create();
             champ.code = req.body.program;
             champ.name = req.body.name;
             await validate(champ);
@@ -49,9 +64,9 @@ export function AppRouter(
             asm.assemble(champ.code); // Check the assembly code before saving
             await championsRepo.save(champ);
             return {
-                id: champ.id,
+                program: champ.code,
                 name: champ.name,
-                program: champ.code
+                id: champ.id
             };
         },
 

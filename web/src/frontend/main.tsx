@@ -9,11 +9,12 @@ import { HomeScreen } from './components/screens/HomeScreen';
 import { LoadHeroScreen } from './components/screens/LoadHeroScreen';
 import { MatchMakingScreen } from './components/screens/MatchMakingScreen';
 import { ReplayScreen } from './components/screens/ReplayScreen';
-import { ROUTE_CREATE_HERO, ROUTE_EDITOR, ROUTE_IMPORT_HERO, ROUTE_MATCHMAKING, ROUTE_REPLAY, ROUTE_PLAYTEST } from './services/navigation';
+import { ROUTE_CREATE_HERO, ROUTE_EDITOR, ROUTE_IMPORT_HERO, ROUTE_MATCHMAKING, ROUTE_REPLAY, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from './services/navigation';
 import { AppActions, reducer } from './redux/reduer';
 import { initialState, State } from './redux/state';
 import { player } from './services/player';
 import { PlaytestOponentPickerScreen } from './components/screens/PlaytestOponentPickerScreen';
+import { PublishHeroScreen } from './components/screens/PublishHeroScreen';
 
 declare global {
     interface Window {
@@ -37,6 +38,7 @@ ReactDOM.render(
                 <Route exact path={ROUTE_EDITOR} component={EditorScreen} />
                 <Route exact path={ROUTE_CREATE_HERO} component={EditMenuScreen} />
                 <Route exact path={ROUTE_PLAYTEST} component={PlaytestOponentPickerScreen} />
+                <Route exact path={ROUTE_PUBLISH_HERO} component={PublishHeroScreen} />
             </div>
         </Provider>
     </Router>,
