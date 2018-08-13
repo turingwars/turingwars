@@ -26,6 +26,7 @@ export const HeroPickerSeparator = (() => {
         height: ${height}px;
         width: ${width}px;
         position: relative;
+        flex-shrink: 0;
     `;
 
     const VersusText = styled.div`

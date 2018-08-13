@@ -1,22 +1,26 @@
-import { Hero } from 'api';
 import * as React from 'react';
 import styled from 'styled-components';
-import { api } from '../../services/api';
-import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
-import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
-import { HeroPickerList } from '../widgets/HeroPickerList';
-import { BaseScreen } from './BaseScreen';
-import { BackButton } from '../widgets/BackButton';
-import { ROUTE_REPLAY, navigateTo } from '../../services/navigation';
+import { api, herosDataSource } from '../../services/api';
+import { navigateTo, ROUTE_REPLAY } from '../../services/navigation';
 import { player } from '../../services/player';
-import { ScreenActionButton } from '../widgets/ScreenActionButton';
+import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
+import { ActionsRow } from '../layout/ActionsRow';
 import { Row } from '../layout/Row';
-import { ActionsRow } from '../layout/ActionsRow';
+import { BackButton } from '../widgets/BackButton';
+import { HeroPickerList } from '../widgets/HeroPickerList';
+import { HeroPickerListController, IHeroPickerListControllerState } from '../widgets/HeroPickerListController';
+import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
+import { ScreenActionButton } from '../widgets/ScreenActionButton';
+import { BaseScreen } from './BaseScreen';
+import { Label } from '../widgets/Label';
 
 
 
 const Column = styled.div`
     flex-grow: 1;
+    flex-basis: 0;
+    flex-shrink: 1;
+    overflow: hidden;
 `;
 
 const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
@@ -31,18 +35,38 @@ const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
     }
 `;
 
+interface MatchMakingScreenState {
+    heroPicker1: IHeroPickerListControllerState;
+    heroPicker2: IHeroPickerListControllerState;
+}
 
 
-export class MatchMakingScreen extends React.Component<{}> {
+export class MatchMakingScreen extends React.Component<{}, MatchMakingScreenState> {
 
-    /** @override */ public state = {
-        heros: [] as Hero[],
-        selectedP1: undefined as string | undefined,
-        selectedP2: undefined as string | undefined,
+    /** @override */ public state: MatchMakingScreenState = {
+        heroPicker1: HeroPickerListController.initialState(),
+        heroPicker2: HeroPickerListController.initialState()
     };
 
+    private p1HerosListController = new HeroPickerListController(
+        (state) => this.setState({
+            heroPicker1: state
+        }),
+        () => this.state.heroPicker1
+    );
+
+    private p2HerosListController = new HeroPickerListController(
+        (state) => this.setState({
+            heroPicker2: state
+        }),
+        () => this.state.heroPicker2
+    );
+
     /** @override */ public componentDidMount() {
-        this.loadHeros().catch((e) => { throw e });
+        herosDataSource.invalidate();
+        // TODO: proper error handling
+        this.p1HerosListController.init().catch((e) => { throw e });
+        this.p2HerosListController.init().catch((e) => { throw e });
     }
 
     /** @override */ public render() {
@@ -53,19 +77,24 @@ export class MatchMakingScreen extends React.Component<{}> {
             </Row>
             <Row>
                 <Column>
+                    <Label>{ this.state.heroPicker1.selected }</Label>
                     <HeroPickerList 
                             player={1}
-                            heros={this.state.heros}
-                            selectedHeroId={this.state.selectedP1}
-                            onSelect={this.p1SelectHandler}/>
+                            selectedHeroId={this.state.heroPicker1.selected}
+                            onSelect={this.p1HerosListController.selectHandler}
+                            herosPage={this.state.heroPicker1.heros}
+                            onRequestNextPage={this.p1HerosListController.loadNextPageHandler}
+                            onRequestPreviousPage={this.p1HerosListController.loadPreviousPageHandler} />
                 </Column>
                 <HeroPickerSeparator />
                 <Column>
                     <HeroPickerList
                             player={2}
-                            heros={this.state.heros}
-                            selectedHeroId={this.state.selectedP2}
-                            onSelect={this.p2SelectHandler} />
+                            selectedHeroId={this.state.heroPicker2.selected}
+                            onSelect={this.p2HerosListController.selectHandler}
+                            herosPage={this.state.heroPicker2.heros}
+                            onRequestNextPage={this.p2HerosListController.loadNextPageHandler}
+                            onRequestPreviousPage={this.p2HerosListController.loadPreviousPageHandler} />
                 </Column>
             </Row>
             <ActionsRow>
@@ -75,38 +104,15 @@ export class MatchMakingScreen extends React.Component<{}> {
         </BaseScreen>
     }
 
-    private async loadHeros() {
-        const response = await api.getAllHeros({
-            query: {
-                page: '0'
-            }
-        });
-        this.setState({
-            heros: response.data.data
-        });
-    }
-
     private canStartGame() {
-        return this.state.selectedP1 !== undefined && this.state.selectedP2 !== undefined;
+        return this.state.heroPicker1.selected !== undefined && this.state.heroPicker2.selected !== undefined;
     }
 
 
     // Note: Handlers are bound to the class instance so we don't lose context during event dispatch!
 
-    private p1SelectHandler = (heroId: string) => {
-        this.setState({
-            selectedP1: heroId
-        });
-    }
-
-    private p2SelectHandler = (heroId: string) => {
-        this.setState({
-            selectedP2: heroId
-        });
-    }
-
     private startGameHandler = async () => {
-        if (this.state.selectedP1 === undefined || this.state.selectedP2 === undefined) {
+        if (this.state.heroPicker1.selected === undefined || this.state.heroPicker2.selected === undefined) {
             return;
         }
 
@@ -116,8 +122,8 @@ export class MatchMakingScreen extends React.Component<{}> {
         const result = await api.createGame({
             body: {
                 champions: [
-                    this.state.selectedP1,
-                    this.state.selectedP2
+                    this.state.heroPicker1.selected,
+                    this.state.heroPicker2.selected
                 ]
             }
         });

@@ -4,9 +4,25 @@ import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
 import { Label } from './Label';
+import { IDataPage } from '../../services/private/PagedDataSource';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
+
+/**
+ * Returns the index of the first entry shown at page n (0-indexed)
+ */
+export function firstEntryOfPage(n: number) {
+    if (n <= 0) {
+        return 0;
+    } else if (n === 1) {
+        // On the first page, we need one extra space for the page down button
+        return ENTRIES_PER_PAGE - 1;
+    } else {
+        // On the next pages, we need two extra spaces.
+        return ENTRIES_PER_PAGE - 1 + (n - 1) * (ENTRIES_PER_PAGE - 2);
+    }
+}
 
 const HorizontalPixelGridBackground = styled.div<{baseColor: string}>`
     background: repeating-linear-gradient(
@@ -141,23 +157,46 @@ class ListElement extends React.PureComponent<{
 
 type HeroPickerListProps = {
     player: 1 | 2;
-    heros: Hero[];
+    herosPage: IDataPage<Hero> | undefined;
     selectedHeroId?: string;
     onSelect: (heroId: string) => void;
+    onRequestNextPage: () => void;
+    onRequestPreviousPage: () => void;
 };
 
-export const HeroPickerList = (props: HeroPickerListProps) => {
-    const baseColor = props.player === 1 ? COLOR_P1 : COLOR_P2;
-    return <ListContainer baseColor={baseColor}>
-            { props.heros.map((hero) => <ListElement
-                    key={hero.id}
-                    baseColor={baseColor}
-                    hero={hero} selected={hero.id === props.selectedHeroId}
-                    onClick={props.onSelect} />
-                )}
-            <HorizontalPixelGridBackground baseColor={baseColor}/>
-            <RGBPixelGridBackground />
-            {props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
-            <Glow baseColor={baseColor} />
-    </ListContainer>
+export class HeroPickerList extends React.Component<HeroPickerListProps> {
+
+    /** @override */ public render() {
+        const baseColor = this.props.player === 1 ? COLOR_P1 : COLOR_P2;
+        return <ListContainer baseColor={baseColor}>
+                { 
+                    this.props.herosPage && this.renderListEntries(baseColor, this.props.herosPage)
+                }
+                <HorizontalPixelGridBackground baseColor={baseColor}/>
+                <RGBPixelGridBackground />
+                {this.props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
+                <Glow baseColor={baseColor} />
+        </ListContainer>
+    }
+
+    private renderListEntries(baseColor: string, herosPage: IDataPage<Hero>) {
+        return [
+            herosPage.hasPrevious && (
+                <StyledElement onClick={this.props.onRequestPreviousPage} key="prev-page" baseColor={baseColor} selected={false}>
+                    <Label textAlign="center">▴</Label>
+                </StyledElement>
+            ),
+            herosPage.data.map((hero) => <ListElement
+                key={hero.id}
+                baseColor={baseColor}
+                hero={hero} selected={hero.id === this.props.selectedHeroId}
+                onClick={this.props.onSelect} />
+            ),
+            herosPage.hasNext && (
+                <StyledElement onClick={this.props.onRequestNextPage} key="next-page" baseColor={baseColor} selected={false}>
+                    <Label textAlign="center">▾</Label>
+                </StyledElement>
+            )
+        ];
+    }
 };

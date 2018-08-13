@@ -1,4 +1,4 @@
-import { BadRequestHttpException, NotFoundHttpException } from '@senhung/http-exceptions';
+import { BadRequestHttpException } from '@senhung/http-exceptions';
 import * as byline from 'byline';
 import { spawn } from 'child_process';
 import { transformAndValidate } from 'class-transformer-validator';
@@ -36,25 +36,6 @@ export function AppRouter(
             };
         },
 
-        // saveHero: async (req) => {
-        //     const champ = await championsRepo.findOneOrFail(req.params.id);
-        //     if (champ === undefined) {
-        //         throw new NotFoundHttpException();
-        //     }
-        //     console.log(req.body);
-        //     champ.code = req.body.program;
-        //     champ.name = req.body.name;
-        //     await validate(champ);
-        //     const asm = new Assembler();
-        //     asm.assemble(champ.code); // Check the assembly code before saving
-        //     await championsRepo.save(champ);
-        //     return {
-        //         id: champ.id,
-        //         name: champ.name,
-        //         program: champ.code
-        //     };
-        // },
-
         commitHero: async (req) => {
             const champ = championsRepo.create();
             champ.code = req.body.program;
@@ -85,7 +66,7 @@ export function AppRouter(
                 };
 
             });
-            const nextPage = (page * API_RESULTS_PER_PAGE > total - API_RESULTS_PER_PAGE) ? null : page + 1;
+            const nextPage = ((page + 1) * API_RESULTS_PER_PAGE >= total) ? null : page + 1;
             const previousPage = page > 0 ? page - 1 : null;
             return {
                 data,

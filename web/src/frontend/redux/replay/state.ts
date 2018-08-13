@@ -41,7 +41,7 @@ export type PlayerState = ReturnType<typeof playerState>;
 export function replayInitialState() {
     return {
         memory: emptyMemory,
-        changedCells: [] as number[][],
+        changedCells: [] as number[],
         processes: [] as Process[],
         gameResult: null as GameResult | null,
         gameStarted: false,

@@ -1,4 +1,3 @@
-import { CHANGE_BUFFER_LENGTH } from '../../style';
 import { ReplayActions } from './actions';
 import { playerState, ReplayState, replayInitialState } from './state';
 import { catchUnhandledAction } from '../utils';
@@ -12,18 +11,13 @@ export function replayReducer(state: ReplayState | undefined, action: ReplayAct
         case 'publishGameUpdate': {
             const memory = state.memory.slice();
             // Clear old changed cells
-            if (state.changedCells.length >= CHANGE_BUFFER_LENGTH) {
-                for (const address of state.changedCells[0]) {
-                    memory[address] = {
-                        ...memory[address],
-                        changed: memory[address].changed - 1
-                    };
-                }
+            for (const address of state.changedCells) {
+                memory[address] = {
+                    ...memory[address],
+                    changed: memory[address].changed - 1
+                };
             }
-            const changedCells = state.changedCells.length >= CHANGE_BUFFER_LENGTH ?
-                state.changedCells.slice(state.changedCells.length - CHANGE_BUFFER_LENGTH + 1) :
-                state.changedCells.slice();
-            const changedNow: number[] = [];
+            const changedCells: number[] = [];
             // populate new changes
             for (const m of action.payload.memory) {
                 memory[m.address] = {
@@ -31,9 +25,8 @@ export function replayReducer(state: ReplayState | undefined, action: ReplayAct
                     owner: m.cause,
                     changed: memory[m.address].changed + 1
                 };
-                changedNow.push(m.address);
+                changedCells.push(m.address);
             }
-            changedCells.push(changedNow);
 
             // Update players
             const player1 = {

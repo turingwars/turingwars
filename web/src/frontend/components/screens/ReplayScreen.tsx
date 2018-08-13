@@ -72,7 +72,6 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                             <MemoryMap
                                 memory={this.props.memory}
                                 processes={this.props.processes}
-                                changedCells={this.props.changedCells}
                                 memoryWidth={MEMORY_WIDTH} />
 
                             {/* Right col */}

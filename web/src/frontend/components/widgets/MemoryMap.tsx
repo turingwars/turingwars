@@ -29,7 +29,6 @@ interface IMemoryMapProps {
     memory: IPrintableMemoryCell[];
     memoryWidth: number;
     processes: Process[];
-    changedCells: number[][];
 }
 
 interface CellCoordinates {

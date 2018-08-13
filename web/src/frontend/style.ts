@@ -62,9 +62,6 @@ export const COLOR_INSTR_MINE_P2 = PURPLEGOLD;
 export const COLOR_INSTR_NOP = GRAY;
 export const COLOR_CHANGED_INSTR = WHITE;
 
-// Legacy, to remove
-export const CHANGE_BUFFER_LENGTH = 1;
-
 /* Effects */
 
 export const CRT_GLITCH_TEXT_LG = `text-shadow: 3px 1px 2px ${PURPLE}, -2px 1px 2px ${BLUE}, 0px 0px 2px #ccc, 0px 1px 1px #fff;`;
