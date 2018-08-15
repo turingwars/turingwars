@@ -1,11 +1,11 @@
-import { twAPI, Hero } from '../../api';
+import { twAPI, HeroSummary } from '../../api';
 import { createConsumer } from '../../typed-apis/axios-typed-api';
 import { PagedDataSource } from './private/PagedDataSource';
 
 export const api = createConsumer('/api', twAPI);
 
-export const herosDataSource = new PagedDataSource<Hero>(
-    (pageNumber) => api.getAllHeros({
+export const herosDataSource = new PagedDataSource<HeroSummary>(
+    (pageNumber) => api.listHeros({
         query: {
             page: pageNumber.toString()
         }

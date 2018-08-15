@@ -20,7 +20,7 @@ const engineCmdLine = [
     path.join(process.cwd(), BIN_LOCATION)
 ];
 
-export function AppRouter(
+export function appRouter(
         championsRepo: Repository<Champion>,
         gamesRepo: Repository<GameLog>
     ): RouterDefinition<typeof twAPI> {
@@ -43,7 +43,13 @@ export function AppRouter(
             await validate(champ);
             const asm = new Assembler();
             asm.assemble(champ.code); // Check the assembly code before saving
-            await championsRepo.save(champ);
+            try {
+                await championsRepo.save(champ);
+            } catch (e) {
+                if ((e.message as string).indexOf("UNIQUE constraint failed") != -1) {
+                    throw new BadRequestHttpException("This name is already taken. Chose a different name.");
+                }
+            }
             return {
                 program: champ.code,
                 name: champ.name,
@@ -51,7 +57,7 @@ export function AppRouter(
             };
         },
 
-        getAllHeros: async (req) => {
+        listHeros: async (req) => {
             // TODO: Factor the pagination out in a helper if we are likely to use it more than once
             const page = parseInt(req.query.page || '0', 10);
             const [ heros, total ] = await championsRepo.findAndCount({
@@ -61,13 +67,12 @@ export function AppRouter(
             const data = heros.map((champ) => {
                 return {
                     id: champ.id,
-                    name: champ.name,
-                    program: champ.code
+                    name: champ.name
                 };
-
             });
             const nextPage = ((page + 1) * API_RESULTS_PER_PAGE >= total) ? null : page + 1;
             const previousPage = page > 0 ? page - 1 : null;
+
             return {
                 data,
                 page,

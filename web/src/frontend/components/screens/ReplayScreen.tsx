@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { State } from '../../redux/state';
 import { api } from '../../services/api';
 import { player } from '../../services/player';
-import { GRAY, GRAY_2, COLOR_PRIMARY } from '../../style';
+import { GRAY_2, COLOR_PRIMARY } from '../../style';
 import { BackButton } from '../widgets/BackButton';
 import { MemoryMap } from '../widgets/MemoryMap';
 import { PlayerBoard } from '../widgets/PlayerBoard';
@@ -29,12 +29,16 @@ const mapDispatchToProps = {
 };
 
 const PlayerName = styled.div<{winner: boolean}>`
-    text-shadow: 0px 0px 2px ${GRAY};
+    
     text-align: center;
     font-size: 30px;
     margin: 5px 20px;
     margin-top: 0;
-    color: ${props => props.winner ? COLOR_PRIMARY : GRAY_2};
+    color: ${GRAY_2};
+    ${props => props.winner && css`
+        text-shadow: 0px 0px 2px ${GRAY_2};
+        color: ${COLOR_PRIMARY};
+    `}
 `;
 
 const Contents = styled.div`

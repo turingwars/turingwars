@@ -6,8 +6,7 @@ import { api, herosDataSource } from '../../services/api';
 import { navigateTo, ROUTE_CREATE_HERO, ROUTE_REPLAY } from '../../services/navigation';
 import { ActionsRow } from '../layout/ActionsRow';
 import { BackButton } from '../widgets/BackButton';
-import { HeroPickerList } from '../widgets/HeroPickerList';
-import { HeroPickerListController } from '../widgets/HeroPickerListController';
+import { HeroPicker } from '../widgets/HeroPicker';
 import { ScreenActionButton } from '../widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
 
@@ -27,38 +26,29 @@ type PlaytestOponentPickerScreenProps = ReturnType<typeof mapStateToProps> & typ
 export const PlaytestOponentPickerScreen = connect(mapStateToProps, mapDispatchToProps)(
 class extends React.Component<PlaytestOponentPickerScreenProps> {
 
-    private listController = new HeroPickerListController(
-        (listController) => this.setState({ listController }),
-        () => this.state.listController
-    );
-
     /** @override */ public state = {
-        listController: HeroPickerListController.initialState()
+        listState: HeroPicker.initialListState()
     };
 
     /** @override */ public componentDidMount() {
         herosDataSource.invalidate();
-        this.listController.init().catch((e) => { throw e });
     }
 
     /** @override */ public render() {
         return <BaseScreen title="Chose an opponent">
-            <HeroPickerList
+            <HeroPicker
                     player={2}
-                    herosPage={this.state.listController.heros}
-                    selectedHeroId={this.state.listController.selected}
-                    onSelect={this.listController.selectHandler}
-                    onRequestPreviousPage={this.listController.loadPreviousPageHandler}
-                    onRequestNextPage={this.listController.loadNextPageHandler} />
+                    list={this.state.listState}
+                    update={(listState) => this.setState({ listState })} />
             <ActionsRow>
                 <BackButton />
-                <ScreenActionButton enabled={this.state.listController.selected != null} onClick={this.startTestHandler}>Test</ScreenActionButton>
+                <ScreenActionButton enabled={this.state.listState.selected != null} onClick={this.startTestHandler}>Test</ScreenActionButton>
             </ActionsRow>
         </BaseScreen>
     }
 
     private startTestHandler = async () => {
-        if (this.state.listController.selected === undefined) {
+        if (this.state.listState.selected === undefined) {
             throw new Error("You must chose an opponent");
         }
         if (this.props.heroCode == null) {
@@ -66,7 +56,7 @@ class extends React.Component<PlaytestOponentPickerScreenProps> {
         }
         const res = await api.playTest({
             body: {
-                opponent: this.state.listController.selected,
+                opponent: this.state.listState.selected,
                 hero: {
                     program: this.props.heroCode
                 }

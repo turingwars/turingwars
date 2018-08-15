@@ -1,7 +1,7 @@
 import { CreateMatchRequest } from './dto/CreateMatchRequest';
 import { CreateMatchResponse } from './dto/CreateMatchResponse';
 import { GetGameResponse } from './dto/GetGameResponse';
-import { createAPI, UnwrapConstructor } from './typed-apis/typed-api';
+import { createAPI } from './typed-apis/typed-api';
 import { PlaytestRequest } from './dto/PlaytestRequest';
 
 
@@ -15,6 +15,10 @@ export class Hero {
     public name: string;
 };
 
+export interface HeroSummary {
+    name: string;
+    id: string;
+}
 
 export class ResultPage<T> {
     public data: T[];
@@ -45,10 +49,10 @@ export const twAPI = createAPI({
         },
         response: Hero
     },
-    getAllHeros: {
+    listHeros: {
         path: '/heros',
         method: 'GET',
-        response: new ResultPage<UnwrapConstructor<Hero>>(),
+        response: new ResultPage<HeroSummary>(),
         query: {
             page: 'string'
         },

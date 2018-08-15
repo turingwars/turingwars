@@ -3,7 +3,7 @@ import { ResultPage } from 'api';
 export function emptyDataPage<T>(): IDataPage<T> {
     return {
         data: [],
-        hasNext: true,
+        hasNext: false,
         hasPrevious: false
     }
 }
@@ -14,11 +14,33 @@ export interface IDataPage<T> {
     hasPrevious: boolean;
 }
 
+
+/**
+ * This is an adapter for a per-page datasource. It offers maximum flexibility by allowing
+ * components to fetch ranges of data, without worrying about the underlying page model.
+ * 
+ * You can use this to implement infinite scroll on a paged resource, or adapt a UI paged list
+ * to a backend paged resource with different page sizes.
+ * 
+ * The source should provide fixed-length pages. The PagedDataSource is clever enough to detect
+ * if the source changes its number of entries per page, and reload the appropriate page, but it
+ * cannot deal with variable-size source pages.
+ * 
+ * Each source page is requested at most once, and only when necessary. To clear the PagedDataSource's cache,
+ * simply call `invalidate`. Further requests will use fresh data.
+ * 
+ * _note: This could be split into two classes: One for the adapter feature, and one for the page cache._
+ */
 export class PagedDataSource<T> {
 
     private srcPageSize: number | null;
 
     private pages = new Map<number, Promise<T[]>>();
+
+    /**
+     * This counter increases each time the source is invalidated and helps us detect stale reads.
+     */
+    private version = 0;
 
     /**
      * Maximum 0-based index in the series where we know there is an element, even if we haven't acessed it yet.
@@ -33,19 +55,23 @@ export class PagedDataSource<T> {
         this.pages = new Map();
         this.srcPageSize = null;
         this.knownMax = -1;
+        this.version++;
     }
 
     /**
      * Fetches all heros between `from` inclusive and `to` exclusive.
      */
     public async getRange(from: number, to: number): Promise<IDataPage<T>> {
-        await this.init();
-
-        const pagesRequired = this.getPageNumbersForInterval(from, to);
-
+        const startVersion = this.version;
+        const pagesRequired = await this.getPageNumbersForInterval(from, to);
         const data = await Promise.all(pagesRequired.map(this.getPage)).then((allHeros) =>
             allHeros.reduce((prev, cur) => prev.concat(cur), [])
         );
+
+        if (startVersion != this.version) {
+            // This data source has been invalidated while we were fetching data.
+            return await this.getRange(from, to); // Retry
+        }
 
         const hasPrevious = from > 0;
         const hasNext = to <= this.knownMax;
@@ -73,15 +99,6 @@ export class PagedDataSource<T> {
         return page;
     }
 
-    private async init(): Promise<void> {
-        if (this.srcPageSize == null) { // The source hasn't been initialized yet
-            // We fecth and wait on the first page, this way we wait until 'srcPageSize' has been set
-            // and we can start calculating offsets. It is impossible to work if we do not have this value,
-            // and it is more future-proof to not hardcode it in the client.
-            await this.getPage(0);
-        }
-    }
-
     private async fetchPage(p: number): Promise<T[]> {
         const page = await this.source(p);
         if (this.srcPageSize != null && this.srcPageSize != page.perPage) {
@@ -95,9 +112,9 @@ export class PagedDataSource<T> {
         return page.data;
     }
 
-    private getPageNumbersForInterval(start: number, end: number): number[] {
-        if (this.srcPageSize == null) {
-            throw new Error("Illegal state: srcPageSize is null!");
+    private async getPageNumbersForInterval(start: number, end: number): Promise<number[]> {
+        while (this.srcPageSize == null) {
+            await this.fetchPage(0);
         }
         const minimum = Math.floor(start / this.srcPageSize);
         const maximum = Math.floor((end - 1) / this.srcPageSize);

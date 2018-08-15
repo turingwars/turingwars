@@ -7,13 +7,10 @@ import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
 import { ActionsRow } from '../layout/ActionsRow';
 import { Row } from '../layout/Row';
 import { BackButton } from '../widgets/BackButton';
-import { HeroPickerList } from '../widgets/HeroPickerList';
-import { HeroPickerListController, IHeroPickerListControllerState } from '../widgets/HeroPickerListController';
+import { HeroPicker, HeroPickerListState } from '../widgets/HeroPicker';
 import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
 import { ScreenActionButton } from '../widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
-import { Label } from '../widgets/Label';
-
 
 
 const Column = styled.div`
@@ -36,37 +33,20 @@ const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
 `;
 
 interface MatchMakingScreenState {
-    heroPicker1: IHeroPickerListControllerState;
-    heroPicker2: IHeroPickerListControllerState;
+    heroPicker1: HeroPickerListState;
+    heroPicker2: HeroPickerListState;
 }
 
 
 export class MatchMakingScreen extends React.Component<{}, MatchMakingScreenState> {
 
     /** @override */ public state: MatchMakingScreenState = {
-        heroPicker1: HeroPickerListController.initialState(),
-        heroPicker2: HeroPickerListController.initialState()
+        heroPicker1: HeroPicker.initialListState(),
+        heroPicker2: HeroPicker.initialListState()
     };
-
-    private p1HerosListController = new HeroPickerListController(
-        (state) => this.setState({
-            heroPicker1: state
-        }),
-        () => this.state.heroPicker1
-    );
-
-    private p2HerosListController = new HeroPickerListController(
-        (state) => this.setState({
-            heroPicker2: state
-        }),
-        () => this.state.heroPicker2
-    );
 
     /** @override */ public componentDidMount() {
         herosDataSource.invalidate();
-        // TODO: proper error handling
-        this.p1HerosListController.init().catch((e) => { throw e });
-        this.p2HerosListController.init().catch((e) => { throw e });
     }
 
     /** @override */ public render() {
@@ -77,24 +57,17 @@ export class MatchMakingScreen extends React.Component<{}, MatchMakingScreenStat
             </Row>
             <Row>
                 <Column>
-                    <Label>{ this.state.heroPicker1.selected }</Label>
-                    <HeroPickerList 
+                    <HeroPicker 
                             player={1}
-                            selectedHeroId={this.state.heroPicker1.selected}
-                            onSelect={this.p1HerosListController.selectHandler}
-                            herosPage={this.state.heroPicker1.heros}
-                            onRequestNextPage={this.p1HerosListController.loadNextPageHandler}
-                            onRequestPreviousPage={this.p1HerosListController.loadPreviousPageHandler} />
+                            list={this.state.heroPicker1}
+                            update={(heroPicker1) => this.setState({ heroPicker1 })} />
                 </Column>
                 <HeroPickerSeparator />
                 <Column>
-                    <HeroPickerList
+                    <HeroPicker
                             player={2}
-                            selectedHeroId={this.state.heroPicker2.selected}
-                            onSelect={this.p2HerosListController.selectHandler}
-                            herosPage={this.state.heroPicker2.heros}
-                            onRequestNextPage={this.p2HerosListController.loadNextPageHandler}
-                            onRequestPreviousPage={this.p2HerosListController.loadPreviousPageHandler} />
+                            list={this.state.heroPicker2}
+                            update={(heroPicker2) => this.setState({ heroPicker2 })} />
                 </Column>
             </Row>
             <ActionsRow>

@@ -28,16 +28,20 @@ export const COLOR_SECONDARY_0 = PURPLE_0;
 export const COLOR_SECONDARY_1 = PURPLE_1;
 export const COLOR_SECONDARY_2 = PURPLE_2;
 
-
 /* Grayscale */
 
 export const GRAY = '#666';
 export const BLACK = '#000';
 export const GRAY_0 = '#333';
 export const GRAY_1 = GRAY;
-export const GRAY_2 = '#7F7979';
+export const GRAY_2 = '#ccc';
 export const WHITE = '#fff';
 
+
+/* Typography */
+
+export const COLOR_TEXT = WHITE;
+export const COLOR_ERROR = '#f00';
 
 /* Gameplay colors */
 

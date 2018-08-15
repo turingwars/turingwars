@@ -13,16 +13,12 @@ install: $(NODE_MODULES)
 	npm install
 
 .PHONY: serve
-serve: $(NODE_MODULES) views
+serve: $(NODE_MODULES)
 	npm start
-
-.PHONY: views
-views: $(SRC)
-	npm run build:views
 
 .PHONY: clean
 clean:
-	rm -rf .tmp src/server/.views
+	@echo "Nothing to clean"
 
 $(NODE_MODULES): package.json package-lock.json
 	npm install

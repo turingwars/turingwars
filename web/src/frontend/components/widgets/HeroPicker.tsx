@@ -1,10 +1,11 @@
-import { Hero } from 'api';
+import { HeroSummary } from 'api';
 import * as color from 'color';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
 import { Label } from './Label';
-import { IDataPage } from '../../services/private/PagedDataSource';
+import { IDataPage, emptyDataPage } from '../../services/private/PagedDataSource';
+import { herosDataSource } from '../../services/api';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
@@ -12,7 +13,7 @@ const PICKER_HEIGHT = 500;
 /**
  * Returns the index of the first entry shown at page n (0-indexed)
  */
-export function firstEntryOfPage(n: number) {
+function firstEntryOfPage(n: number) {
     if (n <= 0) {
         return 0;
     } else if (n === 1) {
@@ -136,7 +137,7 @@ const StyledElement = styled.div<{
 `;
 
 class ListElement extends React.PureComponent<{
-        hero: Hero;
+        hero: HeroSummary;
         onClick: (heroId: string) => void;
         selected: boolean;
         baseColor: string;
@@ -155,22 +156,40 @@ class ListElement extends React.PureComponent<{
     }
 };
 
-type HeroPickerListProps = {
-    player: 1 | 2;
-    herosPage: IDataPage<Hero> | undefined;
-    selectedHeroId?: string;
-    onSelect: (heroId: string) => void;
-    onRequestNextPage: () => void;
-    onRequestPreviousPage: () => void;
+export type HeroPickerListState = {
+    heros: IDataPage<HeroSummary> | undefined;
+    page: number;
+    selected?: string;
 };
 
-export class HeroPickerList extends React.Component<HeroPickerListProps> {
+export type HeroPickerProps = {
+    player: 1 | 2;
+    list: HeroPickerListState;
+    update: (listState: HeroPickerListState) => void;
+};
+
+export class HeroPicker extends React.Component<HeroPickerProps> {
+
+    public static initialListState(): HeroPickerListState {
+        return {
+            heros: emptyDataPage<HeroSummary>(),
+            page: 0,
+            selected: undefined
+        };
+    };
+
+    /** @override */ public componentDidMount() {
+        herosDataSource.getRange(0, firstEntryOfPage(1)).then((res) => this.props.update({
+            ...this.props.list,
+            heros: res
+        })).catch((e) => { throw e });
+    }
 
     /** @override */ public render() {
         const baseColor = this.props.player === 1 ? COLOR_P1 : COLOR_P2;
         return <ListContainer baseColor={baseColor}>
                 { 
-                    this.props.herosPage && this.renderListEntries(baseColor, this.props.herosPage)
+                    this.props.list.heros && this.renderListEntries(baseColor, this.props.list.heros)
                 }
                 <HorizontalPixelGridBackground baseColor={baseColor}/>
                 <RGBPixelGridBackground />
@@ -179,24 +198,51 @@ export class HeroPickerList extends React.Component<HeroPickerListProps> {
         </ListContainer>
     }
 
-    private renderListEntries(baseColor: string, herosPage: IDataPage<Hero>) {
+    private renderListEntries(baseColor: string, herosPage: IDataPage<HeroSummary>) {
         return [
             herosPage.hasPrevious && (
-                <StyledElement onClick={this.props.onRequestPreviousPage} key="prev-page" baseColor={baseColor} selected={false}>
+                <StyledElement onClick={this.loadPreviousPageHandler} key="prev-page" baseColor={baseColor} selected={false}>
                     <Label textAlign="center">▴</Label>
                 </StyledElement>
             ),
             herosPage.data.map((hero) => <ListElement
                 key={hero.id}
                 baseColor={baseColor}
-                hero={hero} selected={hero.id === this.props.selectedHeroId}
-                onClick={this.props.onSelect} />
+                hero={hero} selected={hero.id === this.props.list.selected}
+                onClick={this.selectHandler} />
             ),
             herosPage.hasNext && (
-                <StyledElement onClick={this.props.onRequestNextPage} key="next-page" baseColor={baseColor} selected={false}>
+                <StyledElement onClick={this.loadNextPageHandler} key="next-page" baseColor={baseColor} selected={false}>
                     <Label textAlign="center">▾</Label>
                 </StyledElement>
             )
         ];
+    }
+
+    private loadNextPageHandler = async () => {
+        const page = this.props.list.page;
+        const nextPage = page + 1;
+        this.props.update({
+            ...this.props.list,
+            heros: await herosDataSource.getRange(firstEntryOfPage(nextPage), firstEntryOfPage(nextPage + 1)),
+            page: nextPage
+        });
+    }
+
+    private loadPreviousPageHandler = async () => {
+        const page = this.props.list.page;
+        const previousPage = page - 1;
+        this.props.update({
+            ...this.props.list,
+            heros: await herosDataSource.getRange(firstEntryOfPage(previousPage), firstEntryOfPage(page)),
+            page: previousPage
+        });
+    }
+
+    private selectHandler = (selected: string) => {
+        this.props.update({
+            ...this.props.list,
+            selected: selected
+        });
     }
 };

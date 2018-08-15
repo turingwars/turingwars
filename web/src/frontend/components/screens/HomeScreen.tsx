@@ -11,6 +11,6 @@ export const HomeScreen = () => <div>
         <FatMenuButton href={`#${ROUTE_MATCHMAKING}`}>Matchmaking</FatMenuButton>
         <FatMenuButton href={`#${ROUTE_CREATE_HERO}`}>Create a hero</FatMenuButton>
         <FatMenuSpacer />
-        <FatMenuButton href={URL_ABOUT} smaller={true}>About</FatMenuButton>
+        <FatMenuButton target="_blank" href={URL_ABOUT} smaller={true}>About</FatMenuButton>
     </FatMenu>
 </div>;

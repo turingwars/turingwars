@@ -6,8 +6,7 @@ import { api, herosDataSource } from '../../services/api';
 import { navigateTo, ROUTE_EDITOR } from '../../services/navigation';
 import { ActionsRow } from '../layout/ActionsRow';
 import { BackButton } from '../widgets/BackButton';
-import { HeroPickerList } from '../widgets/HeroPickerList';
-import { HeroPickerListController } from '../widgets/HeroPickerListController';
+import { HeroPicker } from '../widgets/HeroPicker';
 import { ScreenActionButton } from '../widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
 
@@ -25,43 +24,34 @@ type LoadHeroSreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatc
 export const LoadHeroScreen = connect(mapStateToProps, mapDispatchToProps)(
 class extends React.Component<LoadHeroSreenProps> {
 
-    private listController = new HeroPickerListController(
-        (listController) => this.setState({ listController }),
-        () => this.state.listController
-    );
-
     /** @override */ public state = {
-        listController: HeroPickerListController.initialState()
+        listState: HeroPicker.initialListState()
     };
 
     /** @override */ public componentDidMount() {
         herosDataSource.invalidate();
-        this.listController.init().catch((e) => { throw e });
     }
 
     /** @override */ public render() {
         return <BaseScreen title="Load a hero">
-            <HeroPickerList
+            <HeroPicker
                     player={1}
-                    herosPage={this.state.listController.heros}
-                    selectedHeroId={this.state.listController.selected}
-                    onSelect={this.listController.selectHandler}
-                    onRequestNextPage={this.listController.loadNextPageHandler}
-                    onRequestPreviousPage={this.listController.loadPreviousPageHandler} />
+                    list={this.state.listState}
+                    update={(listState) => this.setState({ listState })} />
             <ActionsRow>
                 <BackButton />
-                <ScreenActionButton enabled={this.state.listController.selected != null} onClick={this.loadHeroHandler}>Load</ScreenActionButton>
+                <ScreenActionButton enabled={this.state.listState.selected != null} onClick={this.loadHeroHandler}>Load</ScreenActionButton>
             </ActionsRow>
         </BaseScreen>
     }
 
     private loadHeroHandler = async () => {
-        if (this.state.listController.selected == null) {
+        if (this.state.listState.selected == null) {
             throw new Error('No hero selected');
         }
         const res = await api.getHero({
             params: {
-                id: this.state.listController.selected
+                id: this.state.listState.selected
             }
         });
         this.props.loadCode(res.data.program);

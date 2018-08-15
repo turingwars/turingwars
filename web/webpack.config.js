@@ -1,4 +1,4 @@
-// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -69,7 +69,7 @@ module.exports = {
             multiStep: true
         }),
         new webpack.NamedModulesPlugin(),
-        // new ForkTsCheckerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development')

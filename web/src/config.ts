@@ -20,6 +20,6 @@ export const UPDATE_PERIOD = 4;
 
 export const BIN_LOCATION = 'js/turingwars.js';
 
-export const API_RESULTS_PER_PAGE = 2;
+export const API_RESULTS_PER_PAGE = 100;
 
 export const SCORE_MAX_VALUE = 1000;

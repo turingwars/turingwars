@@ -4,6 +4,7 @@ import { OpCode } from '../../../model/Instruction';
 // TODO: Widgets should not reference Redux
 import { IPrintableMemoryCell } from '../../redux/replay/state';
 import { COLOR_INSTR_MINE, COLOR_INSTR_MINE_P1, COLOR_INSTR_MINE_P2, COLOR_INSTR_NOP, COLOR_P1, COLOR_P2, COLOR_CHANGED_INSTR } from '../../style';
+import styled from 'styled-components';
 
 
 
@@ -43,17 +44,28 @@ interface CellPixelRect {
     // height: number = width;
 }
 
+const MemoryMapCanvas = styled.canvas`
+    width: 520px;
+    height: 520px;
+    border: 15px solid #222;
+    padding: 0px;
+    margin: 0px 5px;
+`;
+
 export class MemoryMap extends React.Component<IMemoryMapProps> {
 
     private ctx: CanvasRenderingContext2D;
+    private canvasRef = React.createRef<HTMLCanvasElement>();
 
-    /** @override */ public componentDidMount() {
+    /** @override */
+    public componentDidMount() {
         this.ctx = this.getRenderingContext();
         this.ctx.lineWidth = LINE_WIDTH;
         this.drawAll();
     }
 
-    /** @override */ public componentDidUpdate(oldProps: IMemoryMapProps, _newProps: IMemoryMapProps) {
+    /** @override */
+    public componentDidUpdate(oldProps: IMemoryMapProps, _newProps: IMemoryMapProps) {
         for (let address = 0; address < this.props.memory.length; address++) {
             if (this.hasDifferenceAtAddress(oldProps, address)) {
                 this.drawCell(address);
@@ -64,17 +76,19 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
         this.drawIPs(this.props.processes);
     }
 
-    /** @override */ public render() {
-        return <canvas
-                id="memoryMapCanvas"
-                ref="thecanvas"
+    /** @override */
+    public render() {
+        return <MemoryMapCanvas
+                innerRef={this.canvasRef}
                 width={CANVAS_SIZE}
-                height={CANVAS_SIZE}></canvas>;
+                height={CANVAS_SIZE} />;
     }
 
     private getRenderingContext() {
-        const canvas = this.refs.thecanvas as HTMLCanvasElement;
-        const ctx = canvas.getContext('2d');
+        if (this.canvasRef.current == null) {
+            throw new Error("Cannot obtain the canvas reference!");
+        }
+        const ctx = this.canvasRef.current.getContext('2d');
         if (ctx == null) {
             throw new Error("Cannot obtain the canvas rendering context!");
         }

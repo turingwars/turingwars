@@ -35,11 +35,23 @@ export class SplashMessage extends React.Component<ISplashMessageProps> {
         visible: true
     };
 
+    private resetTimer: number | null = null;
+
     /** @override */ public componentDidMount() {
         if (this.props.oneShot) {
-            setTimeout(() => this.setState({
-                visible: false
-            }), SPLASH_ONE_SHOT_DURATION_MS);
+            this.resetTimer = window.setTimeout(() => {
+                this.setState({
+                    visible: false
+                });
+                this.resetTimer = null;
+            }, SPLASH_ONE_SHOT_DURATION_MS);
+        }
+    }
+
+    /** @override */ public componentWillUnmount() {
+        if (this.resetTimer !== null) {
+            window.clearTimeout(this.resetTimer);
+            this.resetTimer = null;
         }
     }
 
