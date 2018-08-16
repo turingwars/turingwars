@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { COLOR_PRIMARY, GRAY_2 } from '../../style';
+import { COLOR_PRIMARY, GRAY_2 } from 'frontend/style';
 
 interface IScoreIndicatorProps {
     score: number;

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { api, herosDataSource } from '../../services/api';
-import { navigateTo, ROUTE_REPLAY } from '../../services/navigation';
-import { player } from '../../services/player';
-import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
-import { ActionsRow } from '../layout/ActionsRow';
-import { Row } from '../layout/Row';
-import { BackButton } from '../widgets/BackButton';
-import { HeroPicker, HeroPickerListState } from '../widgets/HeroPicker';
-import { HeroPickerSeparator } from '../widgets/HeroPickerSeparator';
-import { ScreenActionButton } from '../widgets/ScreenActionButton';
+import { api, herosDataSource } from 'frontend/services/api';
+import { navigateTo, ROUTE_REPLAY } from 'frontend/services/navigation';
+import { player } from 'frontend/services/player';
+import { COLOR_P1, COLOR_P2, WHITE } from 'frontend/style';
+import { ActionsRow } from 'frontend/components/layout/ActionsRow';
+import { Row } from 'frontend/components/layout/Row';
+import { BackButton } from 'frontend/components/widgets/BackButton';
+import { HeroPicker, HeroPickerListState } from 'frontend/components/widgets/HeroPicker';
+import { HeroPickerSeparator } from 'frontend/components/widgets/HeroPickerSeparator';
+import { ScreenActionButton } from 'frontend/components/widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
 
 

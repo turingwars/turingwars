@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const StartServerPlugin = require('start-server-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: ['webpack/hot/signal', './src/server/boot.ts'],
@@ -54,6 +55,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new ForkTsCheckerWebpackPlugin(),
+        new TsconfigPathsPlugin(),
         new webpack.BannerPlugin({
             banner: 'require("source-map-support").install();',
             raw: true,

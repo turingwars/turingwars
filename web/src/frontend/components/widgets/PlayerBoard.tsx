@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ScoreIndicator } from './ScoreIndicator';
 import { WaterProgressBar } from './WaterProgressBar';
-import { PlayerState } from '../../redux/replay/state';
-import { SCORE_MAX_VALUE } from 'config';
-import { COLOR_P1, COLOR_P2 } from '../../style';
+import { PlayerState } from 'frontend/redux/replay/state';
+import { SCORE_MAX_VALUE } from 'shared/config';
+import { COLOR_P1, COLOR_P2 } from 'frontend/style';
 import styled from 'styled-components';
 
 interface IPlayerBoardProps {

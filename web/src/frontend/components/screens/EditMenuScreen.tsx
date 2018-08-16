@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { loadCode } from '../../redux/editor/actions';
-import { State } from '../../redux/state';
-import { navigateTo, ROUTE_EDITOR, ROUTE_IMPORT_HERO } from '../../services/navigation';
-import { FatMenu } from '../widgets/FatMenu';
-import { FatMenuButton } from '../widgets/FatMenuButton';
-import { MainTitle } from '../widgets/MainTitle';
-import { FatMenuSpacer } from '../widgets/FatMenuSpacer';
+import { loadCode } from 'frontend/redux/editor/actions';
+import { State } from 'frontend/redux/state';
+import { navigateTo, ROUTE_EDITOR, ROUTE_IMPORT_HERO } from 'frontend/services/navigation';
+import { FatMenu } from 'frontend/components/widgets/FatMenu';
+import { FatMenuButton } from 'frontend/components/widgets/FatMenuButton';
+import { MainTitle } from 'frontend/components/widgets/MainTitle';
+import { FatMenuSpacer } from 'frontend/components/widgets/FatMenuSpacer';
 
 const DEFAULT_CODE = `; Type your code here
 

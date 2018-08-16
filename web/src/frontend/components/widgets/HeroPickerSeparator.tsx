@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { COLOR_PRIMARY_1, CRT_GLITCH_TEXT_LG, WHITE } from '../../style';
+import { COLOR_PRIMARY_1, CRT_GLITCH_TEXT_LG, WHITE } from 'frontend/style';
 
 export const HeroPickerSeparator = (() => {
 

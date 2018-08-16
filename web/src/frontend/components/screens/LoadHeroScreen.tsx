@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { loadCode } from '../../redux/editor/actions';
-import { State } from '../../redux/state';
-import { api, herosDataSource } from '../../services/api';
-import { navigateTo, ROUTE_EDITOR } from '../../services/navigation';
-import { ActionsRow } from '../layout/ActionsRow';
-import { BackButton } from '../widgets/BackButton';
-import { HeroPicker } from '../widgets/HeroPicker';
-import { ScreenActionButton } from '../widgets/ScreenActionButton';
+import { loadCode } from 'frontend/redux/editor/actions';
+import { State } from 'frontend/redux/state';
+import { api, herosDataSource } from 'frontend/services/api';
+import { navigateTo, ROUTE_EDITOR } from 'frontend/services/navigation';
+import { ActionsRow } from 'frontend/components/layout/ActionsRow';
+import { BackButton } from 'frontend/components/widgets/BackButton';
+import { HeroPicker } from 'frontend/components/widgets/HeroPicker';
+import { ScreenActionButton } from 'frontend/components/widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
 
 const mapStateToProps = (_state: State) => {

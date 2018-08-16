@@ -8,11 +8,11 @@ import * as os from 'os';
 import * as path from 'path';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
-import { twAPI } from '../api';
-import { Assembler } from '../assembler/Assembler';
-import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../config';
-import { GameUpdate } from '../model/GameUpdate';
-import { RouterDefinition } from '../typed-apis/express-typed-api';
+import { twAPI } from 'shared/api';
+import { Assembler } from 'shared/assembler/Assembler';
+import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/config';
+import { GameUpdate } from 'shared/model/GameUpdate';
+import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 

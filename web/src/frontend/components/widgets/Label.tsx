@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { COLOR_SECONDARY, COLOR_TEXT, COLOR_ERROR } from '../../style';
+import { COLOR_SECONDARY, COLOR_TEXT, COLOR_ERROR } from 'frontend/style';
 
 type LabelType = 'info' | 'error';
 

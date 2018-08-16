@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CRT_GLITCH_TEXT_LG, COLOR_PRIMARY } from '../../style';
+import { CRT_GLITCH_TEXT_LG, COLOR_PRIMARY } from 'frontend/style';
 
 export const MainTitle = styled.h1`
     ${CRT_GLITCH_TEXT_LG}

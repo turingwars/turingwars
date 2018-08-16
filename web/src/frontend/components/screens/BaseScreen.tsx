@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScreenTitle } from '../widgets/ScreenTitle';
+import { ScreenTitle } from 'frontend/components/widgets/ScreenTitle';
 
 interface IBaseScreenProps {
     title: string;
