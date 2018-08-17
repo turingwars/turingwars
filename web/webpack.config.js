@@ -19,14 +19,6 @@ module.exports = {
         publicPath: '/dist'
     },
 
-    // devServer: {
-    //     compress: true,
-    //     port: 9000,
-    //     hot: true,
-    //     contentBase: 'public',
-    //     allowedHosts: ['localhost']
-    // },
-
     // Currently we need to add '.ts' to the resolve.extensions array.
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.less'],

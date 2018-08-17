@@ -1,0 +1,4 @@
+# We keep this gitignore here so that the "lib" directory is checked out in git but not its contents
+server
+shared
+*.js

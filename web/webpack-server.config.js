@@ -21,7 +21,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'views': path.resolve(__dirname, 'src/server/.views/')
+            'shared': path.resolve(__dirname, 'src/shared/'),
+            'server': path.resolve(__dirname, 'src/server/'),
         },
         extensions: ['.html', '.ts', '.js']
     },
@@ -55,7 +56,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new ForkTsCheckerWebpackPlugin(),
-        new TsconfigPathsPlugin(),
+        // new TsconfigPathsPlugin(),
         new webpack.BannerPlugin({
             banner: 'require("source-map-support").install();',
             raw: true,

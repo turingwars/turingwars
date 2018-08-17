@@ -11,12 +11,11 @@
     "turingwars": "./bin/turingwars.js"
   },
   "scripts": {
-    "start": "NODE_PATH=./lib webpack --config webpack-server.config.js",
+    "start": "webpack --config webpack-server.config.js",
     "test": "tsc --noEmit && tslint -p . && jest",
     "test:watch": "jest --watch",
-    "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "webpack",
-    "build:backend": "tsc -p . && mkdir -p ./lib && cp -r .tmp/transpiled/src/server .tmp/transpiled/src/shared ./lib/"
+    "build:backend": "tsc -p ."
   },
   "author": "The swag crew",
   "license": "MIT",

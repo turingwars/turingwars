@@ -4,6 +4,12 @@ SRC=$(shell find src/ -type f -name '*.ts')
 .PHONY:all
 all: serve
 
+.PHONY: build
+build: $(NODE_MODULES)
+	npm run build:frontend
+	npm run build:backend
+	cp -r .tmp/transpiled/src/server .tmp/transpiled/src/shared ./lib/
+
 .PHONY: test
 test: $(NODE_MODULES)
 	npm run test

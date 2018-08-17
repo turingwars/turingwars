@@ -1,4 +1,4 @@
-JS_IN_WEBSERVER=web/js/turingwars.js
+JS_IN_WEBSERVER=web/lib/turingwars.js
 
 .PHONY: engine
 engine:	

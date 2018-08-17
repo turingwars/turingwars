@@ -53,7 +53,14 @@ class TuringWarsApplication {
      */
     public async teardown() {
         await this.connection.close();
-        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
+        await new Promise<void>((resolve) => {
+            if (this.webpackDevMiddleware) {
+                this.webpackDevMiddleware.close(resolve);
+                this.webpackDevMiddleware = undefined;
+            } else {
+                resolve();
+            }
+        });
     }
 
     /**
@@ -126,11 +133,13 @@ class TuringWarsApplication {
      * to see your changes. They would instantaneously pop up in your browser.
      */
     private async initializeFrontEnd() {
-        const wdm = require('webpack-dev-middleware');
-        const compiler = webpack(require('../../webpack.config.js'));
-        this.webpackDevMiddleware = wdm(compiler, {
-            publicPath: '/dist'
-        });
+        if (process.env.NODE_ENV != 'production') {
+            const wdm = require('webpack-dev-middleware');
+            const compiler = webpack(require('../../webpack.config.js'));
+            this.webpackDevMiddleware = wdm(compiler, {
+                publicPath: '/dist'
+            });
+        }
     }
 
     /**
