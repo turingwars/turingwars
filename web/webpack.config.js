@@ -4,6 +4,8 @@ const webpack = require('webpack');
 
 const REPO_ROOT = __dirname;
 
+console.log(`Building in ${process.env.NODE_ENV || 'development'}`)
+
 module.exports = {
 
     mode: process.env.NODE_ENV || 'development',
@@ -29,8 +31,6 @@ module.exports = {
     devtool: 'source-map',
 
     externals: {
-        'd3': 'd3',
-        'underscore': '_',
         'react': 'React',
         'redux': 'Redux',
         'react-redux': 'ReactRedux',

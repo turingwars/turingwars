@@ -1,14 +1,8 @@
-JS_IN_WEBSERVER=web/lib/turingwars.js
+JS_IN_WEBSERVER=web/lib/engine.js
 
 .PHONY: engine
 engine:	
 	$(MAKE) -C engine/turingwars js
-
-$(JS_IN_WEBSERVER): engine
-	rm -f $(JS_IN_WEBSERVER)
-	cp engine/turingwars/target/scala-2.12/turingwars-engine-fastopt.js $(JS_IN_WEBSERVER)
-
-copy-jar: $(JS_IN_WEBSERVER)
 
 .PHONY: test
 test:
@@ -29,5 +23,6 @@ clean:
 	$(MAKE) -C engine/turingwars clean
 	$(MAKE) -C web clean
 
-.PHONY:all
-all: engine
+$(JS_IN_WEBSERVER): engine
+	rm -f $(JS_IN_WEBSERVER)
+	cp engine/turingwars/target/scala-2.12/turingwars-engine-fastopt.js $(JS_IN_WEBSERVER)

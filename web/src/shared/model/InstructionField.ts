@@ -1,16 +1,6 @@
-import { IsDefined, IsIn, IsNumber } from 'class-validator';
-
 export class InstructionField {
-
-    @IsDefined()
-    @IsIn(['immediate', 'reference'])
     public fieldType: 'immediate' | 'reference';
-
-    @IsDefined()
-    @IsNumber()
     public value: number;
-
-    @IsIn(['a', 'b'])
     public field: 'a' | 'b';
 }
 

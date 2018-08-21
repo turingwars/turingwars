@@ -11,12 +11,15 @@
     "turingwars": "./bin/turingwars.js"
   },
   "scripts": {
-    "start": "webpack --config webpack-server.config.js",
+    "start": "",
     "test": "tsc --noEmit && tslint -p . && jest",
-    "test:watch": "jest --watch",
-    "build:frontend": "webpack",
-    "build:backend": "tsc -p ."
+    "test:watch": "jest --watch"
   },
+  "files": [
+    "lib",
+    "bin",
+    "public"
+  ],
   "author": "The swag crew",
   "license": "MIT",
   "dependencies": {
