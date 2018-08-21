@@ -1,7 +1,6 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
 import * as byline from 'byline';
-import { spawn } from 'child_process';
-import { transformAndValidate } from 'class-transformer-validator';
+import { fork } from 'child_process';
 import { validate } from 'class-validator';
 import * as fs from 'fs';
 import * as os from 'os';
@@ -16,9 +15,7 @@ import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 
-const engineCmdLine = [
-    path.join(process.cwd(), BIN_LOCATION)
-];
+const engineBin =  path.join(process.cwd(), BIN_LOCATION);
 
 export function appRouter(
         championsRepo: Repository<Champion>,
@@ -159,20 +156,20 @@ export function appRouter(
         const programFiles = await Promise.all(
             champions.map(async (champion) => loadChampion(champion, championNr++)));
 
-        console.log([...engineCmdLine, ...programFiles]);
-        const vm = spawn('node', [
-            ...engineCmdLine,
+        const args = [
             ...programFiles,
             `${UPDATE_PERIOD}`,
             `${NUM_CYCLES}`,
-            `${CORESIZE}`]);
+            `${CORESIZE}`];
+        console.log(args);
+        const vm = fork(engineBin, args, {
+            silent: true
+        });
         const lines = byline(vm.stdout, {
             encoding: 'utf-8'
         });
         lines.on('data', (data) => {
-            const p = transformAndValidate(GameUpdate, data as string) as Promise<GameUpdate>;
-            p.catch((e) => console.error(e));
-            log.push(p);
+            log.push(Promise.resolve(JSON.parse(data)));
         });
 
         vm.stderr.on('data', (d) => {
