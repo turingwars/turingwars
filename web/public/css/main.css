@@ -13,7 +13,7 @@ body {
     color:#fff;
     font-family: 'VT323', monospace;
     background-image: url('../images/background.jpg');
-    background-size: 100%;
+    background-size: cover;
     height: 100vh;
     margin: 0;
     padding: 0;
