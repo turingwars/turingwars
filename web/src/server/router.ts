@@ -15,7 +15,7 @@ import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 
-const engineBin =  path.join(process.cwd(), BIN_LOCATION);
+const engineBin =  path.join(__dirname, '../../', BIN_LOCATION);
 
 export function appRouter(
         championsRepo: Repository<Champion>,

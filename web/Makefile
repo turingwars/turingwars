@@ -1,7 +1,7 @@
 NODE_MODULES=node_modules/.makets
-SERVER_SRC=$(shell find src/server -type f -name '*.ts')
-SHARED_SRC=$(shell find src/shared -type f -name '*.ts')
-FRONTEND_SRC=$(shell find src/frontend -type f -name '*.ts')
+SERVER_SRC=$(shell find src/server -type f -name '*.ts' -or -name '*.tsx')
+SHARED_SRC=$(shell find src/shared -type f -name '*.ts' -or -name '*.tsx')
+FRONTEND_SRC=$(shell find src/frontend -type f -name '*.ts' -or -name '*.tsx')
 SERVER_BIN=lib/server/boot.js
 FRONTEND_BIN=public/dist/app.js
 

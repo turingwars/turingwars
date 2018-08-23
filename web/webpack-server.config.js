@@ -49,7 +49,7 @@ module.exports = {
     plugins: [
         new StartServerPlugin({
             name: 'server.js',
-            // nodeArgs: [`--require`, 'dotenv/config', '--inspect-brk=9229']
+            nodeArgs: ['--inspect=9229'],
             signal: true
         }),
         new webpack.NamedModulesPlugin(),

@@ -18,6 +18,10 @@ install-travis:
 serve: $(JS_IN_WEBSERVER)
 	$(MAKE) -C web serve
 
+.PHONY: build
+build: $(JS_IN_WEBSERVER)
+	$(MAKE) -C web build
+
 .PHONY: clean
 clean:
 	$(MAKE) -C engine/turingwars clean

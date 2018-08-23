@@ -94,7 +94,7 @@ class TuringWarsApplication {
         if (this.webpackDevMiddleware) {
             app.use(this.webpackDevMiddleware);
         }
-        app.use(express.static(path.join(process.cwd(), 'public/')));
+        app.use(express.static(path.join(__dirname, '../../public/')));
 
         // Error handling
         app.use(this.defaultHandler);
@@ -106,7 +106,7 @@ class TuringWarsApplication {
     private async initDatabase() {
         this.connection = await createConnection({
             type: 'sqlite',
-            database: path.join(process.cwd(), '.tmp/sqlite'),
+            database: path.join(__dirname, '../../.tmp/sqlite'),
             entities: [
                 Champion,
                 GameLog
