@@ -9,7 +9,8 @@ module.exports = {
     entry: ['webpack/hot/signal', './src/server/boot.ts'],
     output: {
         path: path.join(__dirname, '.tmp'),
-        filename: 'server.js'
+        filename: 'server.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
     watch: true,
     mode: process.env.NODE_ENV || 'development',
@@ -49,7 +50,7 @@ module.exports = {
     plugins: [
         new StartServerPlugin({
             name: 'server.js',
-            nodeArgs: ['--inspect=9229'],
+            nodeArgs: [ '--inspect=9229'],
             signal: true
         }),
         new webpack.NamedModulesPlugin(),
