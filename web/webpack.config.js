@@ -1,4 +1,4 @@
-// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -8,14 +8,8 @@ module.exports = {
 
     mode: process.env.NODE_ENV || 'development',
     entry: {
-        'replay': [
-            './src/frontend/replay/main.tsx'
-        ],
-        'index': [
-            './src/frontend/index.ts'
-        ],
-        'editor': [
-            './src/frontend/editor/main.tsx'
+        'app': [
+            './src/frontend/main.tsx'
         ]
     },
 
@@ -75,7 +69,7 @@ module.exports = {
             multiStep: true
         }),
         new webpack.NamedModulesPlugin(),
-        // new ForkTsCheckerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development')

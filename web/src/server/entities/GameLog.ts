@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class GameLog {
 
     @PrimaryGeneratedColumn()
-    public id?: string;
+    public id: string;
 
     @Column()
     @IsDefined()

@@ -13,7 +13,7 @@ type PromiseOrValue<T> = PromiseLike<T> | T;
 interface TypedRequest<T extends EndpointDefinition> extends Express.Request {
     body: T['body'];
     params: T['params'];
-    query: T['query'];
+    query: Partial<T['query']>;
 }
 
 export type RouteHandler<T extends EndpointDefinition> =

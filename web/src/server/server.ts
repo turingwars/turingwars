@@ -1,39 +1,102 @@
+import 'reflect-metadata';
+
 import { NotFoundHttpException } from '@senhung/http-exceptions';
 import { json, urlencoded } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
-import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
-import edit from 'views/edit.top';
-import index from 'views/index.top';
-import replay from 'views/replay.top';
 import * as webpack from 'webpack';
 import { twAPI } from '../api';
 import { createRouter } from '../typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
-import { AppRouter } from './router';
+import { appRouter } from './router';
 import { seedDatabase } from './seed';
 
 
 class TuringWarsApplication {
 
     private connection: Connection;
-    private webpackDevMiddleware: any;
+    private webpackDevMiddleware?: any;
 
+    /**
+     * Called when the application starts.
+     * 
+     * In dev, each time you make a change to the server, the application automatically goes
+     * through a cycle of `teardown` and `init` again.
+     * 
+     * See `boot.ts` for more info.
+     */
     public async init() {
         console.log(BANNER);
 
-        const wdm = require('webpack-dev-middleware');
-        const compiler = webpack(require('../../webpack.config.js'));
-        this.webpackDevMiddleware = wdm(compiler, {
-            publicPath: '/dist'
-        });
+        console.log('initializing front-end build pipeline...');
+        await this.initializeFrontEnd();
 
         console.log('initializing DB...');
+        await this.initDatabase();
+
+        console.log('Initializing server...');
+        const app = await this.initServer();
+
+        return app;
+    }
+
+    /**
+     * Called when the application is terminated. It is important to close here any resource you opened
+     * because the application may be restarted multiple times in the same process during development.
+     * You are, however, guaranteed that the next application will not be `init`ialized until the last
+     * one has fully completed its `teardown`. 
+     */
+    public async teardown() {
+        await this.connection.close();
+        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
+    }
+
+    /**
+     * Initialize here the custom application routers.
+     */
+    private async initRouters(app: express.Application) {
+        const championsRepo = this.connection.getRepository(Champion);
+        const gamesRepo = this.connection.getRepository(GameLog);
+
+        app.use('/api', createRouter(twAPI, appRouter(championsRepo, gamesRepo)));
+    }
+
+    /**
+     * Express server boilerplate initialization.
+     */
+    private async initServer() {
+        // A quick note on express. You can read the following code as "the express stack of middlewares".
+        // Incoming requests go through the stack from the top to the bottom, and responses travel back from
+        // wherever the request was actually handled, back to the top and out to the client.
+        const app = express();
+
+        // Pre-application logic stuff
+        app.use(cors());
+        app.use(json());
+        app.use(urlencoded({ extended: true }));
+
+        // Application logic
+        await this.initRouters(app);
+
+        // Static files and front-end assets
+        if (this.webpackDevMiddleware) {
+            app.use(this.webpackDevMiddleware);
+        }
+        app.use(express.static(path.join(process.cwd(), 'public/')));
+
+        // Error handling
+        app.use(this.defaultHandler);
+        app.use(errorReporter());
+
+        return app;
+    }
+
+    private async initDatabase() {
         this.connection = await createConnection({
             type: 'sqlite',
             database: path.join(process.cwd(), '.tmp/sqlite'),
@@ -46,74 +109,42 @@ class TuringWarsApplication {
         });
 
         await seedDatabase(this.connection);
-
-        console.log('Initializing server...');
-
-        const app = express();
-        app.use(cors());
-        app.use(json());
-        app.use(urlencoded({ extended: true }));
-
-        const championsRepo = this.connection.getRepository(Champion);
-        const gamesRepo = this.connection.getRepository(GameLog);
-
-        // HTML pages
-
-        app.get('/', asyncRoute(async () => {
-            return index({
-                champions: await championsRepo.find()
-            });
-        }));
-
-        app.get('/champion/:id', asyncRoute(async () => {
-            return edit();
-        }));
-
-        app.get('/replay/:id', asyncRoute(async (req) => {
-            const gameId = req.params.id;
-            const game = await gamesRepo.findOneOrFail(gameId);
-            return replay({
-                PLAYER_1_NAME: game.player1Name,
-                PLAYER_2_NAME: game.player2Name
-            });
-        }));
-
-        const appRouter = AppRouter(championsRepo, gamesRepo);
-        app.use('/api', createRouter(twAPI, appRouter));
-
-
-        app.use(this.webpackDevMiddleware);
-        app.use(express.static(path.join(process.cwd(), 'public/')));
-        app.use((_req, res, next) => {
-            if (!res.headersSent) {
-                next(new NotFoundHttpException());
-            } else {
-                next();
-            }
-        });
-        app.use(errorReporter());
-
-        return app;
     }
 
-    public async teardown() {
-        await this.connection.close();
-        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
+    /**
+     * Creates a development middleware for the front-end.
+     * 
+     * This will intercept all HTTP requests for the front-end assets (such as 'app.js')
+     * and serve them straight from webpack, without ever hitting the disk.
+     * 
+     * Webpack watches the source files and compiles them as you save them.
+     * This means that every time you refresh the page, you will get a freshly
+     * compiled frontend package.
+     * 
+     * Also, we could use this to do hot module replacement on the front-end (just like we
+     * currently do for the backend). With HMR, you wouldn't even have to refresh the page
+     * to see your changes. They would instantaneously pop up in your browser.
+     */
+    private async initializeFrontEnd() {
+        const wdm = require('webpack-dev-middleware');
+        const compiler = webpack(require('../../webpack.config.js'));
+        this.webpackDevMiddleware = wdm(compiler, {
+            publicPath: '/dist'
+        });
+    }
+
+    /**
+     * Last request handler in the stack. Catches unhandled requests and throws a proper 404 from there.
+     * I don't like express' default 404 handler.
+     */
+    private async defaultHandler(_req: express.Request, res: express.Response, next: express.NextFunction) {
+        // Catch unhandled requests and throws a proper 404 from there.
+        if (!res.headersSent) {
+            next(new NotFoundHttpException());
+        } else {
+            next();
+        }
     }
 }
 
 export default new TuringWarsApplication();
-
-function asyncRoute(handler: (req: express.Request, res: express.Response) => Promise<any>) {
-    return (req: express.Request, res: express.Response, next: express.NextFunction) => handler(req, res)
-            .then((v) => {
-                if (v !== undefined && !res.headersSent) {
-                    res.send(v);
-                } else {
-                    res.end();
-                }
-            })
-            .catch((e) => {
-                next(e);
-            });
-}
