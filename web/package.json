@@ -1,6 +1,6 @@
 {
   "name": "turing-wars",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A 21th century core-wars reboot",
   "main": "bin/server/main.js",
   "repository": {

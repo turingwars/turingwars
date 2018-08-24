@@ -56,10 +56,6 @@ $(ENGINE_BIN):
 test: $(NODE_MODULES)
 	npm run test
 
-.PHONY: install
-install: $(NODE_MODULES)
-	npm install
-
 .PHONY: serve
 serve: $(NODE_MODULES) $(LIBS_OUTPUT)
 	node_modules/.bin/webpack --config webpack-server.config.js

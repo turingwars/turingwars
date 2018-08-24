@@ -2,6 +2,6 @@
 
 tag=`git describe --tags`
 
-if [ $? -eq 0 ]; then
+if ! echo $tag | grep -q 'untagged'; then
     cd web && npm version $tag
 fi

@@ -4,11 +4,6 @@ SRC=$(shell find src/ -type f -name '*.scala')
 $(BIN): $(SRC)
 	sbt clean fastOptJS
 
-.PHONY: install-travis
-install-travis:
-	mkdir -p ${HOME}/.sbt/launchers/1.0.3/
-	curl -L -o ${HOME}/.sbt/launchers/1.0.3/sbt-launch.jar http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.9/sbt-launch.jar
-
 .PHONY: js
 js: $(BIN)
 

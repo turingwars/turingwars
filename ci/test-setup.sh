@@ -24,7 +24,7 @@ echo "Testing the version to be published"
 
 tag=`git describe --tags`
 version=`turingwars --version`
-if [ "$version" != "$tag" ]; then
+if ! echo $tag | grep -q 'untagged' && [ "$version" != "$tag" ]; then
     echo "Did not return the right version:"
     echo "$version"
     exit 1
