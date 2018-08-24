@@ -1,24 +1,21 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
 import * as byline from 'byline';
-import { spawn } from 'child_process';
-import { transformAndValidate } from 'class-transformer-validator';
+import { fork } from 'child_process';
 import { validate } from 'class-validator';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
-import { twAPI } from '../api';
-import { Assembler } from '../assembler/Assembler';
-import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../config';
-import { GameUpdate } from '../model/GameUpdate';
-import { RouterDefinition } from '../typed-apis/express-typed-api';
+import { twAPI } from 'shared/api';
+import { Assembler } from 'shared/assembler/Assembler';
+import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/config';
+import { GameUpdate } from 'shared/model/GameUpdate';
+import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 
-const engineCmdLine = [
-    path.join(process.cwd(), BIN_LOCATION)
-];
+const engineBin =  path.join(__dirname, '../../', BIN_LOCATION);
 
 export function appRouter(
         championsRepo: Repository<Champion>,
@@ -159,20 +156,21 @@ export function appRouter(
         const programFiles = await Promise.all(
             champions.map(async (champion) => loadChampion(champion, championNr++)));
 
-        console.log([...engineCmdLine, ...programFiles]);
-        const vm = spawn('node', [
-            ...engineCmdLine,
+        const args = [
             ...programFiles,
             `${UPDATE_PERIOD}`,
             `${NUM_CYCLES}`,
-            `${CORESIZE}`]);
+            `${CORESIZE}`];
+        console.log(args);
+        const vm = fork(engineBin, args, {
+            silent: true,
+            execArgv: []
+        });
         const lines = byline(vm.stdout, {
             encoding: 'utf-8'
         });
         lines.on('data', (data) => {
-            const p = transformAndValidate(GameUpdate, data as string) as Promise<GameUpdate>;
-            p.catch((e) => console.error(e));
-            log.push(p);
+            log.push(Promise.resolve(JSON.parse(data)));
         });
 
         vm.stderr.on('data', (d) => {

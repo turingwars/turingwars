@@ -4,7 +4,7 @@ export class GetGameResponse {
 
     public id: string;
 
-    public isOver: boolean = false;
+    public isOver: boolean;
 
     public player1Name: string;
     public player2Name: string;

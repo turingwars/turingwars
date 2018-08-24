@@ -1,7 +1,7 @@
-import { Assembler } from '../../src/assembler/Assembler';
-import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, se, sne, sub, subb } from '../../src/model/Instruction';
-import { immediate, ref } from '../../src/model/InstructionField';
-import { Program } from '../../src/model/Program';
+import { Assembler } from 'shared/assembler/Assembler';
+import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, se, sne, sub, subb } from 'shared/model/Instruction';
+import { immediate, ref } from 'shared/model/InstructionField';
+import { Program } from 'shared/model/Program';
 
 describe('Basic operations', () => {
     test('ADD', () => {

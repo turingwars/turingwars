@@ -54,6 +54,10 @@ You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt
 
 Then just run `make serve` from the root of the repo and you are good to go. This command is intended for development purposes only. There is no "production" build yet.
 
+### Debugging
+
+In VSCode, just hit "F5" while the server is running, this will attach a debugger to the process. Then set your breakpoints and happy debugging!
+
 ## Authors
 
 - [Christophe Tafani-Dereeper](https://christophetd.fr)

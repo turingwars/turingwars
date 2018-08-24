@@ -1,11 +1,11 @@
-import { HeroSummary } from 'api';
+import { HeroSummary } from 'shared/api';
 import * as color from 'color';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
+import { COLOR_P1, COLOR_P2, WHITE } from 'frontend/style';
 import { Label } from './Label';
-import { IDataPage, emptyDataPage } from '../../services/private/PagedDataSource';
-import { herosDataSource } from '../../services/api';
+import { IDataPage, emptyDataPage } from 'frontend/services/private/PagedDataSource';
+import { herosDataSource } from 'frontend/services/api';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;

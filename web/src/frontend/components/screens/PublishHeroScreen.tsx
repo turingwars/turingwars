@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { unloadCode } from '../../redux/editor/actions';
-import { State } from '../../redux/state';
-import { navigateTo, ROUTE_EDITOR, ROUTE_HOME } from '../../services/navigation';
-import { FatMenu } from '../widgets/FatMenu';
-import { FatMenuButton } from '../widgets/FatMenuButton';
-import { MainTitle } from '../widgets/MainTitle';
-import { FatMenuSpacer } from '../widgets/FatMenuSpacer';
-import { Label } from '../widgets/Label';
-import { Input } from '../widgets/Input';
-import { Button } from '../widgets/Button';
-import { api } from '../../services/api';
+import { unloadCode } from 'frontend/redux/editor/actions';
+import { State } from 'frontend/redux/state';
+import { navigateTo, ROUTE_EDITOR, ROUTE_HOME } from 'frontend/services/navigation';
+import { FatMenu } from 'frontend/components/widgets/FatMenu';
+import { FatMenuButton } from 'frontend/components/widgets/FatMenuButton';
+import { MainTitle } from 'frontend/components/widgets/MainTitle';
+import { FatMenuSpacer } from 'frontend/components/widgets/FatMenuSpacer';
+import { Label } from 'frontend/components/widgets/Label';
+import { Input } from 'frontend/components/widgets/Input';
+import { Button } from 'frontend/components/widgets/Button';
+import { api } from 'frontend/services/api';
 
 const mapStateToProps = (state: State) => {
     return {
@@ -43,7 +43,7 @@ class extends React.Component<PublishHeroScreenProps> {
             <MainTitle>Publish your hero</MainTitle>
             <FatMenu>
                 <Label>Publish your hero to make it visible to other players.<br />You won't be able to modify it after that.</Label>
-                <Input placeholder="Name your hero..." value={this.state.heroName} onChange={this.handleHeroNameChange} />
+                <Input placeholder="Name your herofrontend/components." value={this.state.heroName} onChange={this.handleHeroNameChange} />
                 { this.state.error && <Label type="error">{ this.state.error }</Label> }
                 <FatMenuSpacer />
                 <Button href="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>

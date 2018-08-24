@@ -3,15 +3,17 @@ const webpack = require('webpack');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const StartServerPlugin = require('start-server-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: ['webpack/hot/signal', './src/server/boot.ts'],
     output: {
         path: path.join(__dirname, '.tmp'),
-        filename: 'server.js'
+        filename: 'server.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
     watch: true,
-    mode: 'development',
+    mode: process.env.NODE_ENV || 'development',
     devtool: 'inline-source-map',
     target: 'node',
     node: {
@@ -20,7 +22,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'views': path.resolve(__dirname, 'src/server/.views/')
+            'shared': path.resolve(__dirname, 'src/shared/'),
+            'server': path.resolve(__dirname, 'src/server/'),
         },
         extensions: ['.html', '.ts', '.js']
     },
@@ -47,13 +50,14 @@ module.exports = {
     plugins: [
         new StartServerPlugin({
             name: 'server.js',
-            // nodeArgs: [`--require`, 'dotenv/config', '--inspect-brk=9229']
+            nodeArgs: [ '--inspect=9229' ],
             signal: true
         }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new ForkTsCheckerWebpackPlugin(),
+        // new TsconfigPathsPlugin(),
         new webpack.BannerPlugin({
             banner: 'require("source-map-support").install();',
             raw: true,

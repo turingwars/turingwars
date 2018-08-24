@@ -1,5 +1,3 @@
-import { IsDefined, IsIn, IsString, ValidateNested } from 'class-validator';
-
 import { immediate, InstructionField } from './InstructionField';
 
 export enum OpCode {
@@ -24,15 +22,10 @@ export enum OpCode {
 
 export class Instruction {
 
-    @IsDefined()
-    @IsString()
-    @IsIn(Object.keys(OpCode))
     public op: OpCode;
 
-    @ValidateNested()
     public a: InstructionField;
 
-    @ValidateNested()
     public b: InstructionField;
 }
 

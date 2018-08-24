@@ -7,9 +7,8 @@ import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
 import { Connection, createConnection } from 'typeorm';
-import * as webpack from 'webpack';
-import { twAPI } from '../api';
-import { createRouter } from '../typed-apis/express-typed-api';
+import { twAPI } from 'shared/api';
+import { createRouter } from 'shared/typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
@@ -53,7 +52,14 @@ class TuringWarsApplication {
      */
     public async teardown() {
         await this.connection.close();
-        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
+        await new Promise<void>((resolve) => {
+            if (this.webpackDevMiddleware) {
+                this.webpackDevMiddleware.close(resolve);
+                this.webpackDevMiddleware = undefined;
+            } else {
+                resolve();
+            }
+        });
     }
 
     /**
@@ -87,7 +93,7 @@ class TuringWarsApplication {
         if (this.webpackDevMiddleware) {
             app.use(this.webpackDevMiddleware);
         }
-        app.use(express.static(path.join(process.cwd(), 'public/')));
+        app.use(express.static(path.join(__dirname, '../../public/')));
 
         // Error handling
         app.use(this.defaultHandler);
@@ -99,7 +105,7 @@ class TuringWarsApplication {
     private async initDatabase() {
         this.connection = await createConnection({
             type: 'sqlite',
-            database: path.join(process.cwd(), '.tmp/sqlite'),
+            database: path.join(__dirname, '../../.tmp/sqlite'),
             entities: [
                 Champion,
                 GameLog
@@ -126,11 +132,14 @@ class TuringWarsApplication {
      * to see your changes. They would instantaneously pop up in your browser.
      */
     private async initializeFrontEnd() {
-        const wdm = require('webpack-dev-middleware');
-        const compiler = webpack(require('../../webpack.config.js'));
-        this.webpackDevMiddleware = wdm(compiler, {
-            publicPath: '/dist'
-        });
+        if (process.env.NODE_ENV != 'production') {
+            const webpack = require<typeof import('webpack')>('webpack'); 
+            const wdm = require('webpack-dev-middleware');
+            const compiler = webpack(require('../../webpack.config.js'));
+            this.webpackDevMiddleware = wdm(compiler, {
+                publicPath: '/dist'
+            });
+        }
     }
 
     /**

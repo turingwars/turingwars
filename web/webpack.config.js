@@ -4,6 +4,8 @@ const webpack = require('webpack');
 
 const REPO_ROOT = __dirname;
 
+console.log(`Building in ${process.env.NODE_ENV || 'development'}`)
+
 module.exports = {
 
     mode: process.env.NODE_ENV || 'development',
@@ -19,14 +21,6 @@ module.exports = {
         publicPath: '/dist'
     },
 
-    // devServer: {
-    //     compress: true,
-    //     port: 9000,
-    //     hot: true,
-    //     contentBase: 'public',
-    //     allowedHosts: ['localhost']
-    // },
-
     // Currently we need to add '.ts' to the resolve.extensions array.
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.less'],
@@ -37,8 +31,6 @@ module.exports = {
     devtool: 'source-map',
 
     externals: {
-        'd3': 'd3',
-        'underscore': '_',
         'react': 'React',
         'redux': 'Redux',
         'react-redux': 'ReactRedux',

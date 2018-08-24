@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-      "outDir": "dist",
+      "outDir": ".tmp/transpiled",
       "baseUrl": "src",
-      "declaration": true,
+      "declaration": false,
       "noImplicitAny": true,
       "strict": true,
       "strictPropertyInitialization": false,
-      "sourceMap": false,
+      "sourceMap": true,
       "module": "commonjs",
       "target": "es5",
       "allowJs": false,
@@ -21,9 +21,11 @@
         "es2015",
         "dom"
       ],
-      "paths": {
-        "views/*": [ "server/.views/*" ]
-      },
+      // "paths": {
+      //   "frontend/*": ["frontend/*"],
+      //   "shared/*": ["shared/*"],
+      //   "server/*": ["server/*"],
+      // },
       "plugins": [
         { "name": "tslint-language-service"}
       ]
