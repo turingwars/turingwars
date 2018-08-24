@@ -20,7 +20,8 @@ serve: $(JS_IN_WEBSERVER)
 
 .PHONY: build
 build: $(JS_IN_WEBSERVER)
-	$(MAKE) -C web build
+	$(MAKE) -C web package
+	mv web/turing-wars*.tgz ./turing-wars.tgz
 
 .PHONY: clean
 clean:
@@ -29,4 +30,5 @@ clean:
 
 $(JS_IN_WEBSERVER): engine
 	rm -f $(JS_IN_WEBSERVER)
+	mkdir -p $(dir $(JS_IN_WEBSERVER))
 	cp engine/turingwars/target/scala-2.12/turingwars-engine-fastopt.js $(JS_IN_WEBSERVER)

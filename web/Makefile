@@ -30,14 +30,17 @@ LIBS_OUTPUT=$(patsubst %,public/dist/vendor/%.js,$(notdir $(LIBS)))
 all: serve
 
 .PHONY: package
-package:
+package: build
 	npm pack
 
 .PHONY: build
 build: LIBS_TYPE:=prod
-build: $(ENGINE_BIN) $(LIBS_OUTPUT)
+build: $(ENGINE_BIN) $(LIBS_OUTPUT) lib
 	$(MAKE) $(SERVER_BIN)
 	$(MAKE) $(FRONTEND_BIN)
+
+lib:
+	mkdir -p lib
 
 $(SERVER_BIN): $(NODE_MODULES) $(SERVER_SRC) $(SHARED_SRC) webpack-server.config.js tsconfig.json
 	node_modules/.bin/tsc -p . # Transpile everything although we only really care about 'shared' and 'server'
@@ -70,5 +73,5 @@ $(NODE_MODULES): package.json package-lock.json
 	touch $(NODE_MODULES)
 
 $(LIBS_OUTPUT): public/dist/vendor/%.js : $(NODE_MODULES)
-	mkdir -p public/dist/vendor
+	mkdir -p $(dir $@)
 	cp node_modules/$(libs.$*.$(LIBS_TYPE)) $@

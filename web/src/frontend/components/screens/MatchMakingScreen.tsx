@@ -96,8 +96,7 @@ export class MatchMakingScreen extends React.Component<{}, MatchMakingScreenStat
             body: {
                 champions: [
                     this.state.heroPicker1.selected,
-                    this.state.heroPicker2.selected,
-                    '3'
+                    this.state.heroPicker2.selected
                 ]
             }
         });

@@ -7,7 +7,6 @@ import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
 import { Connection, createConnection } from 'typeorm';
-import * as webpack from 'webpack';
 import { twAPI } from 'shared/api';
 import { createRouter } from 'shared/typed-apis/express-typed-api';
 import { BANNER } from './banner';
@@ -134,6 +133,7 @@ class TuringWarsApplication {
      */
     private async initializeFrontEnd() {
         if (process.env.NODE_ENV != 'production') {
+            const webpack = require<typeof import('webpack')>('webpack'); 
             const wdm = require('webpack-dev-middleware');
             const compiler = webpack(require('../../webpack.config.js'));
             this.webpackDevMiddleware = wdm(compiler, {

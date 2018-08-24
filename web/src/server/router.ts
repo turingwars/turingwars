@@ -163,7 +163,8 @@ export function appRouter(
             `${CORESIZE}`];
         console.log(args);
         const vm = fork(engineBin, args, {
-            silent: true
+            silent: true,
+            execArgv: []
         });
         const lines = byline(vm.stdout, {
             encoding: 'utf-8'
