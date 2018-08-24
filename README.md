@@ -54,9 +54,25 @@ You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt
 
 Then just run `make serve` from the root of the repo and you are good to go. This command is intended for development purposes only. There is no "production" build yet.
 
-### Debugging
+### Debugging
 
 In VSCode, just hit "F5" while the server is running, this will attach a debugger to the process. Then set your breakpoints and happy debugging!
+
+## Install
+
+Grab the [latest release](https://github.com/turingwars/turingwars/releases/latest) from github. Copy the link to `turing-wars.tgz` and install it with npm.
+
+For instance:
+```
+npm install -g https://github.com/turingwars/turingwars/releases/download/(actual version here)/turing-wars.tgz
+```
+
+Then start the game with:
+
+```
+turingwars
+```
+
 
 ## Authors
 
