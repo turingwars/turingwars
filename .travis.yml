@@ -5,6 +5,7 @@ scala:
   - 2.12.4
 before_script:
   - make install-travis
+  - ci/set-version.sh
 script:
   - make test
   - make build
