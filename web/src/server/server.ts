@@ -18,7 +18,7 @@ import { getConfig } from './config';
 import { pause } from 'shared/utils';
 
 const ONE_SECOND_IN_MS = 2000;
-const DB_CONNECT_ATTEMPTS = 20;
+const DB_CONNECT_ATTEMPTS = 40;
 
 class TuringWarsApplication {
 

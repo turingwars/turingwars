@@ -11,7 +11,7 @@ export class GameLog {
     @IsDefined()
     public isOver: boolean = false;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "mediumtext" })
     public log?: string;
 
     @Column()
