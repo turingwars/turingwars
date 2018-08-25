@@ -34,7 +34,7 @@ echo "Starting the server..."
 trap cleanup EXIT
 
 pushd infra
-    . .env.example
+    . env.example
     ./start.sh --source .. --abort-on-container-exit | tee ../$logfile &
     pid=$!
 popd
