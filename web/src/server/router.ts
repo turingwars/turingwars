@@ -14,6 +14,7 @@ import { GameUpdate } from 'shared/model/GameUpdate';
 import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
+import { GetGameResponse } from 'shared/dto/GetGameResponse';
 
 const engineBin =  path.join(__dirname, '../../', BIN_LOCATION);
 
@@ -27,7 +28,7 @@ export function appRouter(
         getHero: async (req) => {
             const champ = await championsRepo.findOneOrFail(req.params.id);
             return {
-                id: champ.id,
+                id: champ.id.toString(),
                 name: champ.name,
                 program: champ.code
             };
@@ -50,7 +51,7 @@ export function appRouter(
             return {
                 program: champ.code,
                 name: champ.name,
-                id: champ.id
+                id: champ.id.toString()
             };
         },
 
@@ -63,7 +64,7 @@ export function appRouter(
             });
             const data = heros.map((champ) => {
                 return {
-                    id: champ.id,
+                    id: champ.id.toString(),
                     name: champ.name
                 };
             });
@@ -97,11 +98,10 @@ export function appRouter(
 
         playTest: async (req) => {
             const opponent = await championsRepo.findOneOrFail(req.body.opponent);
-            const tmpHero: Champion = {
-                code: req.body.hero.program,
-                name: 'tmp',
-                id: 'null'
-            };
+            const tmpHero = new Champion();
+            tmpHero.code = req.body.hero.program;
+            tmpHero.name = 'tmp';
+
             const theGame = await createGame([
                 tmpHero,
                 opponent
@@ -113,8 +113,9 @@ export function appRouter(
 
         getGame: async (req) => {
             const gameLog = await gamesRepo.findOneOrFail(req.params.id);
-            const resp = {
+            const resp: GetGameResponse = {
                 ...gameLog,
+                id: gameLog.id.toString(),
                 log: JSON.parse(gameLog.log || '[]')
             };
             return resp;

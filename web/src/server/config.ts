@@ -6,7 +6,6 @@ export function getConfig() {
     if (configFile === undefined) {
         configFile = path.resolve(__dirname, '../../config.json');
     }
-    console.log(configFile);
     return JSON.parse(fs.readFileSync(configFile).toString('utf-8'));
 }
 
