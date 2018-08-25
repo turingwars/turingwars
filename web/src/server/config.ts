@@ -1,12 +1,46 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import * as t from 'io-ts';
 
-export function getConfig() {
+import { reporter } from 'io-ts-reporters';
+
+const MysqlConfig = t.type({
+    type: t.literal('mysql'),
+    host: t.string,
+    port: t.number,
+    username: t.string,
+    password: t.string,
+    database: t.string,
+});
+
+const SqliteConfig = t.type({
+    type: t.literal('sqlite'),
+    database: t.string,
+});
+
+const schema = t.type({
+    "db": t.intersection([
+        t.union([
+            MysqlConfig,
+            SqliteConfig
+        ]),
+        t.type({
+            logging: t.boolean,
+            synchronize: t.boolean
+        })
+    ])
+});
+
+export function getConfig(): t.TypeOf<typeof schema> {
     let configFile = findConfigFileInArguments();    
     if (configFile === undefined) {
         configFile = path.resolve(__dirname, '../../config.json');
     }
-    return JSON.parse(fs.readFileSync(configFile).toString('utf-8'));
+    const decoded = schema.decode(JSON.parse(fs.readFileSync(configFile).toString('utf-8')))
+    if (decoded.isLeft()) {
+        throw new Error(reporter(decoded).join('\n'));
+    }
+    return decoded.value;
 }
 
 function findConfigFileInArguments(): string | undefined {

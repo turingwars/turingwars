@@ -15,7 +15,6 @@ cleanup() {
 is_dead() {
     ! kill -0 $pid
 }
-trap cleanup EXIT
 pid=-1
 
 # main():
@@ -32,8 +31,11 @@ fi
 
 echo "Starting the server..."
 
+trap cleanup EXIT
+
 pushd infra
-    ./start.sh --source .. --abort-on-container-exit > ../$logfile &
+    . .env.example
+    ./start.sh --source .. --abort-on-container-exit | tee ../$logfile &
     pid=$!
 popd
 
