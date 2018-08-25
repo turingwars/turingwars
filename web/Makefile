@@ -61,8 +61,12 @@ serve: $(NODE_MODULES) $(LIBS_OUTPUT)
 	node_modules/.bin/webpack
 
 .PHONY: clean
-clean:
+clean: clean-package
 	rm -rf .tmp lib/* public/dist
+
+.PHONY: clean-package
+clean-package:
+	rm -f *.tgz
 
 $(NODE_MODULES): package.json package-lock.json
 	npm install
