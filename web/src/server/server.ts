@@ -14,6 +14,7 @@ import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { appRouter } from './router';
 import { seedDatabase } from './seed';
+import { getConfig } from './config';
 
 
 class TuringWarsApplication {
@@ -104,14 +105,11 @@ class TuringWarsApplication {
 
     private async initDatabase() {
         this.connection = await createConnection({
-            type: 'sqlite',
-            database: path.join(__dirname, '../../.tmp/sqlite'),
+            ...getConfig().db,
             entities: [
                 Champion,
                 GameLog
-            ],
-            logging: false,
-            synchronize: true,
+            ]
         });
 
         await seedDatabase(this.connection);
@@ -135,7 +133,7 @@ class TuringWarsApplication {
         if (process.env.NODE_ENV != 'production') {
             const webpack = require<typeof import('webpack')>('webpack'); 
             const wdm = require('webpack-dev-middleware');
-            const compiler = webpack(require('../../webpack.config.js'));
+            const compiler = webpack(require('../../webpack-client.config.js'));
             this.webpackDevMiddleware = wdm(compiler, {
                 publicPath: '/dist'
             });

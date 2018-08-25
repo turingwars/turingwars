@@ -42,12 +42,12 @@ build: $(ENGINE_BIN) $(LIBS_OUTPUT) lib
 lib:
 	mkdir -p lib
 
-$(SERVER_BIN): $(NODE_MODULES) $(SERVER_SRC) $(SHARED_SRC) webpack-server.config.js tsconfig.json
+$(SERVER_BIN): $(NODE_MODULES) $(SERVER_SRC) $(SHARED_SRC) webpack.config.js tsconfig.json
 	node_modules/.bin/tsc -p . # Transpile everything although we only really care about 'shared' and 'server'
 	cp -r .tmp/transpiled/src/server .tmp/transpiled/src/shared ./lib/
 
-$(FRONTEND_BIN): $(NODE_MODULES) $(FRONTEND_SRC) $(SHARED_SRC) webpack.config.js tsconfig.json
-	NODE_ENV=production node_modules/.bin/webpack # Build the client files
+$(FRONTEND_BIN): $(NODE_MODULES) $(FRONTEND_SRC) $(SHARED_SRC) webpack-client.config.js tsconfig.json
+	NODE_ENV=production node_modules/.bin/webpack --config webpack-client.config.js # Build the client files
 
 $(ENGINE_BIN):
 	$(MAKE) -C .. web/$(ENGINE_BIN)
@@ -58,7 +58,7 @@ test: $(NODE_MODULES)
 
 .PHONY: serve
 serve: $(NODE_MODULES) $(LIBS_OUTPUT)
-	node_modules/.bin/webpack --config webpack-server.config.js
+	node_modules/.bin/webpack
 
 .PHONY: clean
 clean:

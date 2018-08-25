@@ -18,7 +18,8 @@
   "files": [
     "lib",
     "bin",
-    "public"
+    "public",
+    "config.js"
   ],
   "author": "The swag crew",
   "license": "MIT",
@@ -33,9 +34,9 @@
     "cors": "2.8.4",
     "express": "4.16.3",
     "express-youch": "0.1.0",
+    "mysql": "^2.16.0",
     "reflect-metadata": "0.1.12",
     "source-map-support": "^0.5.9",
-    "sqlite3": "4.0.2",
     "tslib": "1.9.3",
     "typeorm": "0.2.7",
     "uuid": "3.3.2"
@@ -66,6 +67,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
+    "sqlite3": "4.0.2",
     "start-server-webpack-plugin": "2.2.5",
     "styled-components": "^3.4.2",
     "ts-jest": "23.1.3",
