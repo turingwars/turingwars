@@ -1,0 +1,8 @@
+{
+    "db": {
+        "type": "sqlite",
+        "database": ".tmp/sqlite",
+        "logging": false,
+        "synchronize": true
+    }
+}

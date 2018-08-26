@@ -10,12 +10,11 @@ cleanup() {
         cat $logfile
     fi
     rm -f $logfile
-    kill $pid 2>/dev/null
+    cd infra && ./stop.sh
 }
 is_dead() {
     ! kill -0 $pid
 }
-trap cleanup EXIT
 pid=-1
 
 # main():
@@ -26,23 +25,19 @@ tag=`git describe --tags`
 version=`turingwars --version`
 if ! echo $tag | grep -q 'untagged' && [ "$version" != "$tag" ]; then
     echo "Did not return the right version:"
-    echo "$version"
+    echo "was '$version' but expected '$tag'."
     exit 1
 fi
 
 echo "Starting the server..."
 
-turingwars > $logfile &
-pid=$!
+trap cleanup EXIT
 
-# $pid is now the pid of the launcher, which is different from that of the server.
-# We now attempt to find the pid of the server.
-sleep 1
-until is_dead || grep -q "TuringWars started with pid" "$logfile"; do
-    sleep 1
-done
-pid=$(grep "TuringWars started with pid" "$logfile" | sed 's/TuringWars started with pid \([0-9][0-9]*\)./\1/')
-echo "Got pid $pid"
+pushd infra
+    . env.example
+    ./start.sh --source .. --abort-on-container-exit | tee ../$logfile &
+    pid=$!
+popd
 
 # Wait until server is either running or dead
 until is_dead || grep -q "Server is listening" "$logfile"; do

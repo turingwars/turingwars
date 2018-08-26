@@ -5,13 +5,13 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class GameLog {
 
     @PrimaryGeneratedColumn()
-    public id: string;
+    public id: number;
 
     @Column()
     @IsDefined()
     public isOver: boolean = false;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "mediumtext" })
     public log?: string;
 
     @Column()

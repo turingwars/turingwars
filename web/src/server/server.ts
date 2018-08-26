@@ -14,7 +14,11 @@ import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { appRouter } from './router';
 import { seedDatabase } from './seed';
+import { getConfig } from './config';
+import { pause } from 'shared/utils';
 
+const ONE_SECOND_IN_MS = 2000;
+const DB_CONNECT_ATTEMPTS = 40;
 
 class TuringWarsApplication {
 
@@ -103,18 +107,32 @@ class TuringWarsApplication {
     }
 
     private async initDatabase() {
-        this.connection = await createConnection({
-            type: 'sqlite',
-            database: path.join(__dirname, '../../.tmp/sqlite'),
-            entities: [
-                Champion,
-                GameLog
-            ],
-            logging: false,
-            synchronize: true,
-        });
-
+        this.connection = await this.tryConnectToDB();
         await seedDatabase(this.connection);
+    }
+
+
+    private async tryConnectToDB() {
+        for (let i = 0 ; i < DB_CONNECT_ATTEMPTS ; i++) {
+            try {
+                return await createConnection({
+                    ...getConfig().db,
+                    entities: [
+                        Champion,
+                        GameLog
+                    ],
+                });
+            } catch (e) {
+                if (i == DB_CONNECT_ATTEMPTS - 1) {
+                    console.log(`Could not connect to DB after ${DB_CONNECT_ATTEMPTS} attempts!`);
+                    throw e;
+                } else {
+                    console.log("Failed to connect. Retrying...");
+                }
+            }
+            await pause(ONE_SECOND_IN_MS);
+        }
+        throw new Error("Unreachable code reached!");
     }
 
     /**
@@ -135,7 +153,7 @@ class TuringWarsApplication {
         if (process.env.NODE_ENV != 'production') {
             const webpack = require<typeof import('webpack')>('webpack'); 
             const wdm = require('webpack-dev-middleware');
-            const compiler = webpack(require('../../webpack.config.js'));
+            const compiler = webpack(require('../../webpack-client.config.js'));
             this.webpackDevMiddleware = wdm(compiler, {
                 publicPath: '/dist'
             });

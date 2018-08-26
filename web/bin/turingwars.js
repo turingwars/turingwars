@@ -10,7 +10,7 @@ if (process.argv.length > 2) {
     }
 }
 
-const child = child_process.fork(path.join(__dirname, '../lib/server/boot.js'), {
+const child = child_process.fork(path.join(__dirname, '../lib/server/boot.js'), process.argv.slice(2), {
     execArgv: ['-r', require.resolve('source-map-support/register')],
     env: {
         'NODE_PATH': appendPath(process.env.NODE_PATH, path.join(__dirname, '../lib')),
