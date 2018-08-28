@@ -1,4 +1,4 @@
-import { HeroSummary } from 'shared/api';
+import { HeroSummary } from 'shared/api/dto';
 import * as color from 'color';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';

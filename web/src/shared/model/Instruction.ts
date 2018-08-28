@@ -1,166 +1,84 @@
 import { immediate, InstructionField } from './InstructionField';
+import * as rt from 'runtypes';
 
-export enum OpCode {
-    ADD = 'ADD',
-    DAT = 'DAT',
-    DIV = 'DIV',
-    DIVB = 'DIVB',
-    JMP = 'JMP',
-    JNZ = 'JNZ',
-    JZ = 'JZ',
-    MINE = 'MINE',
-    MOD = 'MOD',
-    MODB = 'MODB',
-    MOV = 'MOV',
-    MUL = 'MUL',
-    NOP = 'NOP',
-    SE = 'SE',
-    SNE = 'SNE',
-    SUB = 'SUB',
-    SUBB = 'SUBB',
-}
 
-export class Instruction {
+const BaseInstruction = <A extends string>(op: A) => rt.Record({
+    op: rt.Literal(op),
+    a: InstructionField,
+    b: InstructionField
+});
 
-    public op: OpCode;
+export const ADD = BaseInstruction('ADD');
+export const DAT = BaseInstruction('DAT');
+export const DIV = BaseInstruction('DIV');
+export const DIVB = BaseInstruction('DIVB');
+export const JMP = BaseInstruction('JMP');
+export const JNZ = BaseInstruction('JNZ');
+export const JZ = BaseInstruction('JZ');
+export const MINE = BaseInstruction('MINE');
+export const MOD = BaseInstruction('MOD');
+export const MODB = BaseInstruction('MODB');
+export const MOV = BaseInstruction('MOV');
+export const MUL = BaseInstruction('MUL');
+export const NOP = BaseInstruction('NOP');
+export const SE = BaseInstruction('SE');
+export const SNE = BaseInstruction('SNE');
+export const SUB = BaseInstruction('SUB');
+export const SUBB = BaseInstruction('SUBB');
 
-    public a: InstructionField;
+export type Instruction = rt.Static<typeof Instruction>;
+export const Instruction = rt.Union(
+    ADD,
+    DAT,
+    DIV,
+    DIVB,
+    JMP,
+    JNZ,
+    JZ,
+    MINE,
+    MOD,
+    MODB,
+    MOV,
+    MUL,
+    NOP,
+    SE,
+    SNE,
+    SUB,
+    SUBB
+);
 
-    public b: InstructionField;
-}
+const instr = <T extends rt.Runtype>(_: T, t: rt.Static<T>) => t;
 
-export function add(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.ADD;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const add = (a: InstructionField, b: InstructionField) => instr(ADD, { op: 'ADD', a, b })
 
-export function dat(aValue: number, bValue: number) {
-    const instr = new Instruction();
-    instr.op = OpCode.DAT;
-    instr.a = immediate(aValue);
-    instr.b = immediate(bValue);
-    return instr;
-}
+export const dat = (aValue: number, bValue: number) => instr(DAT, { op: 'DAT', a: immediate(aValue), b: immediate(bValue) })
 
-export function div(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.DIV;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const div = (a: InstructionField, b: InstructionField) => instr(DIV, { op: 'DIV', a, b })
 
-export function divb(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.DIVB;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const divb = (a: InstructionField, b: InstructionField) => instr(DIVB, { op: 'DIVB', a, b })
 
-export function jmp(dest: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.JMP;
-    instr.a = dest;
-    instr.b = immediate();
-    return instr;
-}
+export const jmp = (dest: InstructionField) => instr(JMP, { op: 'JMP', a: dest, b: immediate() })
 
-export function jnz(cond: InstructionField, dest: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.JNZ;
-    instr.a = cond;
-    instr.b = dest;
-    return instr;
-}
+export const jnz = (cond: InstructionField, dest: InstructionField) => instr(JNZ, { op: 'JNZ', a: cond, b: dest })
 
-export function jz(cond: InstructionField, dest: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.JZ;
-    instr.a = cond;
-    instr.b = dest;
-    return instr;
-}
+export const jz = (cond: InstructionField, dest: InstructionField) => instr(JZ, { op: 'JZ', a: cond, b: dest })
 
-export function mine(id: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.MINE;
-    instr.a = id;
-    instr.b = immediate();
-    return instr;
-}
+export const mine = (id: InstructionField) => instr(MINE, { op: 'MINE', a: id, b: immediate() })
 
-export function mod(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.MOD;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const mod = (a: InstructionField, b: InstructionField) => instr(MOD, { op: 'MOD', a, b })
 
-export function modb(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.MODB;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const modb = (a: InstructionField, b: InstructionField) => instr(MODB, { op: 'MODB', a, b })
 
-export function mov(dest: InstructionField, src: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.MOV;
-    instr.a = dest;
-    instr.b = src;
-    return instr;
-}
+export const mov = (dest: InstructionField, src: InstructionField) => instr(MOV, { op: 'MOV', a: dest, b: src })
 
-export function mul(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.MUL;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const mul = (a: InstructionField, b: InstructionField) => instr(MUL, { op: 'MUL', a, b })
 
-export function nop() {
-    const instr = new Instruction();
-    instr.op = OpCode.NOP;
-    instr.a = immediate();
-    instr.b = immediate();
-    return instr;
-}
+export const nop = () => instr(MUL, { op: 'MUL', a: immediate(), b: immediate() })
 
-export function se(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.SE;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const se = (a: InstructionField, b: InstructionField) => instr(SE, { op: 'SE', a, b })
 
-export function sne(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.SNE;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const sne = (a: InstructionField, b: InstructionField) => instr(SNE, { op: 'SNE', a, b })
 
-export function sub(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.SUB;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const sub = (a: InstructionField, b: InstructionField) => instr(SUB, { op: 'SUB', a, b })
 
-export function subb(a: InstructionField, b: InstructionField) {
-    const instr = new Instruction();
-    instr.op = OpCode.SUBB;
-    instr.a = a;
-    instr.b = b;
-    return instr;
-}
+export const subb = (a: InstructionField, b: InstructionField) => instr(SUBB, { op: 'SUBB', a, b })

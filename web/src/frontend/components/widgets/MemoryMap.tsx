@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Process } from 'shared/model/GameUpdate';
-import { OpCode } from 'shared/model/Instruction';
 // TODO: Widgets should not reference Redux
 import { IPrintableMemoryCell } from 'frontend/redux/replay/state';
 import { COLOR_INSTR_MINE, COLOR_INSTR_MINE_P1, COLOR_INSTR_MINE_P2, COLOR_INSTR_NOP, COLOR_P1, COLOR_P2, COLOR_CHANGED_INSTR } from 'frontend/style';
@@ -152,7 +151,7 @@ export class MemoryMap extends React.Component<IMemoryMapProps> {
     }
 
     private getCellColor(cell: IPrintableMemoryCell) {
-        if (cell.instr.op === OpCode.MINE) {
+        if (cell.instr.op === 'MINE') {
             const playerId = cell.instr.a.value;
             if (isValidPlayerNumber(playerId)) {
                 return playerMineInstructionColor(playerId);

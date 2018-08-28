@@ -1,7 +1,7 @@
 import { T_PERCENT } from '../assembler/tokens';
-import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, OpCode, se, sne, sub, subb } from '../model/Instruction';
+import { add, dat, div, divb, jmp, jnz, jz, mine, mod, modb, mov, mul, nop, se, sne, sub, subb } from '../model/Instruction';
 import { immediate, InstructionField, ref } from '../model/InstructionField';
-import { Program } from '../model/Program';
+import { Program, program } from '../model/Program';
 import { CompilerError } from './CompileError';
 import { IVariableStore } from './IVariableStore';
 import { ParseError } from './ParseError';
@@ -26,7 +26,7 @@ export class Parser {
 
     private it: TokensIterator;
 
-    private program: Program = new Program();
+    private program: Program = program();
 
     private state: ParserState;
 
@@ -320,93 +320,93 @@ export class Parser {
         const op = this.bufferOpcode.value.toUpperCase();
 
         switch (op) {
-            case OpCode.ADD:
+            case 'ADD':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(add(aField, bField));
                 });
                 break;
-            case OpCode.DAT:
+            case 'DAT':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     // TODO: check that aField and bField are immediate
                     this.program.program.push(dat(aField.value, bField.value));
                 });
                 break;
-            case OpCode.DIV:
+            case 'DIV':
                 // TODO: check that aField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(div(aField, bField));
                 });
                 break;
-            case OpCode.DIVB:
+            case 'DIVB':
                 // TODO: check that bField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(divb(aField, bField));
                 });
                 break;
-            case OpCode.JMP:
+            case 'JMP':
                 this.withAField(this.bufferOpcode, (aField) => {
                     this.program.program.push(jmp(aField));
                 });
                 break;
-            case OpCode.JNZ:
+            case 'JNZ':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(jnz(aField, bField));
                 });
                 break;
-            case OpCode.JZ:
+            case 'JZ':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(jz(aField, bField));
                 });
                 break;
-            case OpCode.MINE:
+            case 'MINE':
                 this.withAField(this.bufferOpcode, (aField) => {
                     this.program.program.push(mine(aField));
                 });
                 break;
-            case OpCode.MOD:
+            case 'MOD':
                 // TODO: check that aField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mod(aField, bField));
                 });
                 break;
-            case OpCode.MODB:
+            case 'MODB':
                 // TODO: check that bField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(modb(aField, bField));
                 });
                 break;
-            case OpCode.MOV:
+            case 'MOV':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mov(aField, bField));
                 });
                 break;
-            case OpCode.MUL:
+            case 'MUL':
                 // TODO: check that aField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(mul(aField, bField));
                 });
                 break;
-            case OpCode.NOP:
+            case 'NOP':
                 // TODO: check that there is no field
                 this.program.program.push(nop());
                 break;
-            case OpCode.SE:
+            case 'SE':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(se(aField, bField));
                 });
                 break;
-            case OpCode.SNE:
+            case 'SNE':
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(sne(aField, bField));
                 });
                 break;
-            case OpCode.SUB:
+            case 'SUB':
                 // TODO: check that aField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(sub(aField, bField));
                 });
                 break;
-            case OpCode.SUBB:
+            case 'SUBB':
                 // TODO: check that bField is not immediate
                 this.withAandBField(this.bufferOpcode, (aField, bField) => {
                     this.program.program.push(subb(aField, bField));

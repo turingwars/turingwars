@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { ApiDefinition, EndpointDefinition, getPathWithParams } from './typed-api';
+import { ApiDefinition, EndpointDefinition, getPathWithParams, RealType } from './typed-api';
 
 /**
  * A promise of T or just T.
@@ -11,13 +11,13 @@ type PromiseOrValue<T> = PromiseLike<T> | T;
  * An express Request with proper typings.
  */
 interface TypedRequest<T extends EndpointDefinition> extends Express.Request {
-    body: T['body'];
-    params: T['params'];
-    query: Partial<T['query']>;
+    body: RealType<T['body']>;
+    params: RealType<T['params']>;
+    query: RealType<T['query']>;
 }
 
 export type RouteHandler<T extends EndpointDefinition> =
-    (req: TypedRequest<T>, res: Express.Response) => PromiseOrValue<T['response']>;
+    (req: TypedRequest<T>, res: Express.Response) => PromiseOrValue<RealType<T['response']>>;
 
 export type RouterDefinition<T extends ApiDefinition> = {
     [K in keyof T]: RouteHandler<T[K]>;

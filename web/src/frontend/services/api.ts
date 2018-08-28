@@ -1,8 +1,9 @@
-import { twAPI, HeroSummary } from 'shared/api';
-import { createConsumer } from 'shared/typed-apis/axios-typed-api';
+import { endpoints } from 'shared/api/endpoints';
+import { createConsumer } from 'shared/api/typed-apis/axios-typed-api';
 import { PagedDataSource } from './private/PagedDataSource';
+import { HeroSummary } from 'shared/api/dto';
 
-export const api = createConsumer('/api', twAPI);
+export const api = createConsumer('/api', endpoints);
 
 export const herosDataSource = new PagedDataSource<HeroSummary>(
     (pageNumber) => api.listHeros({

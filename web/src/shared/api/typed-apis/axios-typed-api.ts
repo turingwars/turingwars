@@ -1,16 +1,16 @@
 import axios, { AxiosResponse } from 'axios';
-import { ApiDefinition, EndpointDefinition, makePathWithParams } from './typed-api';
+import { ApiDefinition, EndpointDefinition, makePathWithParams, RealType } from './typed-api';
 
 
 type IsInRecord<T, Key extends keyof T> = T extends Record<Key, any> ? Key : never;
 type KeyIfDefined<T, Key extends keyof T> = Key extends IsInRecord<T, Key> ? Key : never;
 
 interface TypedAxiosResponse<T extends EndpointDefinition> extends AxiosResponse {
-    data: T['response'];
+    data: RealType<T['response']>;
 }
 
 type RouteConsumerParams<T extends EndpointDefinition> = {
-    [K in KeyIfDefined<T, 'params' | 'query' | 'body'>]: T[K];
+    [K in KeyIfDefined<T, 'params' | 'query' | 'body'>]: RealType<T[K]>;
 };
 
 type RouteConsumer<T extends EndpointDefinition> = KeyIfDefined<T, 'params' | 'query' | 'body'> extends never ?

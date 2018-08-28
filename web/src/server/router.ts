@@ -1,20 +1,20 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
 import { validate } from 'class-validator';
-import { twAPI } from 'shared/api';
+import { endpoints } from 'shared/api/endpoints';
 import { Assembler } from 'shared/assembler/Assembler';
 import { API_RESULTS_PER_PAGE, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/constants';
-import { GetGameResponse } from 'shared/dto/GetGameResponse';
-import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
 import { Repository } from 'typeorm';
 import { Engine, EngineConfiguration } from '../../lib/engine';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { EngineRunResult } from './engine-interface';
+import { RouterDefinition } from 'shared/api/typed-apis/express-typed-api';
+import { GetGameResponse } from 'shared/api/dto';
 
 export function appRouter(
         championsRepo: Repository<Champion>,
         gamesRepo: Repository<GameLog>
-    ): RouterDefinition<typeof twAPI> {
+    ): RouterDefinition<typeof endpoints> {
 
 
     return {
