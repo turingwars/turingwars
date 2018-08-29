@@ -123,7 +123,7 @@ class FlowSpec extends FlatSpec with Matchers{
     val fd = List(new ProcessDescriptor(1, 1), new ProcessDescriptor(6, 2))
     memory.setRelative(fd.head, 0, Mov(ImmediateValue(1), ImmediateValue(0)), 1)
     memory.setRelative(fd(1), 0, Mov(ImmediateValue(1), ImmediateValue(0)), 2)
-    new ExecutionUnit(State(memory, fd, Map())).run()
+    new ExecutionUnit(State(memory, fd, Map())).step()
   }
 
   it should "properly do christophe's program" in {
@@ -133,7 +133,7 @@ class FlowSpec extends FlatSpec with Matchers{
     memory.setRelative(pd, 1, Dat(ImmediateValue(0), ImmediateValue(0)), 0)
     memory.setRelative(pd, 2, Jz(ImmediateValue(2), ReferenceValue(-1, FieldType.a)), 0)
     memory.setRelative(pd, 3, Mine(ImmediateValue(0), ImmediateValue(0)), 0)
-    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).run()
+    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).step()
   }
 
   it should "properly do christophe's other program" in {
@@ -143,7 +143,7 @@ class FlowSpec extends FlatSpec with Matchers{
     memory.setRelative(pd, 1, Dat(ImmediateValue(0), ImmediateValue(0)), 0)
     memory.setRelative(pd, 2, Jnz(ImmediateValue(2), ReferenceValue(-1, FieldType.a)), 0)
     memory.setRelative(pd, 3, Mine(ImmediateValue(0), ImmediateValue(0)), 0)
-    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).run()
+    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).step()
   }
 
   it should "this one too" in {
@@ -154,7 +154,7 @@ class FlowSpec extends FlatSpec with Matchers{
     memory.setRelative(pd, 2, Jnz(ImmediateValue(2), ReferenceValue(-1, FieldType.a)), 0)
     memory.setRelative(pd, 3, Mine(ImmediateValue(0), ImmediateValue(0)), 0)
     memory.setRelative(pd, 4, Jmp(ImmediateValue(-2), ImmediateValue(0)), 0)
-    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).run()
+    new ExecutionUnit(State(memory, List(pd), Map(0 -> 0))).step()
   }
 
   def run(is: List[Instruction], eip: Int = 0) = {
