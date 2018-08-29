@@ -38,9 +38,6 @@ mine %id
 ```
 This one does not mine at first, but hopes to hijack the other's program CPU time! He floods every 4 slots of the memory with `mov` instructions that points to its own `mine` instruction. If it his the memory space corresponding to the opponent program, he will make him jump to the Dwarf's `mine` instruction. Potentially, in the end, both program work for the Dwarf ! 
 
-### I made a killer program !
-
-Awesome, we want to include it in the game. Just open an issue with the code.
 
 ## Development guidelines
 
@@ -48,7 +45,7 @@ Awesome, we want to include it in the game. Just open an issue with the code.
 
 You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt](https://www.scala-sbt.org/) to build and run stuff.
 
-Then just run `make serve` from the root of the repo and you are good to go. This command is intended for development purposes only. There is no "production" build yet.
+Then just run `make serve` from the root of the repo and you are good to go.
 
 ### How to debug
 
