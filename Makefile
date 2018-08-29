@@ -15,7 +15,7 @@ engine:
 	$(MAKE) -C $(ENGINE_DIR)/turingwars js
 
 .PHONY: test
-test:
+test: publish-engine-to-web
 	$(MAKE) -C $(ENGINE_DIR)/turingwars test
 	$(MAKE) -C $(WEB_DIR) test
 
