@@ -24,6 +24,7 @@
   "author": "The swag crew",
   "license": "MIT",
   "dependencies": {
+    "@senhung/http-exceptions": "1.1.1",
     "body-parser": "1.18.3",
     "byline": "5.0.0",
     "class-transformer-validator": "0.5.0",
@@ -40,7 +41,6 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@senhung/http-exceptions": "1.1.1",
     "@types/byline": "4.2.31",
     "@types/codemirror": "0.0.58",
     "@types/color": "^3.0.0",
