@@ -39,4 +39,7 @@ async function boot() {
     }
 }
 
-boot().catch((e) => { throw e; });
+boot().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});

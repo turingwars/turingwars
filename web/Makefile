@@ -27,7 +27,7 @@ LIBS_TYPE=dev
 LIBS_OUTPUT=$(patsubst %,public/dist/vendor/%.js,$(notdir $(LIBS)))
 
 .PHONY: all
-all: serve
+all: build test
 
 .PHONY: package
 package: build

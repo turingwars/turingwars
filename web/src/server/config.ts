@@ -1,46 +1,46 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as t from 'io-ts';
+import * as rt from 'runtypes';
 
-import { reporter } from 'io-ts-reporters';
 
-const MysqlConfig = t.type({
-    type: t.literal('mysql'),
-    host: t.string,
-    port: t.number,
-    username: t.string,
-    password: t.string,
-    database: t.string,
+const MysqlConfig = rt.Record({
+    type: rt.Literal('mysql'),
+    host: rt.String,
+    port: rt.Number,
+    username: rt.String,
+    password: rt.String,
+    database: rt.String,
 });
 
-const SqliteConfig = t.type({
-    type: t.literal('sqlite'),
-    database: t.string,
+const SqliteConfig = rt.Record({
+    type: rt.Literal('sqlite'),
+    database: rt.String,
 });
 
-const schema = t.type({
-    "db": t.intersection([
-        t.union([
+const Schema = rt.Record({
+    "db": rt.Intersect(
+        rt.Union(
             MysqlConfig,
             SqliteConfig
-        ]),
-        t.type({
-            logging: t.boolean,
-            synchronize: t.boolean
+        ),
+        rt.Record({
+            logging: rt.Boolean,
+            synchronize: rt.Boolean
         })
-    ])
+    )
 });
 
-export function getConfig(): t.TypeOf<typeof schema> {
+export function getConfig(): rt.Static<typeof Schema> {
     let configFile = findConfigFileInArguments();    
     if (configFile === undefined) {
         configFile = path.resolve(__dirname, '../../config.json');
     }
-    const decoded = schema.decode(JSON.parse(fs.readFileSync(configFile).toString('utf-8')))
-    if (decoded.isLeft()) {
-        throw new Error(reporter(decoded).join('\n'));
+    try {
+        return Schema.check(JSON.parse(fs.readFileSync(configFile).toString('utf-8')))
+    } catch (e) {
+        console.error("Failed to load config file");
+        throw e;
     }
-    return decoded.value;
 }
 
 function findConfigFileInArguments(): string | undefined {

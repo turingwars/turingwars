@@ -1,5 +1,6 @@
 import { IsDefined } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SQLColumnType_mediumText } from './schemaHelper';
 
 @Entity()
 export class GameLog {
@@ -11,7 +12,7 @@ export class GameLog {
     @IsDefined()
     public isOver: boolean = false;
 
-    @Column({ nullable: true, type: "mediumtext" })
+    @Column({ nullable: true, type: SQLColumnType_mediumText() })
     public log?: string;
 
     @Column()

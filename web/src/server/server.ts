@@ -127,6 +127,7 @@ class TuringWarsApplication {
                     console.log(`Could not connect to DB after ${DB_CONNECT_ATTEMPTS} attempts!`);
                     throw e;
                 } else {
+                    console.log(e);
                     console.log("Failed to connect. Retrying...");
                 }
             }

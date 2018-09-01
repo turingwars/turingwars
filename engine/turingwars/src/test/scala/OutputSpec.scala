@@ -48,7 +48,7 @@ class OutputSpec extends FlatSpec with Matchers {
       memory.setRelative(new ProcessDescriptor(i, 0), 0, is(i), 0)
     }
     val initialState = State(memory, p, Map())
-    new ExecutionUnit(initialState).run()
+    new ExecutionUnit(initialState).step()
     memory
   }
 }
