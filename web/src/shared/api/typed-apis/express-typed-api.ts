@@ -1,6 +1,7 @@
 import * as express from 'express';
 
 import { ApiDefinition, EndpointDefinition, getPathWithParams, RealType } from './typed-api';
+import { BadRequestHttpException } from '@senhung/http-exceptions';
 
 /**
  * A promise of T or just T.
@@ -30,31 +31,43 @@ export function createRouter<T extends ApiDefinition>(def: T, hash: RouterDefini
         const path = getPathWithParams(endpoint);
         switch (endpoint.method) {
             case 'GET':
-                router.get(path, makeHandler(hash[i].bind(hash)));
+                router.get(path, makeHandler(endpoint, hash[i].bind(hash)));
                 break;
             case 'POST':
-                router.post(path, makeHandler(hash[i].bind(hash)));
+                router.post(path, makeHandler(endpoint, hash[i].bind(hash)));
                 break;
             case 'PUT':
-                router.put(path, makeHandler(hash[i].bind(hash)));
+                router.put(path, makeHandler(endpoint, hash[i].bind(hash)));
                 break;
             case 'DELETE':
-                router.delete(path, makeHandler(hash[i].bind(hash)));
+                router.delete(path, makeHandler(endpoint, hash[i].bind(hash)));
                 break;
         }
     }
     return router;
 }
 
-export function makeHandler<T extends EndpointDefinition>(fn: RouteHandler<T>) {
-    return (req: express.Request, res: express.Response, next: express.NextFunction) =>
-        Promise.resolve(fn(req, res))
-            .then((data) => {
-                if (data !== undefined && !res.headersSent) {
-                    res.send(data);
-                } else {
-                    next();
-                }
-            })
-            .catch(next);
+export function makeHandler<T extends EndpointDefinition>(def: T, fn: RouteHandler<T>) {
+    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        (async () => {
+            sanitizeIncomingRequest(def, req);
+            const data = await Promise.resolve(fn(req, res));
+            if (data !== undefined && !res.headersSent) {
+                res.send(data);
+            } else {
+                next();
+            }
+        })()
+        .catch(next);
+    }
+}
+
+function sanitizeIncomingRequest(def: EndpointDefinition, req: express.Request) {
+    if (req.body != null) {
+        try {
+            req.body = def.body == null ? null : def.body.check(req.body);
+        } catch (e) {
+            throw new BadRequestHttpException(e);
+        }
+    }
 }
