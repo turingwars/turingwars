@@ -1,4 +1,3 @@
-import { IsDefined } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { SQLColumnType_mediumText } from './schemaHelper';
 
@@ -8,18 +7,15 @@ export class GameLog {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
-    @IsDefined()
+    @Column({ nullable: false })
     public isOver: boolean = false;
 
     @Column({ nullable: true, type: SQLColumnType_mediumText() })
     public log?: string;
 
-    @Column()
-    @IsDefined()
+    @Column({ nullable: false })
     public player1Name: string;
 
-    @Column()
-    @IsDefined()
+    @Column({ nullable: false })
     public player2Name: string;
 }

@@ -1,4 +1,3 @@
-import { IsDefined, IsNotEmpty } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
@@ -8,9 +7,7 @@ export class Champion {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
-    @IsNotEmpty()
-    @IsDefined()
+    @Column({ nullable: false })
     public name: string = '';
 
     @Column({ type: "text" })

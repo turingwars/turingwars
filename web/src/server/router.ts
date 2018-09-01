@@ -1,5 +1,4 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
-import { validate } from 'class-validator';
 import { endpoints } from 'shared/api/endpoints';
 import { Assembler } from 'shared/assembler/Assembler';
 import { API_RESULTS_PER_PAGE, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/constants';
@@ -31,7 +30,6 @@ export function appRouter(
             const champ = championsRepo.create();
             champ.code = req.body.program;
             champ.name = req.body.name;
-            await validate(champ);
             const asm = new Assembler();
             asm.assemble(champ.code); // Check the assembly code before saving
             try {
