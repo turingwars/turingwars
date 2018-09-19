@@ -6,7 +6,7 @@ import { validate } from 'class-validator';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Repository } from 'typeorm';
+import { Repository, FindManyOptions, Like } from 'typeorm';
 import * as uuid from 'uuid/v4';
 import { twAPI } from '../api';
 import { Assembler } from '../assembler/Assembler';
@@ -60,10 +60,18 @@ export function appRouter(
         listHeros: async (req) => {
             // TODO: Factor the pagination out in a helper if we are likely to use it more than once
             const page = parseInt(req.query.page || '0', 10);
-            const [ heros, total ] = await championsRepo.findAndCount({
+            const searchTerm = req.query.searchTerm
+            
+            let searchQuery: FindManyOptions = {
                 take: API_RESULTS_PER_PAGE,
                 skip: page * API_RESULTS_PER_PAGE,
-            });
+            }
+
+            if (searchTerm != null) {
+                searchQuery.where = {name: Like(`%${searchTerm}%`)}
+            }
+
+            const [ heros, total ] = await championsRepo.findAndCount(searchQuery);
             const data = heros.map((champ) => {
                 return {
                     id: champ.id,

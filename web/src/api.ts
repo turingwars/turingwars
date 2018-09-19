@@ -54,7 +54,8 @@ export const twAPI = createAPI({
         method: 'GET',
         response: new ResultPage<HeroSummary>(),
         query: {
-            page: 'string'
+            page: 'string',
+            searchTerm: 'string'
         },
     },
     getGame: {

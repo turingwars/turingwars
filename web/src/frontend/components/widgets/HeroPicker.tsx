@@ -4,8 +4,9 @@ import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
 import { Label } from './Label';
-import { IDataPage, emptyDataPage } from '../../services/private/PagedDataSource';
-import { herosDataSource } from '../../services/api';
+import { SearchInput } from './SearchBar';
+import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/private/PagedDataSource';
+import { api } from '../../services/api';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
@@ -160,6 +161,8 @@ export type HeroPickerListState = {
     heros: IDataPage<HeroSummary> | undefined;
     page: number;
     selected?: string;
+    searchTerm: string;
+    heroDataSource: PagedDataSource<HeroSummary>
 };
 
 export type HeroPickerProps = {
@@ -174,12 +177,21 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
         return {
             heros: emptyDataPage<HeroSummary>(),
             page: 0,
-            selected: undefined
-        };
+            selected: undefined,
+            searchTerm: "",
+            heroDataSource: new PagedDataSource<HeroSummary>(
+                (pageNumber, searchTerm) => api.listHeros({
+                    query: {
+                        page: pageNumber.toString(),
+                        searchTerm: searchTerm || ''
+                    }
+                }).then((res) => res.data))
+        }
     };
 
     /** @override */ public componentDidMount() {
-        herosDataSource.getRange(0, firstEntryOfPage(1)).then((res) => this.props.update({
+        this.props.list.heroDataSource.invalidate()
+        this.props.list.heroDataSource.getRange(0, firstEntryOfPage(1)).then((res) => this.props.update({
             ...this.props.list,
             heros: res
         })).catch((e) => { throw e });
@@ -187,7 +199,8 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
 
     /** @override */ public render() {
         const baseColor = this.props.player === 1 ? COLOR_P1 : COLOR_P2;
-        return <ListContainer baseColor={baseColor}>
+        return  [<SearchInput color={baseColor} value={this.props.list.searchTerm} onChange={(s) => this.updateSearchTerm(s.currentTarget.value) }/>,
+                <ListContainer baseColor={baseColor}>
                 { 
                     this.props.list.heros && this.renderListEntries(baseColor, this.props.list.heros)
                 }
@@ -195,7 +208,7 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
                 <RGBPixelGridBackground />
                 {this.props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
                 <Glow baseColor={baseColor} />
-        </ListContainer>
+        </ListContainer>]
     }
 
     private renderListEntries(baseColor: string, herosPage: IDataPage<HeroSummary>) {
@@ -220,22 +233,39 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
     }
 
     private loadNextPageHandler = async () => {
+        const searchTerm = this.props.list.searchTerm
         const page = this.props.list.page;
         const nextPage = page + 1;
         this.props.update({
             ...this.props.list,
-            heros: await herosDataSource.getRange(firstEntryOfPage(nextPage), firstEntryOfPage(nextPage + 1)),
+            heros: await this.props.list.heroDataSource.getRange(firstEntryOfPage(nextPage), firstEntryOfPage(nextPage + 1), searchTerm),
             page: nextPage
         });
     }
 
     private loadPreviousPageHandler = async () => {
+        const searchTerm = this.props.list.searchTerm
         const page = this.props.list.page;
         const previousPage = page - 1;
         this.props.update({
             ...this.props.list,
-            heros: await herosDataSource.getRange(firstEntryOfPage(previousPage), firstEntryOfPage(page)),
+            heros: await this.props.list.heroDataSource.getRange(firstEntryOfPage(previousPage), firstEntryOfPage(page), searchTerm),
             page: previousPage
+        });
+    }
+
+
+    private updateSearchTerm = async (searchTerm: string) => {
+        console.log("I'm called, search is ", searchTerm)
+        this.props.list.heroDataSource.invalidate()
+        const from = this.props.list.page;
+        const l = await this.props.list.heroDataSource.getRange(firstEntryOfPage(from), firstEntryOfPage(from+1), searchTerm)
+        console.log(l)
+
+        this.props.update({
+            ...this.props.list,
+            searchTerm: searchTerm,
+            heros: l,            
         });
     }
 
