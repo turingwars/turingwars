@@ -1,9 +1,28 @@
 language: node_js
-before_script:
-  - make install-travis
-script:
-  - make test
+sudo: required
+services:
+  - docker
 node_js:
   - 6.10.3
 scala:
   - 2.12.4
+before_script:
+  - ci/setup.sh
+  - ci/set-version.sh
+script:
+  - make test
+  - make build
+  - npm install -g ./turing-wars.tgz
+  - ci/test-setup.sh
+deploy:
+  provider: releases
+  api_key:
+    secure: Lqae27YPU00UuGdsCIi77UGywYDG5cQ+e7halFpRXa19imRRuoJRexfkFezPE5ccQ7u7vIoCFChmYn9Glxn7PBefZUjsx67gSqhbc/MdeU1VQZtaccZVimFhAs8DiMu9mGNzCEIgLJ23H4Bp5zdYBCCR4XD9c5/On8UTSgO9A9kKKc3u7XjeJM0oRsW6TRqMARYBMsTKpkf1Xzy6y36yQYaObZXmkX502z08MvwdqRQ1mHzn9XRYZpm317vdvFQKseiFfXHz/hEoBGtPQPZMEoi2E1wHLLFFHXcFaGaYoDaixThW6HyLU9lIhmd83OSN79z13QigSF6YgW4w/CTpcTMdw5wx+gBulgWwZXSLWLA/Qm67gNXt0Gof2JnAVZCOXUy0cp2tHqV31YqsSwl6kLEWAt61b/GvxvZxWi4gFv2d4BKKEZZtnXsZTZvRGp5csFsaRQeEn3SqqYV8hidk2wWjuWeC/pNxMA5DFj7G9PI/rx8WE9OB1CmxD8uQgwmsitJ75fvkyebO29PpY0AiPOZmn2T6BwhIuQhIdaFI4PvkIKK2Xfwu26VKBWoHn2YK2sn+cqq83FBjxSr7BiVs/vXmk1m9ZrQ5Zx/kxiDMv46yCjdYUID3uwNArnl/7He/hKOi+nvq9v/62qTn8NJHMfg+BlTXLgR6qTjeZ2Moekg=
+  file: turing-wars.tgz
+  on:
+    tags: true
+  skip_cleanup: true
+branches:
+  only: 
+    # Avoids PRs to get built twice but keep building master when a new change is merged
+    - master

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { COLOR_PRIMARY, CRT_GLITCH_TEXT_LG } from '../../style';
+import { COLOR_PRIMARY, CRT_GLITCH_TEXT_LG } from 'frontend/style';
 
 interface ISplashMessageProps {
     message: string;

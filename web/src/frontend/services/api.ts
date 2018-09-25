@@ -1,5 +1,5 @@
-import { twAPI, HeroSummary } from '../../api';
-import { createConsumer } from '../../typed-apis/axios-typed-api';
+import { twAPI, HeroSummary } from 'shared/api';
+import { createConsumer } from 'shared/typed-apis/axios-typed-api';
 import { PagedDataSource } from './private/PagedDataSource';
 
 export const api = createConsumer('/api', twAPI);

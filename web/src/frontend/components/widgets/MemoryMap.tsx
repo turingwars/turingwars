@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Process } from '../../../model/GameUpdate';
-import { OpCode } from '../../../model/Instruction';
+import { Process } from 'shared/model/GameUpdate';
+import { OpCode } from 'shared/model/Instruction';
 // TODO: Widgets should not reference Redux
-import { IPrintableMemoryCell } from '../../redux/replay/state';
-import { COLOR_INSTR_MINE, COLOR_INSTR_MINE_P1, COLOR_INSTR_MINE_P2, COLOR_INSTR_NOP, COLOR_P1, COLOR_P2, COLOR_CHANGED_INSTR } from '../../style';
+import { IPrintableMemoryCell } from 'frontend/redux/replay/state';
+import { COLOR_INSTR_MINE, COLOR_INSTR_MINE_P1, COLOR_INSTR_MINE_P2, COLOR_INSTR_NOP, COLOR_P1, COLOR_P2, COLOR_CHANGED_INSTR } from 'frontend/style';
 import styled from 'styled-components';
 
 

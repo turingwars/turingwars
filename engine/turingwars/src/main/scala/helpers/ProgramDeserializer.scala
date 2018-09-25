@@ -1,7 +1,8 @@
 package helpers
 
 import core.instructions._
-import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+import io.circe.generic.auto._
+import io.circe.parser._
 
 object ProgramDeserializer {
 
@@ -48,7 +49,6 @@ object ProgramDeserializer {
     }
     program.map(_.toInstruction())
   }
-
 
 }
 

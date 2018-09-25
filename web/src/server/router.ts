@@ -1,24 +1,15 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
-import * as byline from 'byline';
-import { spawn } from 'child_process';
-import { transformAndValidate } from 'class-transformer-validator';
 import { validate } from 'class-validator';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { Repository, FindManyOptions, Like } from 'typeorm';
-import * as uuid from 'uuid/v4';
-import { twAPI } from '../api';
-import { Assembler } from '../assembler/Assembler';
-import { API_RESULTS_PER_PAGE, BIN_LOCATION, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from '../config';
-import { GameUpdate } from '../model/GameUpdate';
-import { RouterDefinition } from '../typed-apis/express-typed-api';
+import { twAPI } from 'shared/api';
+import { Assembler } from 'shared/assembler/Assembler';
+import { API_RESULTS_PER_PAGE, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/constants';
+import { GetGameResponse } from 'shared/dto/GetGameResponse';
+import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
+import { Repository } from 'typeorm';
+import { Engine, EngineConfiguration } from '../../lib/engine';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
-
-const engineCmdLine = [
-    path.join(process.cwd(), BIN_LOCATION)
-];
+import { EngineRunResult } from './engine-interface';
 
 export function appRouter(
         championsRepo: Repository<Champion>,
@@ -30,7 +21,7 @@ export function appRouter(
         getHero: async (req) => {
             const champ = await championsRepo.findOneOrFail(req.params.id);
             return {
-                id: champ.id,
+                id: champ.id.toString(),
                 name: champ.name,
                 program: champ.code
             };
@@ -53,28 +44,20 @@ export function appRouter(
             return {
                 program: champ.code,
                 name: champ.name,
-                id: champ.id
+                id: champ.id.toString()
             };
         },
 
         listHeros: async (req) => {
             // TODO: Factor the pagination out in a helper if we are likely to use it more than once
             const page = parseInt(req.query.page || '0', 10);
-            const searchTerm = req.query.searchTerm
-            
-            let searchQuery: FindManyOptions = {
+            const [ heros, total ] = await championsRepo.findAndCount({
                 take: API_RESULTS_PER_PAGE,
                 skip: page * API_RESULTS_PER_PAGE,
-            }
-
-            if (searchTerm != null) {
-                searchQuery.where = {name: Like(`%${searchTerm}%`)}
-            }
-
-            const [ heros, total ] = await championsRepo.findAndCount(searchQuery);
+            });
             const data = heros.map((champ) => {
                 return {
-                    id: champ.id,
+                    id: champ.id.toString(),
                     name: champ.name
                 };
             });
@@ -108,11 +91,10 @@ export function appRouter(
 
         playTest: async (req) => {
             const opponent = await championsRepo.findOneOrFail(req.body.opponent);
-            const tmpHero: Champion = {
-                code: req.body.hero.program,
-                name: 'tmp',
-                id: 'null'
-            };
+            const tmpHero = new Champion();
+            tmpHero.code = req.body.hero.program;
+            tmpHero.name = 'tmp';
+
             const theGame = await createGame([
                 tmpHero,
                 opponent
@@ -124,9 +106,10 @@ export function appRouter(
 
         getGame: async (req) => {
             const gameLog = await gamesRepo.findOneOrFail(req.params.id);
-            const resp = {
+            const resp: GetGameResponse = {
                 ...gameLog,
-                log: JSON.parse(gameLog.log || '[]')
+                id: gameLog.id.toString(),
+                log: JSON.parse(gameLog.log || '[]')
             };
             return resp;
         }
@@ -135,25 +118,13 @@ export function appRouter(
     /**
      * Assemble and load champion code to disk.
      */
-    async function loadChampion(player: Champion, championNr: number): Promise<string> {
-
+    function loadChampion(player: Champion, championNr: number): string {
         const asm = new Assembler({
             id: championNr,
             coresize: CORESIZE
         });
         const program = asm.assemble(player.code);
-
-        const dest = path.join(os.tmpdir(), uuid());
-
-        await new Promise<void>((resolve, reject) => fs.writeFile(dest, JSON.stringify(program), (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        }));
-
-        return dest;
+        return JSON.stringify(program);
     }
 
     /**
@@ -161,47 +132,33 @@ export function appRouter(
      * Consumers must poll the game's "isOver" flag to determine when it is done simulating.
      */
     async function createGame(champions: Champion[]) {
-        const log: Array<Promise<GameUpdate>> = [];
         const theGame = gamesRepo.create();
-        let championNr = 0;
-        const programFiles = await Promise.all(
-            champions.map(async (champion) => loadChampion(champion, championNr++)));
-
-        console.log([...engineCmdLine, ...programFiles]);
-        const vm = spawn('node', [
-            ...engineCmdLine,
-            ...programFiles,
-            `${UPDATE_PERIOD}`,
-            `${NUM_CYCLES}`,
-            `${CORESIZE}`]);
-        const lines = byline(vm.stdout, {
-            encoding: 'utf-8'
-        });
-        lines.on('data', (data) => {
-            const p = transformAndValidate(GameUpdate, data as string) as Promise<GameUpdate>;
-            p.catch((e) => console.error(e));
-            log.push(p);
-        });
-
-        vm.stderr.on('data', (d) => {
-            console.log(d.toString());
-        });
-
-        vm.on('exit', async (code) => {
-            if (code === 0) {
-                const resolved = await Promise.all(log);
-                theGame.log = JSON.stringify(resolved);
-                theGame.isOver = true;
-                await gamesRepo.save(theGame);
-                console.log(`Game ${theGame.id} is ready!`);
-            } else {
-                console.log(`Failed to bake game ${theGame.id}; status: ${code}`);
-            }
-        });
 
         theGame.player1Name = champions[0].name;
         theGame.player2Name = champions[1].name;
         await gamesRepo.save(theGame);
+
+        const config: EngineConfiguration = {
+            diffFrequency: UPDATE_PERIOD,
+            memorySize: CORESIZE,
+            nbCycles: NUM_CYCLES
+        };
+
+        const engine = new Engine(
+            loadChampion(champions[0], 0),
+            loadChampion(champions[1], 1),
+            JSON.stringify(config)
+        );
+
+        const result = EngineRunResult.check(JSON.parse(engine.run()));
+
+        // TODO: Validate result using some schema validation thingy
+
+        theGame.log = JSON.stringify(result);
+        theGame.isOver = true;
+        await gamesRepo.save(theGame);
+
+        console.log(`Game ${theGame.id} is ready!`);
 
         return theGame;
     }

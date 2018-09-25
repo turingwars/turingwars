@@ -7,22 +7,15 @@ import core.instructions._
 // main execution class
 class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequency: Int = 1) {
 
-  def run(): Unit = {
-    for (i <- 0 until nbCycles) {
-      if((i % diffFrequency) == 0) {
-        println(outputState())
-        state.memory.resetDiff()
+  def step(): Unit = {
+    state.processes.foreach(process => {
+      if (process.isAlive) {
+        process.eip = execute(process)
+        // Round off to keep process inside the core
+        val mod = process.eip % state.memory.size
+        process.eip = if (mod >= 0) mod else mod + state.memory.size
       }
-
-      state.processes.foreach(process => {
-        if (process.isAlive) {
-          process.eip = execute(process)
-          // Round off to keep process inside the core
-          val mod = process.eip % state.memory.size
-          process.eip = if (mod >= 0) mod else mod + state.memory.size
-        }
-      })
-    }
+    })
   }
 
   // executes the next instruction for the eid in the process
@@ -124,7 +117,7 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
   }
 
   def outputState(): String = {
-    GameUpdate(
+    val ret = GameUpdate(
       state.processes.zipWithIndex.map({ case (descriptor: ProcessDescriptor, id: Int) =>
         Process(
           id.toString, descriptor.eip, descriptor.isAlive
@@ -149,5 +142,8 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
       )),
       state.scores.map(t => Score(t._1.toString, t._2)).toList
     ).asJson.noSpaces
+
+    state.memory.resetDiff()
+    ret
   }
 }

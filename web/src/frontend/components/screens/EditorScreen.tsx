@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { connect } from 'react-redux';
-import { Assembler } from '../../../assembler/Assembler';
-import { CompilerError } from '../../../assembler/CompileError';
-import '../../codemirror-grammar';
-import { loadCode, unloadCode } from '../../redux/editor/actions';
-import { State } from '../../redux/state';
-import { navigateTo, ROUTE_HOME, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from '../../services/navigation';
-import { ActionsRow } from '../layout/ActionsRow';
-import { Button } from '../widgets/Button';
+import { Assembler } from 'shared/assembler/Assembler';
+import { CompilerError } from 'shared/assembler/CompileError';
+import 'frontend/codemirror-grammar';
+import { loadCode, unloadCode } from 'frontend/redux/editor/actions';
+import { State } from 'frontend/redux/state';
+import { navigateTo, ROUTE_HOME, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from 'frontend/services/navigation';
+import { ActionsRow } from 'frontend/components/layout/ActionsRow';
+import { Button } from 'frontend/components/widgets/Button';
 import { BaseScreen } from './BaseScreen';
 
 

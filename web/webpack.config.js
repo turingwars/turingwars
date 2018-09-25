@@ -1,79 +1,67 @@
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const path = require('path');
 const webpack = require('webpack');
-
-const REPO_ROOT = __dirname;
+const path = require('path');
+const nodeExternals = require('webpack-node-externals');
+const StartServerPlugin = require('start-server-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-
+    entry: ['webpack/hot/signal', './src/server/boot.ts'],
+    output: {
+        path: path.join(__dirname, '.tmp'),
+        filename: 'server.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
+    },
+    watch: true,
     mode: process.env.NODE_ENV || 'development',
-    entry: {
-        'app': [
-            './src/frontend/main.tsx'
+    devtool: 'inline-source-map',
+    target: 'node',
+    node: {
+        __filename: true,
+        __dirname: true
+    },
+    resolve: {
+        alias: {
+            'shared': path.resolve(__dirname, 'src/shared/'),
+            'server': path.resolve(__dirname, 'src/server/'),
+        },
+        extensions: ['.html', '.ts', '.js']
+    },
+    externals: [
+        nodeExternals({ whitelist: ['webpack/hot/signal'] })
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                include: path.join(__dirname, 'src'),
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true
+                        }
+                    }
+                ],
+                exclude: /node_modules/
+            }
         ]
     },
-
-    output: {
-        filename: '[name].js',
-        path: path.resolve(REPO_ROOT, 'public/dist/'),
-        publicPath: '/dist'
-    },
-
-    // devServer: {
-    //     compress: true,
-    //     port: 9000,
-    //     hot: true,
-    //     contentBase: 'public',
-    //     allowedHosts: ['localhost']
-    // },
-
-    // Currently we need to add '.ts' to the resolve.extensions array.
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.less'],
-        modules: ['node_modules', 'src', '..']
-    },
-
-    // Source maps support ('inline-source-map' also works)
-    devtool: 'source-map',
-
-    externals: {
-        'd3': 'd3',
-        'underscore': '_',
-        'react': 'React',
-        'redux': 'Redux',
-        'react-redux': 'ReactRedux',
-        'react-dom': 'ReactDOM',
-        'codemirror': 'CodeMirror',
-        'axios': 'axios'
-    },
-
-    // Add the loader for .ts files.
-    module: {
-        rules: [{
-            include: path.join(process.cwd(), '.'),
-            test: /\.tsx?$/,
-            use: [
-                {
-                    loader: 'ts-loader',
-                    options: {
-                        transpileOnly: true
-                    },
-                },
-            ]
-        }]
-    },
-
     plugins: [
-        new webpack.HotModuleReplacementPlugin({
-            // Compute HMR chunks first
-            multiStep: true
+        new StartServerPlugin({
+            name: 'server.js',
+            nodeArgs: [ '--inspect=9229' ],
+            signal: true
         }),
         new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new ForkTsCheckerWebpackPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('development')
-            }
+        // new TsconfigPathsPlugin(),
+        new webpack.BannerPlugin({
+            banner: 'require("source-map-support").install();',
+            raw: true,
+            entryOnly: false
         })
-    ],
+    ]
 };

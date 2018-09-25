@@ -1,4 +1,4 @@
-import { storage } from '../../services/storage';
+import { storage } from 'frontend/services/storage';
 
 export function editorInitialState() {
     return {

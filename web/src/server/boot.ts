@@ -20,6 +20,7 @@ async function boot() {
     });
 
     if (module.hot) {
+        console.log('HMR enabled.');
         module.hot.accept('./server', () => {
             replace().catch((e) => { throw e; });;
         });
@@ -38,4 +39,7 @@ async function boot() {
     }
 }
 
-boot().catch((e) => { throw e; });
+boot().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});

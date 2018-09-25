@@ -38,21 +38,35 @@ mine %id
 ```
 This one does not mine at first, but hopes to hijack the other's program CPU time! He floods every 4 slots of the memory with `mov` instructions that points to its own `mine` instruction. If it his the memory space corresponding to the opponent program, he will make him jump to the Dwarf's `mine` instruction. Potentially, in the end, both program work for the Dwarf ! 
 
-### I made a killer program !
 
-Awesome, we want to include it in the game. Just open an issue with the code.
+## Development guidelines
 
-## How to run
-
-### Docker setup
-
-(WIP)
-
-### Manual
+### How to run
 
 You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt](https://www.scala-sbt.org/) to build and run stuff.
 
-Then just run `make serve` from the root of the repo and you are good to go. This command is intended for development purposes only. There is no "production" build yet.
+Then just run `make serve` from the root of the repo and you are good to go.
+
+### How to debug
+
+In VSCode, just hit "F5" while the server is running, this will attach a debugger to the process. Then set your breakpoints and happy debugging!
+
+
+## Using the releases
+
+Grab the [latest release](https://github.com/turingwars/turingwars/releases/latest) from github. Copy the link to `turing-wars.tgz` and install it with npm.
+
+For instance:
+```
+npm install -g https://github.com/turingwars/turingwars/releases/download/(actual version here)/turing-wars.tgz
+```
+
+Then start the game with:
+
+```
+turingwars
+```
+
 
 ## Authors
 

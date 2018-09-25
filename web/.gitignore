@@ -1,6 +1,5 @@
 node_modules
-dist
 coverage
 public/dist
-src/server/.views
 .tmp
+lib

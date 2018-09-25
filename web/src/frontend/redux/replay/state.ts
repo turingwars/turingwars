@@ -1,6 +1,6 @@
-import { Process } from 'model/GameUpdate';
-import { Instruction, nop } from 'model/Instruction';
-import { CORESIZE } from 'config';
+import { Process } from 'shared/model/GameUpdate';
+import { Instruction, nop } from 'shared/model/Instruction';
+import { CORESIZE } from 'shared/constants';
 
 export interface IPrintableMemoryCell {
     instr: Instruction;

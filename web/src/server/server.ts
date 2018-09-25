@@ -7,15 +7,18 @@ import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
 import { Connection, createConnection } from 'typeorm';
-import * as webpack from 'webpack';
-import { twAPI } from '../api';
-import { createRouter } from '../typed-apis/express-typed-api';
+import { twAPI } from 'shared/api';
+import { createRouter } from 'shared/typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { appRouter } from './router';
 import { seedDatabase } from './seed';
+import { getConfig } from './config';
+import { pause } from 'shared/utils';
 
+const ONE_SECOND_IN_MS = 2000;
+const DB_CONNECT_ATTEMPTS = 40;
 
 class TuringWarsApplication {
 
@@ -53,7 +56,14 @@ class TuringWarsApplication {
      */
     public async teardown() {
         await this.connection.close();
-        await new Promise<void>((resolve) => this.webpackDevMiddleware.close(resolve));
+        await new Promise<void>((resolve) => {
+            if (this.webpackDevMiddleware) {
+                this.webpackDevMiddleware.close(resolve);
+                this.webpackDevMiddleware = undefined;
+            } else {
+                resolve();
+            }
+        });
     }
 
     /**
@@ -87,7 +97,7 @@ class TuringWarsApplication {
         if (this.webpackDevMiddleware) {
             app.use(this.webpackDevMiddleware);
         }
-        app.use(express.static(path.join(process.cwd(), 'public/')));
+        app.use(express.static(path.join(__dirname, '../../public/')));
 
         // Error handling
         app.use(this.defaultHandler);
@@ -97,18 +107,33 @@ class TuringWarsApplication {
     }
 
     private async initDatabase() {
-        this.connection = await createConnection({
-            type: 'sqlite',
-            database: path.join(process.cwd(), '.tmp/sqlite'),
-            entities: [
-                Champion,
-                GameLog
-            ],
-            logging: false,
-            synchronize: true,
-        });
-
+        this.connection = await this.tryConnectToDB();
         await seedDatabase(this.connection);
+    }
+
+
+    private async tryConnectToDB() {
+        for (let i = 0 ; i < DB_CONNECT_ATTEMPTS ; i++) {
+            try {
+                return await createConnection({
+                    ...getConfig().db,
+                    entities: [
+                        Champion,
+                        GameLog
+                    ],
+                });
+            } catch (e) {
+                if (i == DB_CONNECT_ATTEMPTS - 1) {
+                    console.log(`Could not connect to DB after ${DB_CONNECT_ATTEMPTS} attempts!`);
+                    throw e;
+                } else {
+                    console.log(e);
+                    console.log("Failed to connect. Retrying...");
+                }
+            }
+            await pause(ONE_SECOND_IN_MS);
+        }
+        throw new Error("Unreachable code reached!");
     }
 
     /**
@@ -126,11 +151,14 @@ class TuringWarsApplication {
      * to see your changes. They would instantaneously pop up in your browser.
      */
     private async initializeFrontEnd() {
-        const wdm = require('webpack-dev-middleware');
-        const compiler = webpack(require('../../webpack.config.js'));
-        this.webpackDevMiddleware = wdm(compiler, {
-            publicPath: '/dist'
-        });
+        if (process.env.NODE_ENV != 'production') {
+            const webpack = require<typeof import('webpack')>('webpack'); 
+            const wdm = require('webpack-dev-middleware');
+            const compiler = webpack(require('../../webpack-client.config.js'));
+            this.webpackDevMiddleware = wdm(compiler, {
+                publicPath: '/dist'
+            });
+        }
     }
 
     /**

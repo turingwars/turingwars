@@ -2,7 +2,7 @@ import { State } from '../state';
 import { EditorActions } from './actions';
 import { editorInitialState } from './state';
 import { catchUnhandledAction } from '../utils';
-import { storage } from '../../services/storage';
+import { storage } from 'frontend/services/storage';
 
 export function editorReducer(state: State['editor'] | undefined, action: EditorActions): State['editor'] {
     if (state === undefined) {

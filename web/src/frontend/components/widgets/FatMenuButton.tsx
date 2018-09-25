@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { COLOR_PRIMARY, CRT_GLITCH_TEXT_LG } from '../../style';
+import { COLOR_PRIMARY, CRT_GLITCH_TEXT_LG } from 'frontend/style';
 
 export const FatMenuButton = styled.a<{
     smaller?: boolean

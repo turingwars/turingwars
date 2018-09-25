@@ -1,4 +1,4 @@
-import { GameUpdate } from 'model/GameUpdate';
+import { GameUpdate } from 'shared/model/GameUpdate';
 import { GameResult } from './state';
 import { baseAction } from '../utils';
 

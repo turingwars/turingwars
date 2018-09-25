@@ -1,4 +1,4 @@
-import { ResultPage } from 'api';
+import { ResultPage } from 'shared/api';
 
 export function emptyDataPage<T>(): IDataPage<T> {
     return {
