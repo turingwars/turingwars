@@ -5,9 +5,10 @@ import { PagedDataSource } from './private/PagedDataSource';
 export const api = createConsumer('/api', twAPI);
 
 export const herosDataSource = new PagedDataSource<HeroSummary>(
-    (pageNumber) => api.listHeros({
+    (pageNumber, searchTerm) =>        api.listHeros({
         query: {
-            page: pageNumber.toString()
+            page: pageNumber.toString(),
+            searchTerm: searchTerm || ''
         }
     }).then((res) => res.data)
 );
