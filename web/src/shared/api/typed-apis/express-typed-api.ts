@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { ApiDefinition, EndpointDefinition, getPathWithParams, RealType } from './typed-api';
+import { ApiDefinition, EndpointDefinition, getPathWithParams, RealType, Tuple2Dict } from './typed-api';
 import { BadRequestHttpException } from '@senhung/http-exceptions';
 
 /**
@@ -8,12 +8,14 @@ import { BadRequestHttpException } from '@senhung/http-exceptions';
  */
 type PromiseOrValue<T> = PromiseLike<T> | T;
 
+
+
 /**
  * An express Request with proper typings.
  */
 interface TypedRequest<T extends EndpointDefinition> extends Express.Request {
     body: RealType<T['body']>;
-    params: RealType<T['params']>;
+    params: Tuple2Dict<T['params']>;
     query: RealType<T['query']>;
 }
 
@@ -21,26 +23,27 @@ export type RouteHandler<T extends EndpointDefinition> =
     (req: TypedRequest<T>, res: Express.Response) => PromiseOrValue<RealType<T['response']>>;
 
 export type RouterDefinition<T extends ApiDefinition> = {
-    [K in keyof T]: RouteHandler<T[K]>;
+    [K in keyof T]: RouteHandler<T[K]['def']>;
 };
 
-export function createRouter<T extends ApiDefinition>(def: T, hash: RouterDefinition<T>): express.Router {
+export function createRouter<T extends ApiDefinition>(apiDefinition: T, hash: RouterDefinition<T>): express.Router {
     const router = express.Router();
-    for (const i of Object.keys(def)) {
-        const endpoint = def[i];
-        const path = getPathWithParams(endpoint);
-        switch (endpoint.method) {
+    for (const i of Object.keys(apiDefinition)) {
+        const endpoint = apiDefinition[i];
+        const def = endpoint.def;
+        const path = getPathWithParams(def);
+        switch (endpoint.def.method) {
             case 'GET':
-                router.get(path, makeHandler(endpoint, hash[i].bind(hash)));
+                router.get(path, makeHandler(def, hash[i].bind(hash)));
                 break;
             case 'POST':
-                router.post(path, makeHandler(endpoint, hash[i].bind(hash)));
+                router.post(path, makeHandler(def, hash[i].bind(hash)));
                 break;
             case 'PUT':
-                router.put(path, makeHandler(endpoint, hash[i].bind(hash)));
+                router.put(path, makeHandler(def, hash[i].bind(hash)));
                 break;
             case 'DELETE':
-                router.delete(path, makeHandler(endpoint, hash[i].bind(hash)));
+                router.delete(path, makeHandler(def, hash[i].bind(hash)));
                 break;
         }
     }

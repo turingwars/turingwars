@@ -86,7 +86,6 @@ export function appRouter(
             };
         },
 
-
         playTest: async (req) => {
             const opponent = await championsRepo.findOneOrFail(req.body.opponent);
             const tmpHero = new Champion();
