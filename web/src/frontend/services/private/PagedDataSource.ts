@@ -48,7 +48,7 @@ export class PagedDataSource<T> {
     private knownMax = -1;
 
     public constructor(
-            private source: (pageNumber: number) => Promise<ResultPage<T>>) {
+            private source: (pageNumber: number, searchTerm?: string) => Promise<ResultPage<T>>) {
     }
 
     public invalidate() {
@@ -61,10 +61,12 @@ export class PagedDataSource<T> {
     /**
      * Fetches all heros between `from` inclusive and `to` exclusive.
      */
-    public async getRange(from: number, to: number): Promise<IDataPage<T>> {
+    public async getRange(from: number, to: number, searchTerm: string = ''): Promise<IDataPage<T>> {
         const startVersion = this.version;
-        const pagesRequired = await this.getPageNumbersForInterval(from, to);
-        const data = await Promise.all(pagesRequired.map(this.getPage)).then((allHeros) =>
+        console.log(`tamere ${searchTerm}`)
+        const pagesRequired = await this.getPageNumbersForInterval(from, to, searchTerm);
+        console.log(pagesRequired)
+        const data = await Promise.all(pagesRequired.map(p => this.getPage(p, searchTerm))).then((allHeros) =>
             allHeros.reduce((prev, cur) => prev.concat(cur), [])
         );
 
@@ -90,17 +92,17 @@ export class PagedDataSource<T> {
             hasPrevious };
     }
 
-    private getPage = (p: number): Promise<T[]> => {
+    private getPage = (p: number, searchTerm: string): Promise<T[]> => {
         let page = this.pages.get(p);
         if (page == null) {
-            page = this.fetchPage(p);
+            page = this.fetchPage(p, searchTerm);
             this.pages.set(p, page);
         }
         return page;
     }
 
-    private async fetchPage(p: number): Promise<T[]> {
-        const page = await this.source(p);
+    private async fetchPage(p: number, searchTerm: string): Promise<T[]> {
+        const page = await this.source(p, searchTerm);
         if (this.srcPageSize != null && this.srcPageSize != page.perPage) {
             console.warn("Page size has changed. This means that the backend code was updated while the frontend was running.");
             this.invalidate();
@@ -112,9 +114,9 @@ export class PagedDataSource<T> {
         return page.data;
     }
 
-    private async getPageNumbersForInterval(start: number, end: number): Promise<number[]> {
+    private async getPageNumbersForInterval(start: number, end: number, searchTerm: string): Promise<number[]> {
         while (this.srcPageSize == null) {
-            await this.fetchPage(0);
+            await this.fetchPage(0, searchTerm);
         }
         const minimum = Math.floor(start / this.srcPageSize);
         const maximum = Math.floor((end - 1) / this.srcPageSize);

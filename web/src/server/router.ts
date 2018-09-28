@@ -106,7 +106,7 @@ export function appRouter(
             const resp: GetGameResponse = {
                 ...gameLog,
                 id: gameLog.id.toString(),
-                log: JSON.parse(gameLog.log || '[]')
+                log: JSON.parse(gameLog.log || '[]')
             };
             return resp;
         }

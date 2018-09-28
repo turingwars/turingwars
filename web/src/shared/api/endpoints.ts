@@ -20,7 +20,8 @@ export const endpoints = api.Api({
         .method('GET')
         .response(ResultPage(HeroSummary))
         .query({
-            page: rt.String
+            page: rt.String,
+            searchTerm: rt.String
         }),
         
     createGame: api.endpoint('/create-game')
