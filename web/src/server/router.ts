@@ -60,7 +60,7 @@ export function appRouter(
                     name: Like(`%${req.query.searchTerm || ''}%`)
                 }
             }
-    
+
             const [ heros, total ] = await championsRepo.findAndCount(findOptions);
             const data = heros.map((champ) => {
                 return {
@@ -157,8 +157,6 @@ export function appRouter(
         );
 
         const result = EngineRunResult.check(JSON.parse(engine.run()));
-
-        // TODO: Validate result using some schema validation thingy
 
         theGame.log = JSON.stringify(result);
         theGame.isOver = true;
