@@ -6,7 +6,7 @@ import { COLOR_P1, COLOR_P2, WHITE } from 'frontend/style';
 import { Label } from './Label';
 import { SearchInput } from './SearchBar';
 import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/private/PagedDataSource';
-import { api } from '../../services/api';
+import { herosCache } from '../../services/api';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
@@ -180,12 +180,10 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
             selected: undefined,
             searchTerm: "",
             heroDataSource: new PagedDataSource<HeroSummary>(
-                (pageNumber, searchTerm) => api.listHeros({
-                    query: {
-                        page: pageNumber.toString(),
-                        searchTerm: searchTerm || ''
-                    }
-                }).then((res) => res.data))
+                (pageNumber, searchTerm) => herosCache.getPage(pageNumber, {
+                    searchTerm: searchTerm || '' 
+                })
+            )
         }
     };
 

@@ -14,7 +14,7 @@ export class PageCache<DATA, PARAMS> {
     }
 
     public getPage(p: number, params: PARAMS): Promise<ResultPage<DATA>> {
-        const tag = this.tag(params);
+        const tag = this.makeTag(p, params);
         let page = this.pages.get(tag);
         if (page == null) {
             page = this.source(p, params);
@@ -25,5 +25,9 @@ export class PageCache<DATA, PARAMS> {
 
     public invalidate(): void {
         this.pages = new Map();
+    }
+
+    private makeTag(p: number, params: PARAMS) {
+        return `${p}:${this.tag(params)}`;
     }
 }

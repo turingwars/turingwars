@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { loadCode } from 'frontend/redux/editor/actions';
 import { State } from 'frontend/redux/state';
-import { api, herosDataSource } from 'frontend/services/api';
+import { api, herosCache } from 'frontend/services/api';
 import { navigateTo, ROUTE_EDITOR } from 'frontend/services/navigation';
 import { ActionsRow } from 'frontend/components/layout/ActionsRow';
 import { BackButton } from 'frontend/components/widgets/BackButton';
@@ -29,7 +29,7 @@ class extends React.Component<LoadHeroSreenProps> {
     };
 
     /** @override */ public componentDidMount() {
-        herosDataSource.invalidate();
+        herosCache.invalidate();
     }
 
     /** @override */ public render() {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { api } from '../../services/api';
+import { api, herosCache } from '../../services/api';
 import { navigateTo, ROUTE_REPLAY } from '../../services/navigation';
 import { player } from '../../services/player';
 import { COLOR_P1, COLOR_P2, WHITE } from '../../style';
@@ -45,6 +45,7 @@ export class MatchMakingScreen extends React.Component<{}, MatchMakingScreenStat
     };    
 
     /** @override */ public componentDidMount() {
+        herosCache.invalidate();
     }
 
     /** @override */ public render() {
