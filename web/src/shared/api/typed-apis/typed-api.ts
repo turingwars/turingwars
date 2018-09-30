@@ -31,67 +31,99 @@ export class EndpointBuilder<T> {
     }
 }
 
-const defaultMethod: 'GET' = 'GET';
+type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
-export interface InitialEndpointDefinition<Params> {
+export interface InitialEndpointDefinition<Params, METHOD extends HttpMethod | undefined> {
     path: string[];
     params: Params;
-    method: typeof defaultMethod;
+    method: METHOD;
 }
 
-export interface EmptyInitialEndpointDefinition {
+export interface EmptyInitialEndpointDefinition<METHOD extends HttpMethod | undefined> {
     path: string[];
-    method: typeof defaultMethod;
+    method: METHOD;
 }
 
-export function endpoint(path: string): EndpointBuilder<EmptyInitialEndpointDefinition>;
-export function endpoint<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A]>>;
-export function endpoint<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B]>>;
-export function endpoint<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string, P extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string, P extends string, Q extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string, P extends string, Q extends string, R extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string, P extends string, Q extends string, R extends string, S extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]>>;
-export function endpoint<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string, I extends string, J extends string, K extends string, L extends string, M extends string, N extends string, O extends string, P extends string, Q extends string, R extends string, S extends string, T extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]>>;
-export function endpoint(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[]>> {
-    
-    console.log("ENDPOINT")
-    console.log(pathOrStaticParts)
-    console.log(params);
-
+function endpoint(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<any> {
     if (typeof pathOrStaticParts === 'string') {
         return new EndpointBuilder({
             path: [ pathOrStaticParts ],
-            method: defaultMethod,
             params: []
         });
     }
 
     return new EndpointBuilder({
         path: pathOrStaticParts.slice(),
-        params: params || [],
-        method: defaultMethod
+        params: params || []
     });
 }
 
+export function on(path: string | TemplateStringsArray): EndpointBuilder<EmptyInitialEndpointDefinition<undefined>>;
+export function on<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A], undefined>>;
+export function on<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B], undefined>>;
+export function on<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C], undefined>>;
+export function on<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D], undefined>>;
+export function on<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E], undefined>>;
+export function on<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F], undefined>>;
+export function on<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G], undefined>>;
+export function on<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H], undefined>>;
+export function on(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[], undefined>> {
+    return endpoint(pathOrStaticParts, ...params);
+}
 
-type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE';
+export function GET(path: string | TemplateStringsArray): EndpointBuilder<EmptyInitialEndpointDefinition<'GET'>>;
+export function GET<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A], 'GET'>>;
+export function GET<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G], 'GET'>>;
+export function GET<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H], 'GET'>>;
+export function GET(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[], 'GET'>> {
+    return endpoint(pathOrStaticParts, ...params).method('GET');
+}
+
+export function PUT(path: string | TemplateStringsArray): EndpointBuilder<EmptyInitialEndpointDefinition<'PUT'>>;
+export function PUT<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A], 'PUT'>>;
+export function PUT<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G], 'PUT'>>;
+export function PUT<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H], 'PUT'>>;
+export function PUT(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[], 'PUT'>> {
+    return endpoint(pathOrStaticParts, ...params).method('PUT');
+}
+
+export function POST(path: string | TemplateStringsArray): EndpointBuilder<EmptyInitialEndpointDefinition<'POST'>>;
+export function POST<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A], 'POST'>>;
+export function POST<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G], 'POST'>>;
+export function POST<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H], 'POST'>>;
+export function POST(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[], 'POST'>> {
+    return endpoint(pathOrStaticParts, ...params).method('POST');
+}
+
+export function DELETE(path: string): EndpointBuilder<EmptyInitialEndpointDefinition<'DELETE'>>;
+export function DELETE<A extends string>(strings: TemplateStringsArray, a: A): EndpointBuilder<InitialEndpointDefinition<[A], 'DELETE'>>;
+export function DELETE<A extends string, B extends string>(strings: TemplateStringsArray, a: A, b: B): EndpointBuilder<InitialEndpointDefinition<[A, B], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string>(strings: TemplateStringsArray, a: A, b: B, c: C): EndpointBuilder<InitialEndpointDefinition<[A, B, C], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string, D extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string, D extends string, E extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G], 'DELETE'>>;
+export function DELETE<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string, G extends string, H extends string>(strings: TemplateStringsArray, a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H): EndpointBuilder<InitialEndpointDefinition<[A, B, C, D, E, F, G, H], 'DELETE'>>;
+export function DELETE(pathOrStaticParts: TemplateStringsArray | string, ...params: string[]): EndpointBuilder<InitialEndpointDefinition<string[], 'DELETE'>> {
+    return endpoint(pathOrStaticParts, ...params).method('DELETE');
+}
 
 export const Api = <T extends ApiDefinition>(api: T) => api
-
-export const Endpoint = <T extends EndpointDefinition>(def: T | EndpointDefinition): T => def as T
 
 export type ArrayQueryParam = rt.Array<rt.String | rt.Number | rt.Array<rt.String | rt.Number>>;
 export type QueryParam = rt.String | rt.Number | ArrayQueryParam | rt.Record<QueryParams>;
@@ -109,8 +141,6 @@ export interface EndpointDefinition {
 export interface ApiDefinition {
     [k: string]: EndpointBuilder<EndpointDefinition>;
 }
-
-// TODO: Clean these methods
 
 export function getPathWithParams(def: EndpointDefinition): string {
     let i = 1;
@@ -145,10 +175,16 @@ export type RealType<T> =
         T extends [ infer A ] ? [ RealTypeBase<A> ] :
         T extends [ infer A, infer B ] ? [ RealTypeBase<A>, RealTypeBase<B> ] :
         T extends [ infer A, infer B, infer C ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C> ] :
+        T extends [ infer A, infer B, infer C, infer D ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C>, RealTypeBase<D> ] :
+        T extends [ infer A, infer B, infer C, infer D, infer E ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C>, RealTypeBase<D>, RealTypeBase<E> ] :
+        T extends [ infer A, infer B, infer C, infer D, infer E, infer F ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C>, RealTypeBase<D>, RealTypeBase<E>, RealTypeBase<F> ] :
+        T extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C>, RealTypeBase<D>, RealTypeBase<E>, RealTypeBase<F>, RealTypeBase<G> ] :
+        T extends [ infer A, infer B, infer C, infer D, infer E, infer F, infer G, infer H ] ? [ RealTypeBase<A>, RealTypeBase<B>, RealTypeBase<C>, RealTypeBase<D>, RealTypeBase<E>, RealTypeBase<F>, RealTypeBase<G>, RealTypeBase<H> ] :
         T extends { [k: string]: any } ? { [K in keyof T]: RealType<T[K]> } :
         T;
 
-export type Tuple2Dict<T> = T extends [ infer A ] ? A extends string ? { [key in A]: string } : never
+export type Tuple2Dict<T> = 
+      T extends [ infer A ] ? A extends string ? { [key in A]: string } : never
     : T extends [ infer A, infer B ] ? A extends string ? B extends string ? { [key in A | B]: string } : never : never
     : T extends [ infer A, infer B, infer C ] ? A extends string ? B extends string ? C extends string ? { [key in A | B | C]: string } : never : never : never
     : T extends [ infer A, infer B, infer C, infer D ] ? A extends string ? B extends string ? C extends string ? D extends string ? { [key in A | B | C | D]: string } : never : never : never : never
