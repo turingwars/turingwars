@@ -13,7 +13,7 @@ type RouteConsumerParams<T extends EndpointDefinition> = {
     [K in KeyIfDefined<T, 'params' | 'query' | 'body'>]: K extends 'params' ? Tuple2Dict<T[K]> : RealType<T[K]>;
 };
 
-type UnknownRouteConsumerParams<T extends EndpointDefinition> = {
+type UnknownRouteConsumerParams = {
     params?: { [key: string]: string };
     query: { [key: string]: unknown };
     body: unknown;
@@ -37,8 +37,8 @@ export function createConsumer<T extends ApiDefinition>(baseURL: string, apiDefi
 
 function makeAxiosEndpoint<T extends EndpointDefinition>(baseURL: string, def: T): RouteConsumer<EndpointDefinition> {
     function handler(): Promise<TypedAxiosResponse<T>> 
-    function handler(args: UnknownRouteConsumerParams<T>): Promise<TypedAxiosResponse<T>>;
-    function handler(args?: UnknownRouteConsumerParams<T>): Promise<TypedAxiosResponse<T>> {
+    function handler(args: UnknownRouteConsumerParams): Promise<TypedAxiosResponse<T>>;
+    function handler(args?: UnknownRouteConsumerParams): Promise<TypedAxiosResponse<T>> {
         const params = args != null ? args.params : undefined;
         const body = args != null ? args.body : undefined;
         const query = args != null ? args.query : undefined;

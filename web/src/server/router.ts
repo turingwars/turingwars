@@ -2,7 +2,7 @@ import { BadRequestHttpException } from '@senhung/http-exceptions';
 import { endpoints } from 'shared/api/endpoints';
 import { Assembler } from 'shared/assembler/Assembler';
 import { API_RESULTS_PER_PAGE, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/constants';
-import { Repository } from 'typeorm';
+import { Repository, Like, FindManyOptions } from 'typeorm';
 import { Engine, EngineConfiguration } from '../../lib/engine';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
@@ -49,10 +49,19 @@ export function appRouter(
         listHeros: async (req) => {
             // TODO: Factor the pagination out in a helper if we are likely to use it more than once
             const page = parseInt(req.query.page || '0', 10);
-            const [ heros, total ] = await championsRepo.findAndCount({
+
+            const findOptions: FindManyOptions<Champion> = {
                 take: API_RESULTS_PER_PAGE,
-                skip: page * API_RESULTS_PER_PAGE,
-            });
+                skip: page * API_RESULTS_PER_PAGE
+            };
+
+            if (req.query.searchTerm) {
+                findOptions.where = {
+                    name: Like(`%${req.query.searchTerm || ''}%`)
+                }
+            }
+    
+            const [ heros, total ] = await championsRepo.findAndCount(findOptions);
             const data = heros.map((champ) => {
                 return {
                     id: champ.id.toString(),

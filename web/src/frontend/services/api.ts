@@ -6,7 +6,7 @@ import { HeroSummary } from 'shared/api/dto';
 export const api = createConsumer('/api', endpoints);
 
 export const herosDataSource = new PagedDataSource<HeroSummary>(
-    (pageNumber, searchTerm) =>        api.listHeros({
+    (pageNumber, searchTerm) => api.listHeros({
         query: {
             page: pageNumber.toString(),
             searchTerm: searchTerm || ''

@@ -256,11 +256,9 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
 
 
     private updateSearchTerm = async (searchTerm: string) => {
-        console.log("I'm called, search is ", searchTerm)
         this.props.list.heroDataSource.invalidate()
         const from = this.props.list.page;
-        const l = await this.props.list.heroDataSource.getRange(firstEntryOfPage(from), firstEntryOfPage(from+1), searchTerm)
-        console.log(l)
+        const l = await this.props.list.heroDataSource.getRange(firstEntryOfPage(from), firstEntryOfPage(from+1), searchTerm);
 
         this.props.update({
             ...this.props.list,

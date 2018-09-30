@@ -31,11 +31,9 @@ export interface IDataPage<T> {
  * 
  * _note: This could be split into two classes: One for the adapter feature, and one for the page cache._
  */
-export class PagedDataSource<T> {
+export class PagedDataSource<DATA> {
 
     private srcPageSize: number | null;
-
-    private pages = new Map<number, Promise<T[]>>();
 
     /**
      * This counter increases each time the source is invalidated and helps us detect stale reads.
@@ -48,11 +46,10 @@ export class PagedDataSource<T> {
     private knownMax = -1;
 
     public constructor(
-            private source: (pageNumber: number, searchTerm?: string) => Promise<ResultPage<T>>) {
+            private source: (pageNumber: number, searchTerm?: string) => Promise<ResultPage<DATA>>) {
     }
 
     public invalidate() {
-        this.pages = new Map();
         this.srcPageSize = null;
         this.knownMax = -1;
         this.version++;
@@ -61,12 +58,10 @@ export class PagedDataSource<T> {
     /**
      * Fetches all heros between `from` inclusive and `to` exclusive.
      */
-    public async getRange(from: number, to: number, searchTerm: string = ''): Promise<IDataPage<T>> {
+    public async getRange(from: number, to: number, searchTerm: string = ''): Promise<IDataPage<DATA>> {
         const startVersion = this.version;
-        console.log(`tamere ${searchTerm}`)
         const pagesRequired = await this.getPageNumbersForInterval(from, to, searchTerm);
-        console.log(pagesRequired)
-        const data = await Promise.all(pagesRequired.map(p => this.getPage(p, searchTerm))).then((allHeros) =>
+        const data = await Promise.all(pagesRequired.map(p => this.fetchPage(p, searchTerm))).then((allHeros) =>
             allHeros.reduce((prev, cur) => prev.concat(cur), [])
         );
 
@@ -92,16 +87,7 @@ export class PagedDataSource<T> {
             hasPrevious };
     }
 
-    private getPage = (p: number, searchTerm: string): Promise<T[]> => {
-        let page = this.pages.get(p);
-        if (page == null) {
-            page = this.fetchPage(p, searchTerm);
-            this.pages.set(p, page);
-        }
-        return page;
-    }
-
-    private async fetchPage(p: number, searchTerm: string): Promise<T[]> {
+    private async fetchPage(p: number, searchTerm: string): Promise<DATA[]> {
         const page = await this.source(p, searchTerm);
         if (this.srcPageSize != null && this.srcPageSize != page.perPage) {
             console.warn("Page size has changed. This means that the backend code was updated while the frontend was running.");
