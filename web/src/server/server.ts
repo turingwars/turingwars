@@ -7,8 +7,8 @@ import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
 import { Connection, createConnection } from 'typeorm';
-import { twAPI } from 'shared/api';
-import { createRouter } from 'shared/typed-apis/express-typed-api';
+import { endpoints } from 'shared/api/endpoints';
+import { createRouter } from 'shared/api/typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
@@ -73,7 +73,7 @@ class TuringWarsApplication {
         const championsRepo = this.connection.getRepository(Champion);
         const gamesRepo = this.connection.getRepository(GameLog);
 
-        app.use('/api', createRouter(twAPI, appRouter(championsRepo, gamesRepo)));
+        app.use('/api', createRouter(endpoints, appRouter(championsRepo, gamesRepo)));
     }
 
     /**

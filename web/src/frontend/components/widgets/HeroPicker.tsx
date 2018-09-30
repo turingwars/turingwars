@@ -1,4 +1,4 @@
-import { HeroSummary } from 'shared/api';
+import { HeroSummary } from 'shared/api/dto';
 import * as color from 'color';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -6,7 +6,7 @@ import { COLOR_P1, COLOR_P2, WHITE } from 'frontend/style';
 import { Label } from './Label';
 import { SearchInput } from './SearchBar';
 import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/private/PagedDataSource';
-import { api } from '../../services/api';
+import { herosCache } from '../../services/api';
 
 const ENTRIES_PER_PAGE = 15;
 const PICKER_HEIGHT = 500;
@@ -100,7 +100,7 @@ const ListContainer = styled.div<{baseColor: string}>`
     margin: 0;
     height: ${PICKER_HEIGHT}px;
     overflow: hidden;
-    
+
     position: relative;
 `;
 
@@ -144,7 +144,7 @@ class ListElement extends React.PureComponent<{
         baseColor: string;
     }> {
     /** @override */ public render() {
-        return <StyledElement 
+        return <StyledElement
                 baseColor={this.props.baseColor}
                 selected={this.props.selected}
                 onClick={this.clickHandler}>
@@ -173,6 +173,10 @@ export type HeroPickerProps = {
 
 export class HeroPicker extends React.Component<HeroPickerProps> {
 
+    // These variable is used in updateSearchTerm to prevent race conditions
+    private searchTermRaceCounter = 0;
+    private lastSearchTermRaceWinner = 0;
+
     public static initialListState(): HeroPickerListState {
         return {
             heros: emptyDataPage<HeroSummary>(),
@@ -180,12 +184,10 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
             selected: undefined,
             searchTerm: "",
             heroDataSource: new PagedDataSource<HeroSummary>(
-                (pageNumber, searchTerm) => api.listHeros({
-                    query: {
-                        page: pageNumber.toString(),
-                        searchTerm: searchTerm || ''
-                    }
-                }).then((res) => res.data))
+                (pageNumber, searchTerm) => herosCache.getPage(pageNumber, {
+                    searchTerm: searchTerm || ''
+                })
+            )
         }
     };
 
@@ -201,7 +203,7 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
         const baseColor = this.props.player === 1 ? COLOR_P1 : COLOR_P2;
         return  [<SearchInput color={baseColor} value={this.props.list.searchTerm} onChange={(s) => this.updateSearchTerm(s.currentTarget.value) }/>,
                 <ListContainer baseColor={baseColor}>
-                { 
+                {
                     this.props.list.heros && this.renderListEntries(baseColor, this.props.list.heros)
                 }
                 <HorizontalPixelGridBackground baseColor={baseColor}/>
@@ -254,18 +256,37 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
         });
     }
 
-
     private updateSearchTerm = async (searchTerm: string) => {
-        console.log("I'm called, search is ", searchTerm)
-        this.props.list.heroDataSource.invalidate()
-        const from = this.props.list.page;
-        const l = await this.props.list.heroDataSource.getRange(firstEntryOfPage(from), firstEntryOfPage(from+1), searchTerm)
-        console.log(l)
 
+        // This "thread" gets assigned a numeric value. We use this value below to prevent multiple
+        // invokation of this method from racing against each other. In other words, we guarantee that
+        // invokations of this method take effect in the same order as the call order. Any out-of-order
+        // result is aborted.
+        const raceCounter = this.searchTermRaceCounter++;
+
+        // First update the search term because we want the search term to update instantly upon key press,
+        // not seconds after when the ajax request returns
         this.props.update({
             ...this.props.list,
             searchTerm: searchTerm,
-            heros: l,            
+        });
+
+        this.props.list.heroDataSource.invalidate()
+        const from = this.props.list.page;
+        const l = await this.props.list.heroDataSource.getRange(firstEntryOfPage(from), firstEntryOfPage(from+1), searchTerm);
+
+        // Before we update, check that no newer "thread" won the race against the current one
+        if (this.lastSearchTermRaceWinner >= raceCounter) {
+            // If we did lose a race, then abort.
+            return;
+        }
+        // Otherwise, prevent older threads from updating after us
+        this.lastSearchTermRaceWinner = raceCounter;
+
+        // Then update only the results list. The search term has already been optimistically updated at that point.
+        this.props.update({
+            ...this.props.list,
+            heros: l,
         });
     }
 

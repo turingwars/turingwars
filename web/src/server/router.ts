@@ -1,20 +1,19 @@
 import { BadRequestHttpException } from '@senhung/http-exceptions';
-import { validate } from 'class-validator';
-import { twAPI } from 'shared/api';
+import { endpoints } from 'shared/api/endpoints';
 import { Assembler } from 'shared/assembler/Assembler';
 import { API_RESULTS_PER_PAGE, CORESIZE, NUM_CYCLES, UPDATE_PERIOD } from 'shared/constants';
-import { GetGameResponse } from 'shared/dto/GetGameResponse';
-import { RouterDefinition } from 'shared/typed-apis/express-typed-api';
-import { Repository } from 'typeorm';
+import { Repository, Like, FindManyOptions } from 'typeorm';
 import { Engine, EngineConfiguration } from '../../lib/engine';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { EngineRunResult } from './engine-interface';
+import { RouterDefinition } from 'shared/api/typed-apis/express-typed-api';
+import { GetGameResponse } from 'shared/api/dto';
 
 export function appRouter(
         championsRepo: Repository<Champion>,
         gamesRepo: Repository<GameLog>
-    ): RouterDefinition<typeof twAPI> {
+    ): RouterDefinition<typeof endpoints> {
 
 
     return {
@@ -31,7 +30,6 @@ export function appRouter(
             const champ = championsRepo.create();
             champ.code = req.body.program;
             champ.name = req.body.name;
-            await validate(champ);
             const asm = new Assembler();
             asm.assemble(champ.code); // Check the assembly code before saving
             try {
@@ -51,10 +49,19 @@ export function appRouter(
         listHeros: async (req) => {
             // TODO: Factor the pagination out in a helper if we are likely to use it more than once
             const page = parseInt(req.query.page || '0', 10);
-            const [ heros, total ] = await championsRepo.findAndCount({
+
+            const findOptions: FindManyOptions<Champion> = {
                 take: API_RESULTS_PER_PAGE,
-                skip: page * API_RESULTS_PER_PAGE,
-            });
+                skip: page * API_RESULTS_PER_PAGE
+            };
+
+            if (req.query.searchTerm) {
+                findOptions.where = {
+                    name: Like(`%${req.query.searchTerm || ''}%`)
+                }
+            }
+
+            const [ heros, total ] = await championsRepo.findAndCount(findOptions);
             const data = heros.map((champ) => {
                 return {
                     id: champ.id.toString(),
@@ -87,7 +94,6 @@ export function appRouter(
                 gameId: `${theGame.id}`
             };
         },
-
 
         playTest: async (req) => {
             const opponent = await championsRepo.findOneOrFail(req.body.opponent);
@@ -151,8 +157,6 @@ export function appRouter(
         );
 
         const result = EngineRunResult.check(JSON.parse(engine.run()));
-
-        // TODO: Validate result using some schema validation thingy
 
         theGame.log = JSON.stringify(result);
         theGame.isOver = true;

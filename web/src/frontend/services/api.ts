@@ -1,14 +1,19 @@
-import { twAPI, HeroSummary } from 'shared/api';
-import { createConsumer } from 'shared/typed-apis/axios-typed-api';
-import { PagedDataSource } from './private/PagedDataSource';
+import { endpoints } from 'shared/api/endpoints';
+import { createConsumer } from 'shared/api/typed-apis/axios-typed-api';
+import { HeroSummary } from 'shared/api/dto';
+import { PageCache } from './private/PageCache';
 
-export const api = createConsumer('/api', twAPI);
+export const api = createConsumer('/api', endpoints);
 
-export const herosDataSource = new PagedDataSource<HeroSummary>(
-    (pageNumber, searchTerm) =>        api.listHeros({
+interface HerosDataSourceParams {
+    searchTerm: string
+};
+
+export const herosCache = new PageCache<HeroSummary, HerosDataSourceParams>(
+    (p: number, data: HerosDataSourceParams) => api.listHeros({
         query: {
-            page: pageNumber.toString(),
-            searchTerm: searchTerm || ''
+            page: p.toString(),
+            searchTerm: data.searchTerm || ''
         }
-    }).then((res) => res.data)
-);
+    }).then((res) => res.data),
+    (params: HerosDataSourceParams) => params.searchTerm);

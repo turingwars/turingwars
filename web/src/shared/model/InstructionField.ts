@@ -1,21 +1,24 @@
-export class InstructionField {
-    public fieldType: 'immediate' | 'reference';
-    public value: number;
-    public field: 'a' | 'b';
-}
+import * as rt from 'runtypes';
+
+export type InstructionField = rt.Static<typeof InstructionField>;
+export const InstructionField = rt.Record({
+    fieldType: rt.Union(rt.Literal('immediate'), rt.Literal('reference')),
+    value: rt.Number,
+    field: rt.Union(rt.Literal('a'), rt.Literal('b'))
+});
 
 export function immediate(value?: number): InstructionField {
-    const ifield = new InstructionField();
-    ifield.fieldType = 'immediate';
-    ifield.value = value || 0;
-    ifield.field = 'a';
-    return ifield;
+    return {
+        fieldType: 'immediate',
+        value: value || 0,
+        field: 'a'
+    }
 }
 
 export function ref(field: 'a' | 'b', value: number): InstructionField {
-    const ifield = new InstructionField();
-    ifield.fieldType = 'reference';
-    ifield.value = value;
-    ifield.field = field;
-    return ifield;
+    return {
+        fieldType: 'reference',
+        value: value,
+        field: field
+    }
 }

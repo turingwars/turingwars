@@ -32,18 +32,18 @@ class Memory(val size: Int) {
       DiffValue(
         instructionToOpcode(instruction),
         DiffFieldValue(
-          instruction.a match { case ImmediateValue(v) => "immediate"; case _ => "reference "},
+          instruction.a match { case ImmediateValue(v) => "immediate"; case _ => "reference"},
           instruction.a.value,
           instruction.a match {
-            case ImmediateValue(_) => ""
+            case ImmediateValue(_) => "a"
             case ReferenceValue(_, t) => if(t == FieldType.a) "a" else "b"
           }
         ),
         DiffFieldValue(
-          instruction.b match { case ImmediateValue(v) => "immediate"; case _ => "reference "},
+          instruction.b match { case ImmediateValue(v) => "immediate"; case _ => "reference"},
           instruction.b.value,
           instruction.b match {
-            case ImmediateValue(_) => ""
+            case ImmediateValue(_) => "a"
             case ReferenceValue(_, t) => if(t == FieldType.a) "a" else "b"
           }
         )

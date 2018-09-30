@@ -1,36 +1,27 @@
 import { Instruction } from './Instruction';
+import * as rt from 'runtypes';
 
-export class GameUpdate {
+export type Process = rt.Static<typeof Process>;
+export const Process = rt.Record({
+    processId: rt.String,
+    instructionPointer: rt.Number,
+    isAlive: rt.Boolean
+});
 
-    public processes: Process[];
+export const MemoryUpdate = rt.Record({
+    address: rt.Number,
+    cause: rt.Number,
+    value: Instruction
+});
 
-    public memory: MemoryUpdate[];
+export const Score = rt.Record({
+    playerId: rt.String,
+    score: rt.Number
+});
 
-    public score: Score[];
-}
-
-export class Process {
-
-    public processId: string;
-
-    public instructionPointer: number;
-
-    public isAlive: boolean;
-}
-
-export class MemoryUpdate {
-    public address: number;
-
-    /**
-     * ID of the user who "caused" this mutation
-     */
-    public cause: number;
-
-    public value: Instruction;
-}
-
-export class Score {
-    public playerId: string;
-
-    public score: number;
-}
+export type GameUpdate = rt.Static<typeof GameUpdate>;
+export const GameUpdate = rt.Record({
+    processes: rt.Array(Process),
+    memory: rt.Array(MemoryUpdate),
+    score: rt.Array(Score)
+});
