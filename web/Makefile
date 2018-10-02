@@ -69,7 +69,7 @@ clean-package:
 	rm -f *.tgz
 
 $(NODE_MODULES): package.json package-lock.json
-	npm install
+	npm ci
 	touch $(NODE_MODULES)
 
 $(LIBS_OUTPUT): public/dist/vendor/%.js : $(NODE_MODULES)
