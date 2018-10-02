@@ -9,6 +9,7 @@ import { GameLog } from './entities/GameLog';
 import { EngineRunResult } from './engine-interface';
 import { RouterDefinition } from 'shared/api/typed-apis/express-typed-api';
 import { GetGameResponse } from 'shared/api/dto';
+import { getConfig } from './config';
 
 export function appRouter(
         championsRepo: Repository<Champion>,
@@ -31,7 +32,13 @@ export function appRouter(
             champ.code = req.body.program;
             champ.name = req.body.name;
             const asm = new Assembler();
-            asm.assemble(champ.code); // Check the assembly code before saving
+            const program = asm.assemble(champ.code); // Check the assembly code before saving
+
+            const maxProgramSize = getConfig().game.maxProgramSize;
+            if(program.program.length > maxProgramSize) {
+                throw new BadRequestHttpException(`Program too long! Maximum program size is: ${maxProgramSize} instructions.`);
+            }
+
             try {
                 await championsRepo.save(champ);
             } catch (e) {
@@ -86,8 +93,11 @@ export function appRouter(
             if (request.champions.length !== 2) {
                 throw new BadRequestHttpException('You must send exactly two champion IDs');
             }
+            console.log(request.champions);
             const champions = await Promise.all(
                 request.champions.map(async (id) => await championsRepo.findOneOrFail(id)));
+
+            console.log(champions.map((c) => c.code));
             const theGame = await createGame(champions);
 
             return {
