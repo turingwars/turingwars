@@ -12,7 +12,8 @@ const CODEMIRROR_CSS_CONSTANTS = {
     keyword: 'cm-keyword',
     number: 'cm-number',
     reference: 'cm-property',
-    string: 'cm-string'
+    string: 'cm-string',
+    variable: 'cm-variable'
 };
 
 interface ITokenProps {
@@ -40,33 +41,54 @@ class Instruction extends React.Component<IInstructionProps> {
         const tokens = this.props.value.split(/[\s|,]/)
         
         const reactComponents = tokens.map((token) => {
+            let style: string = ''
             switch(token){
                 case 'A':
                 case 'B':
                 case 'offset':
                 case 'condition':
-                    return <Token value={token+' '} class={CODEMIRROR_CSS_CONSTANTS.number} />
+                case '4':
+                    style = CODEMIRROR_CSS_CONSTANTS.number;
+                    break;
                 case '%id':
-                    return <Token value={token+' '} class={CODEMIRROR_CSS_CONSTANTS.string} />
-                case '1':
-                case '2':
-                    return <Token value={token+' '} class={CODEMIRROR_CSS_CONSTANTS.number} />
-                case 'b(1)':
-                    return <Token value={token+' '} class={CODEMIRROR_CSS_CONSTANTS.reference} />
+                    style = CODEMIRROR_CSS_CONSTANTS.string;
+                    break;
+                case 'a(4)':
+                    style = CODEMIRROR_CSS_CONSTANTS.reference;
+                    break;
+                case 'A-field':
+                case 'B-field':
+                case 'field':
+                    style = CODEMIRROR_CSS_CONSTANTS.variable;
+                    break;
                 default:
-                    return <Token value={token+' '} class={CODEMIRROR_CSS_CONSTANTS.keyword} />
+                    style = CODEMIRROR_CSS_CONSTANTS.keyword;
+                    break;
             }
+            return <Token value={token+' '} class={style} />
         });
+
+        if(this.props.tooltip !== undefined){
+            return <span data-tooltip={this.props.tooltip}>{reactComponents}</span>
+        }
 
         return reactComponents
     }
 }
 
 
-const tooltipsLongTexts = {
+const tooltips = {
+    jmp4: 'Jumps by exactly 4 cells.',
+    jmp_a4: 'Reads the A-field of the instruction in 4 cells, and jumps by that many cells.',
     mine: 'Generates 1 victory point. Use `mine %id` verbatim, %id gets replaced with your champion\'s player ID.',
-    add: 'Adds `B` to `A`, stores into `A`.',
-    sub: ''
+    add: 'Computes `A` + `B`, stores into `A`. `A` must be a reference.',
+    sub: 'Computes `A` - `B`, stores into `A`. `A` must be a reference.',
+    mul: 'Computes `A` * `B`, stores into `A`. `A` must be a reference.',
+    div: 'Computes `A` / `B`, stores into `A`. `A` must be a reference.',
+    mod: 'Computes `A` \% `B`, stores into `A`. `A` must be a reference.',
+    jmp: 'Jumps by `offset` cells. `offset` can be negative.',
+    jz: 'Jumps by `offset` cells if `condition` evaluates to 0.',
+    jnz: 'Jumps by `offset` cells if `condition` does not evaluate to 0.',
 }
 
 export class EditorCheatSheet extends React.Component {
@@ -75,25 +97,20 @@ export class EditorCheatSheet extends React.Component {
     return <div className="EditorCheatSheet cm-s-isotope"> 
         <Title>CheatSheet</Title>
         <p>Hover over the text for tips!</p>
-        <p className="CheatSheet_ul_header"><Instruction value="A,B,offset"/> can be either:</p>
-        <ul>
-            <li>immediate: <Instruction value="add 1 2"/></li>
-            <li>referenced: <Instruction value="add b(1) 2"/></li>
-        </ul>
         <p className="CheatSheet_ul_header">Possible instructions:</p>
         <ul>
-            <li><Instruction value="mine %id" tooltip={tooltipsLongTexts.mine}/></li>
-            <li><Instruction value="add A B" tooltip={tooltipsLongTexts.add} /></li>
-            <li>add A B</li>
-            <li>sub A B</li>
-            <li>mul A B</li>
-            <li>div A B</li>
-            <li>mod A B</li>
-            <li>jmp offset</li>
-            <li>jz offset condition</li>
-            <li>jnz offset condition</li>
-            <li>se A B</li>
-            <li>sne A B</li>
+            <li><Instruction value="mine %id" tooltip={tooltips.mine}/></li>
+            <li><Instruction value="add A B" tooltip={tooltips.add} /></li>
+            <li><Instruction value="sub" tooltip={tooltips.sub} />, <Instruction value="mul" tooltip={tooltips.mul} />, <Instruction value="div" tooltip={tooltips.div} />, <Instruction value="mod" tooltip={tooltips.mod} /></li>
+            <li><Instruction value="jmp offset" tooltip={tooltips.jmp}/></li>
+            <li><Instruction value="jz offset condition" tooltip={tooltips.jz}/></li>
+            <li><Instruction value="jnz offset condition" tooltip={tooltips.jnz}/></li>
+        </ul>
+        <p className="CheatSheet_ul_header">All instructions have an opcode (e.g., <Instruction value="add"/>,<Instruction value="jmp"/>), a <Instruction value="A-field"/> and a <Instruction value="B-field"/>.</p>
+        <p className="CheatSheet_ul_header">A <Instruction value="field"/> can be either:</p>
+        <ul>
+            <li>immediate: <Instruction value="jmp 4" tooltip={tooltips.jmp4}/></li>
+            <li>referenced: <Instruction value="jmp a(4)" tooltip={tooltips.jmp_a4}/></li>
         </ul>
     </div>
     }
