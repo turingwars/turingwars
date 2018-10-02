@@ -96,7 +96,7 @@ export class EditorCheatSheet extends React.Component {
     /** @override */ public render() {
     return <div className="EditorCheatSheet cm-s-isotope"> 
         <Title>CheatSheet</Title>
-        <p>Hover over the text for tips!</p>
+        <p>Hover over the text for tips! Full reference <a href="https://github.com/turingwars/turingwars/wiki">here</a>.</p>
         <p className="CheatSheet_ul_header">Possible instructions:</p>
         <ul>
             <li><Instruction value="mine %id" tooltip={tooltips.mine}/></li>

@@ -61,6 +61,10 @@ body {
     width: 25%;
 }
 
+.EditorCheatSheet a {
+    color: #f09609;
+}
+
 .EditorCheatSheet ul {
     padding: 0;
     margin-top: 0px;
