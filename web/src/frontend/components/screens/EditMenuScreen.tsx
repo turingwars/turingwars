@@ -38,10 +38,10 @@ export const EditMenuScreen = connect(mapStateToProps, mapDispatchToProps)(
         return <div>
             <MainTitle>Create a hero</MainTitle>
             <FatMenu>
-                <FatMenuButton href={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
-                <FatMenuButton href={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>
                 <FatMenuSpacer />
-                <FatMenuButton href="#/" smaller={true}>Main menu</FatMenuButton>
+                <FatMenuButton url="#/" smaller={true}>Main menu</FatMenuButton>
             </FatMenu>
         </div>
     }

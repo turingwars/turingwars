@@ -8,9 +8,9 @@ import { MainTitle } from 'frontend/components/widgets/MainTitle';
 export const HomeScreen = () => <div>
     <MainTitle>Turing Wars</MainTitle>
     <FatMenu>
-        <FatMenuButton href={`#${ROUTE_MATCHMAKING}`}>Matchmaking</FatMenuButton>
-        <FatMenuButton href={`#${ROUTE_CREATE_HERO}`}>Create a hero</FatMenuButton>
+        <FatMenuButton url={`#${ROUTE_MATCHMAKING}`}>Matchmaking</FatMenuButton>
+        <FatMenuButton url={`#${ROUTE_CREATE_HERO}`}>Create a hero</FatMenuButton>
         <FatMenuSpacer />
-        <FatMenuButton target="_blank" href={URL_ABOUT} smaller={true}>About</FatMenuButton>
+        <FatMenuButton blank url={URL_ABOUT} smaller={true}>About</FatMenuButton>
     </FatMenu>
 </div>;
