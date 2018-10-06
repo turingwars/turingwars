@@ -89,6 +89,8 @@ const tooltips = {
     jmp: 'Jumps by `offset` cells. `offset` can be negative.',
     jz: 'Jumps by `offset` cells if `condition` evaluates to 0.',
     jnz: 'Jumps by `offset` cells if `condition` does not evaluate to 0.',
+    se: 'Skips next instruction if the instructions at positions `A` and `B` are equal.',
+    sne: 'Skips next instruction if the instructions at positions `A` and `B` are different.',
 }
 
 export class EditorCheatSheet extends React.Component {
@@ -100,11 +102,10 @@ export class EditorCheatSheet extends React.Component {
         <p className="CheatSheet_ul_header">Possible instructions:</p>
         <ul>
             <li><Instruction value="mine %id" tooltip={tooltips.mine}/></li>
-            <li><Instruction value="add A B" tooltip={tooltips.add} /></li>
-            <li><Instruction value="sub" tooltip={tooltips.sub} />, <Instruction value="mul" tooltip={tooltips.mul} />, <Instruction value="div" tooltip={tooltips.div} />, <Instruction value="mod" tooltip={tooltips.mod} /></li>
+            <li><Instruction value="add" tooltip={tooltips.add} /> / <Instruction value="sub" tooltip={tooltips.sub} /> / <Instruction value="mul" tooltip={tooltips.mul} /> / <Instruction value="div" tooltip={tooltips.div} /> / <Instruction value="mod A B" tooltip={tooltips.mod} /></li>
             <li><Instruction value="jmp offset" tooltip={tooltips.jmp}/></li>
-            <li><Instruction value="jz offset condition" tooltip={tooltips.jz}/></li>
-            <li><Instruction value="jnz offset condition" tooltip={tooltips.jnz}/></li>
+            <li><Instruction value="jz" tooltip={tooltips.jz}/> / <Instruction value="jnz offset condition" tooltip={tooltips.jnz}/></li>
+            <li><Instruction value="se" tooltip={tooltips.se}/> / <Instruction value="sne A B" tooltip={tooltips.sne}/></li>
         </ul>
         <p className="CheatSheet_ul_header">All instructions have an opcode (e.g., <Instruction value="add"/>,<Instruction value="jmp"/>), a <Instruction value="A-field"/> and a <Instruction value="B-field"/>.</p>
         <p className="CheatSheet_ul_header">A <Instruction value="field"/> can be either:</p>
