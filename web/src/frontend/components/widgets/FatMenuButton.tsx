@@ -32,6 +32,13 @@ export class FatMenuButton extends React.Component <IFatMenuButtonProps>{
     }
 
     /** @override */ public render() {
-        return <FatMenuButtonA href={this.props.url} target={this.props.blank ? "_blank" : ''} smaller={this.props.smaller} onMouseEnter={this.hover}>{this.props.children}</FatMenuButtonA>
+        return <FatMenuButtonA 
+            href={this.props.url}
+            target={this.props.blank ? "_blank" : ''}
+            smaller={this.props.smaller}
+            onMouseEnter={this.hover}
+            onClick={this.props.onClick}>
+            {this.props.children}
+        </FatMenuButtonA>;
     }
 }

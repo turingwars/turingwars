@@ -11,6 +11,6 @@ export const HomeScreen = () => <div>
         <FatMenuButton url={`#${ROUTE_MATCHMAKING}`}>Matchmaking</FatMenuButton>
         <FatMenuButton url={`#${ROUTE_CREATE_HERO}`}>Create a hero</FatMenuButton>
         <FatMenuSpacer />
-        <FatMenuButton blank url={URL_ABOUT} smaller={true}>About</FatMenuButton>
+        <FatMenuButton url={URL_ABOUT} blank smaller>About</FatMenuButton>
     </FatMenu>
 </div>;
