@@ -40,6 +40,10 @@ body {
     background-repeat: repeat-x;
 }
 
+.CodeMirror {
+    height: 400px;
+}
+
 
 /** Styles for the "stars.js" effect */
 
@@ -48,29 +52,4 @@ body {
     top: 0px;
     left: 0px;
     z-index: 10;
-}
-
-.CodeMirror {
-    height: 400px;
-}
-
-.EditorCheatSheet {
-    float: right;
-    padding-left: 10px;
-    padding-right: 10px;
-    width: 25%;
-}
-
-.EditorCheatSheet a {
-    color: #f09609;
-}
-
-.EditorCheatSheet ul {
-    padding: 0;
-    margin-top: 0px;
-    list-style-type: none;
-} 
-
-.EditorCheatSheet .CheatSheet_ul_header {
-    margin-bottom: 5px;
 }

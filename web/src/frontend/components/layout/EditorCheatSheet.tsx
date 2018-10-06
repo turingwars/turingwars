@@ -8,6 +8,27 @@ const Title = styled.h2`
     margin-top: 0px;
 `;
 
+const CheatSheetDiv = styled.div`
+    float: right;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 25%;
+`;
+
+const CheatSheetUl = styled.ul`
+    padding: 0;
+    margin-top: 0px;
+    list-style-type: none;
+`;
+
+const CheatSheetUlTitle = styled.p`
+    margin-bottom: 5px;
+`;
+
+const CheatSheetLink = styled.a`
+    color: #f09609;
+`;
+
 const CODEMIRROR_CSS_CONSTANTS = {
     keyword: 'cm-keyword',
     number: 'cm-number',
@@ -96,23 +117,25 @@ const tooltips = {
 export class EditorCheatSheet extends React.Component {
 
     /** @override */ public render() {
-    return <div className="EditorCheatSheet cm-s-isotope"> 
+    return <CheatSheetDiv className="cm-s-isotope"> 
         <Title>CheatSheet</Title>
-        <p>Hover over the text for tips! Full reference <a href="https://github.com/turingwars/turingwars/wiki">here</a>.</p>
-        <p className="CheatSheet_ul_header">Possible instructions:</p>
-        <ul>
+        <p>Hover over the text for tips! Full reference <CheatSheetLink href="https://github.com/turingwars/turingwars/wiki">here</CheatSheetLink>.</p>
+        
+        <CheatSheetUlTitle>Possible instructions:</CheatSheetUlTitle>
+        <CheatSheetUl>
             <li><Instruction value="mine %id" tooltip={tooltips.mine}/></li>
             <li><Instruction value="add" tooltip={tooltips.add} /> / <Instruction value="sub" tooltip={tooltips.sub} /> / <Instruction value="mul" tooltip={tooltips.mul} /> / <Instruction value="div" tooltip={tooltips.div} /> / <Instruction value="mod A B" tooltip={tooltips.mod} /></li>
             <li><Instruction value="jmp offset" tooltip={tooltips.jmp}/></li>
             <li><Instruction value="jz" tooltip={tooltips.jz}/> / <Instruction value="jnz offset condition" tooltip={tooltips.jnz}/></li>
             <li><Instruction value="se" tooltip={tooltips.se}/> / <Instruction value="sne A B" tooltip={tooltips.sne}/></li>
-        </ul>
-        <p className="CheatSheet_ul_header">All instructions have an opcode (e.g., <Instruction value="add"/>,<Instruction value="jmp"/>), a <Instruction value="A-field"/> and a <Instruction value="B-field"/>.</p>
-        <p className="CheatSheet_ul_header">A <Instruction value="field"/> can be either:</p>
-        <ul>
+        </CheatSheetUl>
+        <CheatSheetUlTitle>All instructions have an opcode (e.g., <Instruction value="add"/>,<Instruction value="jmp"/>), a <Instruction value="A-field"/> and a <Instruction value="B-field"/>.</CheatSheetUlTitle>
+        
+        <CheatSheetUlTitle>A <Instruction value="field"/> can be either:</CheatSheetUlTitle>
+        <CheatSheetUl>
             <li>immediate: <Instruction value="jmp 4" tooltip={tooltips.jmp4}/></li>
             <li>referenced: <Instruction value="jmp a(4)" tooltip={tooltips.jmp_a4}/></li>
-        </ul>
-    </div>
+        </CheatSheetUl>
+    </CheatSheetDiv>
     }
 }
