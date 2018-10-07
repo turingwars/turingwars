@@ -10,6 +10,13 @@ const BackArrow = styled.a`
     &:hover {
         color: ${GRAY_2};
     }
+
+    &:before {
+        content: "◄";
+        font-size:30px;
+        padding: 0 5px;
+        display:inline-block; /* prevents underline */
+    }
 `;
 
 interface IBackButtonProps {
@@ -21,7 +28,6 @@ interface IBackButtonProps {
 export const BackButton = (props: IBackButtonProps) => (
     <BackArrow
             onClick={props.onClick}
-            href="javascript:history.back()">
-        ◄ back
+            href="javascript:history.back()">back
     </BackArrow>
 );
