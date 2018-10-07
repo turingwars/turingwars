@@ -36,7 +36,7 @@ export const EditMenuScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <div>
-            <MainTitle>Create a hero</MainTitle>
+            <MainTitle>New Hero</MainTitle>
             <FatMenu>
                 <FatMenuButton href={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
                 <FatMenuButton href={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>

@@ -13,5 +13,8 @@ export const FatMenuButton = styled.a<{
         ${CRT_GLITCH_TEXT_LG}
         outline: none;
     }
+
+    font-family: Lazer85;
+    text-transform: lowercase;
 `;
 

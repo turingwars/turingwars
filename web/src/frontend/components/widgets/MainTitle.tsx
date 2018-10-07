@@ -7,4 +7,6 @@ export const MainTitle = styled.h1`
     font-size: 100px;
     text-align: center;
     font-weight: 100;
+    font-family: Lazer85;
+    text-transform: lowercase;
 `;

@@ -39,6 +39,8 @@ const ScoreText = styled.div<{
     position: absolute;
     transition-property: color, font-size;
     transition-duration: 300ms;
+    font-family: Lazer85;
+    text-transform: lowercase;
     line-height: ${TEXT_SIZE_PX * 1.1}px; /* Leaves enough room for the pumping animation to fill */
 
     ${(props) => props.pumping && css`

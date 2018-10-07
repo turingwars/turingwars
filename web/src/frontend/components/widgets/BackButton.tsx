@@ -4,6 +4,8 @@ import { GRAY, GRAY_2 } from 'frontend/style';
 
 const BackArrow = styled.a`
     color: ${GRAY};
+    font-family: Lazer85;
+    text-transform: lowercase;
 
     &:hover {
         color: ${GRAY_2};

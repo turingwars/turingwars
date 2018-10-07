@@ -6,4 +6,6 @@ export const ScreenTitle = styled.h1`
     color: ${COLOR_PRIMARY}
     font-size: 40px;
     text-align: center;
+    font-family: Lazer85;
+    text-transform: lowercase;
 `;

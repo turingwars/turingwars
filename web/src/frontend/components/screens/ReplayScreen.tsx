@@ -35,6 +35,8 @@ const PlayerName = styled.div<{winner: boolean}>`
     margin: 5px 20px;
     margin-top: 0;
     color: ${GRAY_2};
+    font-family: Lazer85;
+    text-transform: lowercase;
     ${props => props.winner && css`
         text-shadow: 0px 0px 2px ${GRAY_2};
         color: ${COLOR_PRIMARY};

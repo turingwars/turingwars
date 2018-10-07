@@ -44,6 +44,8 @@ export const Button = styled.a<ButtonProps>`
     font-size: ${props => `${getFontSize(props.size)}px`};
     display: block;
     cursor: default;
+    font-family: Lazer85;
+    text-transform: lowercase;
     
     ${props => isEnabled(props) ? css`
         &:hover, &:focus {

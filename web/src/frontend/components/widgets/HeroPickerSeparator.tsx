@@ -33,10 +33,12 @@ export const HeroPickerSeparator = (() => {
         position: absolute;
         color: ${WHITE};
         font-size: 47px;
+        font-family: Lazer85;
+        text-transform: lowercase;
 
         /* Adjust magic if changing the font or font size so the text is centered */
         top: ${(height - 15) / 2}px;
-        left: ${(width - 43) / 2}px;
+        left: ${(width - 58) / 2}px;
 
         ${CRT_GLITCH_TEXT_LG}
     `;

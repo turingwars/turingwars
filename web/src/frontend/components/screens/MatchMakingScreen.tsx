@@ -24,10 +24,13 @@ const PlayerTitle = styled.h2<{playerId: 1 | 2}>`
     color: ${WHITE};
     font-size: 20px;
     margin: 5px 10px;
+    font-family: Lazer85;
+    text-transform: lowercase;
 
     &:${props => props.playerId === 1 ? 'after' : 'before'} {
         content: "▾";
-        padding: 0 20px;
+        font-size:40px;
+        padding: 0 5px;
         color: ${props => props.playerId === 1 ? COLOR_P1 : COLOR_P2};
     }
 `;
