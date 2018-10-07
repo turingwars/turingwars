@@ -15,10 +15,16 @@
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
     <link rel="stylesheet" href="/css/isotope.css">
+    <link rel="stylesheet" href="/css/crt.css">
 
     <title>Turing Wars</title>
 
     <link rel="stylesheet" href="/css/main.css">
+
+    <style>
+
+
+    </style>
 
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -26,8 +32,13 @@
 </head>
 <body>
     <div id="innerBody">
-        <div id="app"></div>
+        <div id="crt">
+            <div id="crt_inner">
+                <div id="app"></div>
+            </div>
+        </div>
     </div>
+
     <script src="./dist/vendor/codemirror.js"></script>
     <script src="./dist/vendor/react.js" crossorigin></script>
     <script src="./dist/vendor/react-dom.js" crossorigin></script>
@@ -35,6 +46,6 @@
     <script src="./dist/vendor/react-redux.js" crossorigin></script>
     <script src="./dist/vendor/axios.js"></script>
     <script src="./dist/app.js"></script>
-    <!-- <script src='/js/stars.js'></script> This script was tapping too much into the CPU -->
+    <!--<script src='./js/stars.js'></script>-->
 </body>
 </html>

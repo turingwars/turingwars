@@ -23,6 +23,7 @@ const PlayerBoardContainer = styled.div`
     border: 15px solid #222;
     padding: 0px;
     position: relative;
+    z-index:3;
 `;
 export class PlayerBoard extends React.Component<IPlayerBoardProps> {
 
