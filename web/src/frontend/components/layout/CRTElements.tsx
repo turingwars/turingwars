@@ -59,6 +59,20 @@ const CRTContent = styled.div`
 
 export class AppBody extends React.Component {
 
+    public componentDidMount(){
+
+        // remove the preloader and show the app
+        const loaderDiv = document.getElementById('preloader')
+        const appDiv = document.getElementById('app')
+        if (loaderDiv == null || appDiv == null) {
+            return;
+        }
+        setTimeout(() => {
+            loaderDiv.remove();
+            appDiv.style.display = 'block';
+        }, 2000);
+    }
+
     /** @override */ public render() {
         return <InnerBody>
             <CRTScreen>

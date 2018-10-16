@@ -6,6 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="Pragma" content="no-cache">
 
+    <title>Turing Wars</title>
+
+    <link rel="stylesheet" href="/css/preload.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/crt.css">
+    <link rel="stylesheet" href="/css/isotope.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
+
     <link rel="shortcut icon" href="icons/icon32.ico" />
     <link rel="shortcut icon" href="icons/icon32.png" />
     <link rel="shortcut icon" href="icons/icon64.ico" />
@@ -13,22 +21,15 @@
     <link rel="apple-touch-icon" href="icons/icon64.png" />
 
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
-    <link rel="stylesheet" href="/css/isotope.css">
-    <link rel="stylesheet" href="/css/crt.css">
-
-    <title>Turing Wars</title>
-
-    <link rel="stylesheet" href="/css/main.css">
 
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
 </head>
 <body>
-    <noscript><h1 style="font-family: Consolas; text-align: center">You need to enable javascript to run this app.</h1></noscript>
+    <div id="preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div> <p>Loading...</p></div>
 
-    <div id="app"></div>
+    <div id="app" style="display:none"></div>
 
     <svg>
         <defs>
