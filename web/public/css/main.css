@@ -25,19 +25,6 @@ body {
     padding-top: 10px;
 }
 
-#innerBody{
-    position:relative;
-    z-index: 100;
-    background-color: black;
-    width: 1000px;
-    margin:auto;
-    padding: 30px;
-    opacity: 1;
-    background: #272727;
-    box-shadow: 20px 20px 80px #ff00974d,-20px -20px 80px #1ba1e2b3, inset 3px 3px 10px #fff6, inset -3px -3px 10px #00000080;
-    border-radius: 5px;
-}
-
 /** Code-mirror stuff */
 
 .syntax-error {

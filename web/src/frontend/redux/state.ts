@@ -4,7 +4,8 @@ import { editorInitialState } from './editor/state';
 export function initialState() {
     return {
         replay: replayInitialState(),
-        editor: editorInitialState()
+        editor: editorInitialState(),
+        soundEnabled: true,
     };
 }
 

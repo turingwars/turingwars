@@ -1,6 +1,6 @@
 import { GameUpdate } from 'shared/model/GameUpdate'
 import { Store } from 'redux';
-import { AppActions } from 'frontend/redux/reduer';
+import { AppActions } from 'frontend/redux/reducer';
 import { publishGameOver, publishGameUpdate, publishVictory, resetReplay } from 'frontend/redux/replay/actions';
 import { State } from 'frontend/redux/state';
 
