@@ -2,7 +2,8 @@
     font-size: 50px;
     font-family: Consolas;
     vertical-align: top;
-    margin-left: 20px;
+    margin: auto;
+    text-align: center;
 }
 .lds-ring {
   display: inline-block;
