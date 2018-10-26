@@ -7,9 +7,9 @@ import { Engine, EngineConfiguration } from '../../lib/engine';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
 import { EngineRunResult } from './engine-interface';
-import { RouterDefinition } from 'shared/api/typed-apis/express-typed-api';
 import { GetGameResponse } from 'shared/api/dto';
 import { getConfig } from './config';
+import { RouterDefinition } from 'rest-ts-express';
 
 export function appRouter(
         championsRepo: Repository<Champion>,

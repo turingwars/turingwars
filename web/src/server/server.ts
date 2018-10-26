@@ -8,7 +8,6 @@ import { errorReporter } from 'express-youch';
 import * as path from 'path';
 import { Connection, createConnection } from 'typeorm';
 import { endpoints } from 'shared/api/endpoints';
-import { createRouter } from 'shared/api/typed-apis/express-typed-api';
 import { BANNER } from './banner';
 import { Champion } from './entities/Champion';
 import { GameLog } from './entities/GameLog';
@@ -16,6 +15,7 @@ import { appRouter } from './router';
 import { seedDatabase } from './seed';
 import { getConfig } from './config';
 import { pause } from 'shared/utils';
+import { createRouter } from 'rest-ts-express';
 
 const ONE_SECOND_IN_MS = 2000;
 const DB_CONNECT_ATTEMPTS = 40;

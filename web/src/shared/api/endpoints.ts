@@ -1,8 +1,8 @@
-import { GET, POST, Api }from './typed-apis/typed-api';
+import { GET, POST, defineAPI }from 'rest-ts-core';
 import { ResultPage, HeroSummary, Hero, GetGameResponse, CreateMatchRequest, PlaytestRequest, CreateMatchResponse, CommitHeroRequest } from './dto';
 import * as rt from 'runtypes';
 
-export const endpoints = Api({
+export const endpoints = defineAPI({
 
     getHero: GET `/hero/${'id'}`
         .response(Hero),
