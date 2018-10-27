@@ -10,6 +10,7 @@ import { navigateTo, ROUTE_HOME, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from 'fron
 import { ActionsRow } from 'frontend/components/layout/ActionsRow';
 import { Button } from 'frontend/components/widgets/Button';
 import { BaseScreen } from './BaseScreen';
+import { EditorCheatSheet } from '../layout/EditorCheatSheet';
 
 
 const asm = new Assembler();
@@ -23,10 +24,10 @@ const mapDispatchToProps = {
     loadCode
 };
 
-type EditorSreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type EditorScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
-    class extends React.Component<EditorSreenProps> {
+    class extends React.Component<EditorScreenProps> {
 
     private markers: CodeMirror.TextMarker[] = [];
 
@@ -34,12 +35,13 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <BaseScreen title="Hero creator">
+            <EditorCheatSheet></EditorCheatSheet>
             <CodeMirror
                 value={this.props.code || ''}
                 options={{
                     mode: 'twc',
                     theme: 'isotope',
-                    lineNumbers: true
+                    lineNumbers: true,
                 }}
                 onBeforeChange={(_editor, _data, value) => {
                     this.props.loadCode(value);
@@ -55,6 +57,7 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
                 <Button href={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
                 <Button onClick={this.playtestHandler}>Test ►</Button>
             </ActionsRow>
+
         </BaseScreen>
     }
 

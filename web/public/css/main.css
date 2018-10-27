@@ -33,6 +33,10 @@ body {
     background-repeat: repeat-x;
 }
 
+.CodeMirror {
+    height: 400px;
+}
+
 
 /** Styles for the "stars.js" effect */
 
