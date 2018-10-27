@@ -12,7 +12,7 @@ const SOUNDS_FILES = {
 // A sound, e.g, beep, flight, you_win, you_loose
 export type Sound = keyof typeof SOUNDS_FILES;
 
-export class Sounds {
+export abstract class Sounds {
 
     // Plays the sound exactly once
     public static play(sound: Sound): void {
