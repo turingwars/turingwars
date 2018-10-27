@@ -46,7 +46,7 @@ interface ITokenProps {
 class Token extends React.Component<ITokenProps> {
     /** @override */ public render() {
         if(this.props.tooltip !== undefined) {
-            return <span title={this.props.tooltip} className={this.props.class}>{this.props.value}</span>
+            return <span data-tooltip={this.props.tooltip} className={this.props.class}>{this.props.value}</span>
         }
         return <span className={this.props.class}>{this.props.value}</span>
     }
@@ -90,7 +90,7 @@ class Instruction extends React.Component<IInstructionProps> {
         });
 
         if(this.props.tooltip !== undefined){
-            return <span title={this.props.tooltip}>{reactComponents}</span>
+            return <span data-tooltip={this.props.tooltip}>{reactComponents}</span>
         }
 
         return reactComponents
