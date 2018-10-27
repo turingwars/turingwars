@@ -7,6 +7,13 @@ FRONTEND_BIN=public/dist/app.js
 
 ENGINE_BIN=lib/engine.js
 
+# For some reason, "npm ci" doesn't work in travis, but "npm install" there has the same effect as "npm ci" locally...
+ifeq ($(TRAVIS),true)
+	NPM_INSTALL_CMD=install
+else
+	NPM_INSTALL_CMD=ci
+endif
+
 libs.react.dev := react/umd/react.development.js
 libs.react.prod := react/umd/react.production.min.js
 libs.react-dom.dev := react-dom/umd/react-dom.development.js
@@ -69,7 +76,7 @@ clean-package:
 	rm -f *.tgz
 
 $(NODE_MODULES): package.json package-lock.json
-	npm install
+	npm $(NPM_INSTALL_CMD)
 	touch $(NODE_MODULES)
 
 $(LIBS_OUTPUT): public/dist/vendor/%.js : $(NODE_MODULES)

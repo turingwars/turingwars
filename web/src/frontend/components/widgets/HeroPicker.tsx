@@ -201,16 +201,18 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
 
     /** @override */ public render() {
         const baseColor = this.props.player === 1 ? COLOR_P1 : COLOR_P2;
-        return  [<SearchInput color={baseColor} value={this.props.list.searchTerm} onChange={(s) => this.updateSearchTerm(s.currentTarget.value) }/>,
+        return <div>
+                <SearchInput color={baseColor} value={this.props.list.searchTerm} onChange={(s) => this.updateSearchTerm(s.currentTarget.value) }/>
                 <ListContainer baseColor={baseColor}>
-                {
-                    this.props.list.heros && this.renderListEntries(baseColor, this.props.list.heros)
-                }
-                <HorizontalPixelGridBackground baseColor={baseColor}/>
-                <RGBPixelGridBackground />
-                {this.props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
-                <Glow baseColor={baseColor} />
-        </ListContainer>]
+                    {
+                        this.props.list.heros && this.renderListEntries(baseColor, this.props.list.heros)
+                    }
+                    <HorizontalPixelGridBackground baseColor={baseColor}/>
+                    <RGBPixelGridBackground />
+                    {this.props.player === 1 ? <ListBackgroundScan1 /> :  <ListBackgroundScan2 />}
+                    <Glow baseColor={baseColor} />
+                </ListContainer>
+            </div>;
     }
 
     private renderListEntries(baseColor: string, herosPage: IDataPage<HeroSummary>) {
