@@ -4,5 +4,8 @@
         "database": ".tmp/sqlite",
         "logging": false,
         "synchronize": true
+    },
+    "game": {
+        "maxProgramSize": 48
     }
 }

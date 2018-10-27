@@ -27,7 +27,10 @@ const Schema = rt.Record({
             logging: rt.Boolean,
             synchronize: rt.Boolean
         })
-    )
+    ),
+    "game": rt.Record({
+        "maxProgramSize": rt.Number
+    })
 });
 
 export function getConfig(): rt.Static<typeof Schema> {
