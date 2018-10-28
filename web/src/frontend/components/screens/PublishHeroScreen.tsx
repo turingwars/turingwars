@@ -48,7 +48,7 @@ class extends React.Component<PublishHeroScreenProps> {
                 <FatMenuSpacer />
                 <Button href="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>
                 <FatMenuSpacer />
-                <FatMenuButton href={`#${ROUTE_EDITOR}`} smaller={true}>Back to editor</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_EDITOR}`} smaller>Back to editor</FatMenuButton>
             </FatMenu>
         </div>
     }
