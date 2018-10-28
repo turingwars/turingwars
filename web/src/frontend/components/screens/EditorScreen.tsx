@@ -52,9 +52,9 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
                 editorDidMount={(editor) => this.instance = editor }
             />
             <ActionsRow>
-                <Button href={`#${ROUTE_HOME}`}>◄ Home</Button>
+                <Button url={`#${ROUTE_HOME}`}>◄ Home</Button>
                 <Button onClick={this.discardHandler}>Discard</Button>
-                <Button href={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
+                <Button url={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
                 <Button onClick={this.playtestHandler}>Test ►</Button>
             </ActionsRow>
 

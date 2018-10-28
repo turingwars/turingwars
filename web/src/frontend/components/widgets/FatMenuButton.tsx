@@ -25,13 +25,13 @@ interface IFatMenuButtonProps {
     children: string,
     blank?: boolean,
     smaller?: boolean,
-    onClick?: () => void,
+    onClick?: (evt?: React.MouseEvent<HTMLAnchorElement>) => void,
 }
 
 export class FatMenuButton extends React.Component <IFatMenuButtonProps>{
 
     public hover(): void {
-        Sounds.play("beep"); // TODO: Ideally I'd like to avoid having a litteral here
+        Sounds.play("beep");
     }
 
     /** @override */ public render() {

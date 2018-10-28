@@ -46,7 +46,7 @@ class extends React.Component<PublishHeroScreenProps> {
                 <Input placeholder="Name your herofrontend/components." value={this.state.heroName} onChange={this.handleHeroNameChange} />
                 { this.state.error && <Label type="error">{ this.state.error }</Label> }
                 <FatMenuSpacer />
-                <Button href="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>
+                <Button url="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>
                 <FatMenuSpacer />
                 <FatMenuButton url={`#${ROUTE_EDITOR}`} smaller>Back to editor</FatMenuButton>
             </FatMenu>
