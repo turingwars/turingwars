@@ -1,4 +1,5 @@
 import {Howl} from 'howler'
+import {store} from './main'
 
 const SOUNDS_FOLDERS = 'sounds/'
 
@@ -16,6 +17,10 @@ export abstract class Sounds {
 
     // Plays the sound exactly once
     public static play(sound: Sound): void {
+
+        if (!store.getState().soundEnabled){
+            return
+        }
 
         new Howl({
             src: [SOUNDS_FOLDERS + SOUNDS_FILES[sound]]

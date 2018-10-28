@@ -24,7 +24,7 @@ declare global {
 }
 
 // Initialize redux store and services
-const store: Store<State, AppActions> = createStore(reducer, initialState(), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+export const store: Store<State, AppActions> = createStore(reducer, initialState(), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 player.init(store);
 
 
