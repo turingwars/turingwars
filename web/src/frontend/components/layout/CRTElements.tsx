@@ -59,7 +59,7 @@ const CRTContent = styled.div`
 
 export class AppBody extends React.Component {
 
-    public componentDidMount(){
+    /** @override */ public componentDidMount(){
 
         // remove the preloader and show the app
         const loaderDiv = document.getElementById('preloader')
