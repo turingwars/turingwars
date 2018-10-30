@@ -7,6 +7,7 @@ import { Label } from './Label';
 import { SearchInput } from './SearchBar';
 import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/private/PagedDataSource';
 import { herosCache } from '../../services/api';
+import { Sounds } from 'frontend/sounds';
 
 const ENTRIES_PER_PAGE = 10;
 const PICKER_HEIGHT = 350;
@@ -140,11 +141,17 @@ class ListElement extends React.PureComponent<{
         selected: boolean;
         baseColor: string;
     }> {
+
+    public hover(): void {
+        Sounds.play("beep");
+    }
+
     /** @override */ public render() {
         return <StyledElement
                 baseColor={this.props.baseColor}
                 selected={this.props.selected}
-                onClick={this.clickHandler}>
+                onClick={this.clickHandler}
+                onMouseEnter={this.hover}>
             <Label>{ this.props.hero.name }</Label>
         </StyledElement>
     }

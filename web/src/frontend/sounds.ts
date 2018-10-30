@@ -5,9 +5,9 @@ const SOUNDS_FOLDERS = 'sounds/'
 
 const SOUNDS_FILES = {
     beep: 'fatbeep.mp3',
-    fight: 'beep-21.mp3', // TODO: wrong, replace
-    you_win: 'beep-21.mp3', // TODO: wrong, replace
-    you_loose: 'beep-21.mp3', // TODO: wrong, replace
+    fight: 'fight.mp3',
+    you_win: 'you_win.mp3',
+    you_loose: 'you_lose.mp3',
 }
 
 // A sound, e.g, beep, flight, you_win, you_loose
