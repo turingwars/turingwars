@@ -79,18 +79,18 @@ export abstract class Sounds {
 
     public static startMusic() {
         //temporary
-        this.currentBackgroundMusic = new Track('uncredited audio, sorry', 'track1.mp3', true);
+        this.currentBackgroundMusic = new Track('uncredited audio, sorry', 'track1.mp3', true, this.BACKGROUND_MUSIC_VOLUME);
     }
 }
 
 class Track {
     public sound: Howl;
 
-    constructor(public name: string, audioFile: string, autoplay: boolean, loop: boolean = true) {
+    constructor(public name: string, audioFile: string, autoplay: boolean, volume: number, loop: boolean = true) {
         this.sound = new Howl({
             src: [SOUNDS_FOLDERS + audioFile],
             loop: loop,
-            volume: Sounds.BACKGROUND_MUSIC_VOLUME
+            volume: volume,
         })
 
         if (autoplay) {
