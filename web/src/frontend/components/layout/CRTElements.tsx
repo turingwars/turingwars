@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import * as React from 'react';
 import { VolumeControl } from '../widgets/VolumeControl';
+import { Preloader } from 'frontend/preloader';
 
 const InnerBody = styled.div`
     position:relative;
@@ -60,17 +61,7 @@ const CRTContent = styled.div`
 export class AppBody extends React.Component {
 
     /** @override */ public componentDidMount(){
-
-        // remove the preloader and show the app
-        const loaderDiv = document.getElementById('preloader')
-        const appDiv = document.getElementById('app')
-        if (loaderDiv == null || appDiv == null) {
-            return;
-        }
-        setTimeout(() => {
-            loaderDiv.remove();
-            appDiv.style.display = 'block';
-        }, 2000);
+        Preloader.removeAfterTimeOut();
     }
 
     /** @override */ public render() {

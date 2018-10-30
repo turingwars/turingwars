@@ -16,6 +16,7 @@ import { startGame, initPlayers } from 'frontend/redux/replay/actions';
 import { GameResult } from 'frontend/redux/replay/state';
 import { ActionsRow } from 'frontend/components/layout/ActionsRow';
 import { Sounds } from 'frontend/sounds';
+import { Preloader } from 'frontend/preloader';
 
 const MEMORY_WIDTH = 40;
 const START_DELAY_MS = 1000;
@@ -48,12 +49,22 @@ const Contents = styled.div`
     margin-top: -40px;
 `;
 
-type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId: string}>;
+type ReplayScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId: string}>;
 
 export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
-    class extends React.Component<ReplaySreenProps> {
+    class extends React.Component<ReplayScreenProps> {
 
         /** @override */ public componentDidMount() {
+
+            this.waitForPreloader();
+        }
+
+        private waitForPreloader() {
+            if (Preloader.isPreloaderVisible()) {
+                setTimeout(() => this.waitForPreloader(), 1000);
+                return;
+            }
+
             if (!this.props.gameStarted) {
                 this.pollServerForGame().catch((e) => {throw e;});
             }
