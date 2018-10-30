@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { COLOR_PRIMARY, GRAY_2 } from 'frontend/style';
+import { Sounds } from 'frontend/sounds';
 
 interface IScoreIndicatorProps {
     score: number;
@@ -55,10 +56,11 @@ const ScoreText = styled.div<{
     `}
 `;
 
-export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pumping: boolean }> {
+export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pumping: boolean, previousAudioTickOnScore: number }> {
 
     /** @override */ public state = {
-        pumping: false
+        pumping: false,
+        previousAudioTickOnScore: -10,
     };
 
     private resetTimer: number | null;
@@ -72,8 +74,33 @@ export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pump
 
     /** @override */ public componentWillReceiveProps(prevProps: IScoreIndicatorProps) {
         if (prevProps.score !== this.props.score) {
+
+            if (this.shouldPlayTick(this.state.previousAudioTickOnScore, this.props.score)) {
+                Sounds.play('score_tick');
+                this.setState({previousAudioTickOnScore: this.props.score})
+            }
+
             this.triggerPumping();
         }
+    }
+
+    private shouldPlayTick(tickLastPlayedScore: number, newScore: number): boolean {
+        const diff = newScore - tickLastPlayedScore
+
+        // before 100's, play every tens
+        if (this.props.score <= 100) {
+            return (diff > 10);
+        // before 200's, play every 20's
+        } else if (this.props.score <= 200) {
+            return (diff > 20);
+        // before 400's, play every 40's
+        } else if (this.props.score <= 400) {
+            return (diff > 40);
+        // after 500's, play every 100's
+        } else if (this.props.score >= 500) {
+            return (diff > 100);
+        }
+        return false;
     }
 
     /** @override */ public render() {

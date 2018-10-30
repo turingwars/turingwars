@@ -8,6 +8,7 @@ const SOUNDS_FILES = {
     fight: 'fight.mp3',
     you_win: 'you_win.mp3',
     you_loose: 'you_lose.mp3',
+    score_tick: 'score.mp3',
 }
 
 // A sound, e.g, beep, flight, you_win, you_loose
