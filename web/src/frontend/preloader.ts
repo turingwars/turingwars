@@ -1,3 +1,5 @@
+import { Sounds } from './sounds';
+
 // Handles the preloader.
 // Assumes that the app is structured as follow initially:
 //  <div id={DOM_PRELOADER_ID}>Loading...</div>
@@ -19,6 +21,9 @@ export abstract class Preloader {
 
         loaderDiv.remove();
         appDiv.style.display = 'block';
+
+        // start the background music
+        Sounds.startMusic();
     }
 
     // Removes the preloader div after `timeout`
