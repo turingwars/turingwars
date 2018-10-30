@@ -1,13 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { State } from '../../redux/state';
-import { toggleSound } from 'frontend/redux/actions';
+import { toggleMusic, toggleSFX } from 'frontend/redux/sounds/actions';
 import { connect } from 'react-redux';
 
 const VolumeControlDiv = styled.div`
     text-align: center;
     float: right;
-    margin-top: 13px;
+    margin-top: 10px;
     font-size: 30px;
     margin-right: 10px;
     color: #6f6f6f;
@@ -25,6 +25,12 @@ const SVGIcon = styled.svg`
     stroke: currentColor;
     fill: currentColor;
     `
+
+const Text = styled.div`   
+    font-size: 14px;
+    margin-top: -10px;
+    `
+
 
 const VOLUME_ICONS = {
     off: '<use xlink:href="#icon-volume-mute"></use>',
@@ -44,24 +50,35 @@ class VolumeIcon extends React.Component<VolumeIconProps> {
 
 const mapStateToProps = (_state: State) => {
     return {
-        soundEnabled: _state.soundEnabled
+        musicEnabled: _state.sound.musicEnabled,
+        audioSFXEnabled: _state.sound.audioSFXEnabled
     };
 };
 
 const mapDispatchToProps = {
-    toggleSound
+    toggleMusic,
+    toggleSFX
 };
 
 type VolumeControlScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 export const VolumeControl = connect(mapStateToProps, mapDispatchToProps)(
-class VolumeControl extends React.Component<VolumeControlScreenProps> {
-
-    /** @override */ public render() {
-        let volumeIcon: keyof typeof VOLUME_ICONS = 'off';
-        if(this.props.soundEnabled){
-            volumeIcon = 'on'
+    class VolumeControl extends React.Component<VolumeControlScreenProps> {
+    
+        /** @override */ public render() {
+            let musicIcon: keyof typeof VOLUME_ICONS = 'off';
+            let audioSFXIcon: keyof typeof VOLUME_ICONS = 'off';
+            if(this.props.musicEnabled){
+                musicIcon = 'on'
+            }
+            if(this.props.audioSFXEnabled){
+                audioSFXIcon = 'on'
+            }
+            return [<VolumeControlDiv onClick={() => {this.props.toggleMusic()}}>
+                        <VolumeIcon icon={musicIcon} /><Text>music</Text>
+                    </VolumeControlDiv>,
+                    <VolumeControlDiv onClick={() => {this.props.toggleSFX()}}>
+                        <VolumeIcon icon={audioSFXIcon} /><Text>sfx&nbsp;</Text>
+                    </VolumeControlDiv>];
         }
-        return <VolumeControlDiv onClick={() => {this.props.toggleSound()}}><VolumeIcon icon={volumeIcon} /></VolumeControlDiv>;
-    }
-});
+    });    

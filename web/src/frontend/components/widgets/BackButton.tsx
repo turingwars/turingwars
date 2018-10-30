@@ -29,7 +29,7 @@ interface IBackButtonProps {
 export class BackButton extends React.Component <IBackButtonProps>{
 
     public hover(): void {
-        Sounds.play("beep");
+        Sounds.playSFX("beep");
     }
 
     /** @override */ public render() {

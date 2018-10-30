@@ -71,7 +71,7 @@ export class AppBody extends React.Component {
                     <CRTContent>{this.props.children}</CRTContent>
                 </CRTInnerScreen>
             </CRTScreen>
-            <VolumeControl />
+            <VolumeControl/>
         </InnerBody>;
     }
 };

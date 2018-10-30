@@ -31,7 +31,7 @@ interface IFatMenuButtonProps {
 export class FatMenuButton extends React.Component <IFatMenuButtonProps>{
 
     public hover(): void {
-        Sounds.play("beep");
+        Sounds.playSFX("beep");
     }
 
     /** @override */ public render() {

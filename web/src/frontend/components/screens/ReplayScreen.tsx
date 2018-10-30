@@ -133,17 +133,17 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             if (gameResult.type === 'DRAW') {
                 return 'Draw!';
             } else if(gameResult.winner === '0') {
-                Sounds.play('you_win');
+                Sounds.playSFX('you_win');
                 return `${this.props.player1.name} wins!`;
             } else {
-                Sounds.play('you_loose');
+                Sounds.playSFX('you_loose');
                 return `${this.props.player2.name} wins!`;
             }
         }
 
         private startReplay() {
             this.props.startGame();
-            Sounds.play('fight');
+            Sounds.playSFX('fight');
             // Delay the start of the game by one second so we can appreciate the magnificent wordart
             // in the middle of the screen.
             setTimeout(() => player.start(), START_DELAY_MS);

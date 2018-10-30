@@ -35,9 +35,9 @@ export abstract class Sounds {
     }
 
     // Plays the sound exactly once
-    public static play(sound: Sound): void {
+    public static playSFX(sound: Sound): void {
 
-        if (!store.getState().soundEnabled){
+        if (!store.getState().sound.audioSFXEnabled){
             return
         }
 
@@ -48,19 +48,19 @@ export abstract class Sounds {
         this.howlerSounds[sound].play();
     }
 
-    public static playDebounced(sound: Sound, debounce: number = this.DEBOUNCE) {
+    public static playSFXDebounced(sound: Sound, debounce: number = this.DEBOUNCE) {
 
         const now = new Date().getTime();
         const diff = now - this.debounceLastSoundPlayed;
 
         if(this.debounceLastSoundPlayed == -1 || diff > debounce) {
             this.debounceLastSoundPlayed = now
-            this.play(sound);
+            this.playSFX(sound);
         }
     }
 
     // Stops all sounds
-    public static stopAll() {
+    public static stopAllSFX() {
         for(const key in this.howlerSounds) {
             this.howlerSounds[key].stop();
         }

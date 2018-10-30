@@ -72,7 +72,7 @@ interface IButtonProps {
 export class Button extends React.Component <IButtonProps>{
 
     public hover(): void {
-        Sounds.play("beep");
+        Sounds.playSFX("beep");
     }
 
     /** @override */ public render() {

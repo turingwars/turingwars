@@ -143,7 +143,7 @@ class ListElement extends React.PureComponent<{
     }> {
 
     public hover(): void {
-        Sounds.play("beep");
+        Sounds.playSFX("beep");
     }
 
     /** @override */ public render() {
