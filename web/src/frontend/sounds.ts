@@ -17,7 +17,8 @@ class Track {
     constructor(public name: string, audioFile: string, autoplay: boolean, loop: boolean = true) {
         this.sound = new Howl({
             src: [SOUNDS_FOLDERS + audioFile],
-            loop: loop
+            loop: loop,
+            volume: Sounds.BACKGROUND_MUSIC_VOLUME
         })
 
         if (autoplay) {
@@ -36,6 +37,7 @@ export abstract class Sounds {
 
     private static audioSFX: {[key: string]: Howl};
 
+    public static readonly BACKGROUND_MUSIC_VOLUME = 0.2;
     private static currentBackgroundMusic: Track | undefined;
 
     // creates the "Howl" wrapper for all sounds
