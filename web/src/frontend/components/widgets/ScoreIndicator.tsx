@@ -76,7 +76,7 @@ export class ScoreIndicator extends React.Component<IScoreIndicatorProps, { pump
         if (prevProps.score !== this.props.score) {
 
             if (this.shouldPlayTick(this.state.previousAudioTickOnScore, this.props.score)) {
-                Sounds.play('score_tick');
+                Sounds.playDebounced('score_tick');
                 this.setState({previousAudioTickOnScore: this.props.score})
             }
 
