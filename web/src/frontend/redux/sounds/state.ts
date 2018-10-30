@@ -1,7 +1,9 @@
+import { storage } from 'frontend/services/storage';
+
 export function soundInitialState() {
     return {
-        musicEnabled: true,
-        audioSFXEnabled: true
+        musicEnabled: storage.getMusicStatus(),
+        audioSFXEnabled: storage.getAudioSFXStatus(),
     }
 }
 

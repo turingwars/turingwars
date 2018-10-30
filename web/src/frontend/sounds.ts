@@ -95,6 +95,17 @@ export abstract class Sounds {
     }
 
     public static startMusic() {
+
+        if(!store.getState().sound.musicEnabled) {
+            return;
+        }
+
+        this.forceStartMusic();
+
+    }
+
+    // call this from the reducer, cannot call startMusic who accesses getState()
+    public static forceStartMusic() {
         //temporary
         this.currentBackgroundMusic = new Track('uncredited audio, sorry', 'track1.mp3', true, this.BACKGROUND_MUSIC_VOLUME);
     }

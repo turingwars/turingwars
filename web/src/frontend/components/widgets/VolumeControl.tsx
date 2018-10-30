@@ -74,10 +74,10 @@ export const VolumeControl = connect(mapStateToProps, mapDispatchToProps)(
             if(this.props.audioSFXEnabled){
                 audioSFXIcon = 'on'
             }
-            return [<VolumeControlDiv onClick={() => {this.props.toggleMusic()}}>
+            return [<VolumeControlDiv key={1} onClick={() => {this.props.toggleMusic()}}>
                         <VolumeIcon icon={musicIcon} /><Text>music</Text>
                     </VolumeControlDiv>,
-                    <VolumeControlDiv onClick={() => {this.props.toggleSFX()}}>
+                    <VolumeControlDiv key={2} onClick={() => {this.props.toggleSFX()}}>
                         <VolumeIcon icon={audioSFXIcon} /><Text>sfx&nbsp;</Text>
                     </VolumeControlDiv>];
         }
