@@ -11,22 +11,6 @@ const SOUNDS_FILES = {
     score_tick: 'score.mp3',
 }
 
-class Track {
-    public sound: Howl;
-
-    constructor(public name: string, audioFile: string, autoplay: boolean, loop: boolean = true) {
-        this.sound = new Howl({
-            src: [SOUNDS_FOLDERS + audioFile],
-            loop: loop,
-            volume: Sounds.BACKGROUND_MUSIC_VOLUME
-        })
-
-        if (autoplay) {
-            this.sound.play();
-        }
-    }
-}
-
 // A sound, e.g, beep, flight, you_win, you_loose
 export type Sound = keyof typeof SOUNDS_FILES;
 
@@ -96,5 +80,21 @@ export abstract class Sounds {
     public static startMusic() {
         //temporary
         this.currentBackgroundMusic = new Track('uncredited audio, sorry', 'track1.mp3', true);
+    }
+}
+
+class Track {
+    public sound: Howl;
+
+    constructor(public name: string, audioFile: string, autoplay: boolean, loop: boolean = true) {
+        this.sound = new Howl({
+            src: [SOUNDS_FOLDERS + audioFile],
+            loop: loop,
+            volume: Sounds.BACKGROUND_MUSIC_VOLUME
+        })
+
+        if (autoplay) {
+            this.sound.play();
+        }
     }
 }
