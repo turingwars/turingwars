@@ -4,7 +4,7 @@ import {store} from './main'
 const SOUNDS_FOLDERS = 'sounds/'
 
 const SOUNDS_FILES = {
-    beep: 'beep-07.mp3',
+    beep: 'fatbeep.mp3',
     fight: 'beep-21.mp3', // TODO: wrong, replace
     you_win: 'beep-21.mp3', // TODO: wrong, replace
     you_loose: 'beep-21.mp3', // TODO: wrong, replace

@@ -35,7 +35,7 @@ export class FatMenuButton extends React.Component <IFatMenuButtonProps>{
     }
 
     /** @override */ public render() {
-        return <FatMenuButtonA 
+        return <FatMenuButtonA
             href={this.props.url}
             target={this.props.blank ? "_blank" : ''}
             smaller={this.props.smaller}

@@ -35,6 +35,10 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <BaseScreen title="Hero creator">
+            <style dangerouslySetInnerHTML={{__html: `.cm-s-isotope.CodeMirror {
+                height: 400px !important;
+                margin-bottom: 20px;
+            }`}} />
             <EditorCheatSheet></EditorCheatSheet>
             <CodeMirror
                 value={this.props.code || ''}
