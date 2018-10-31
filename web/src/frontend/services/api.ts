@@ -1,9 +1,12 @@
 import { endpoints } from 'shared/api/endpoints';
-import { createConsumer } from 'shared/api/typed-apis/axios-typed-api';
+import { createConsumer } from 'rest-ts-axios';
 import { HeroSummary } from 'shared/api/dto';
 import { PageCache } from './private/PageCache';
+import axios from 'axios';
 
-export const api = createConsumer('/api', endpoints);
+export const api = createConsumer(endpoints, axios.create({
+    baseURL: '/api'
+}));
 
 interface HerosDataSourceParams {
     searchTerm: string
