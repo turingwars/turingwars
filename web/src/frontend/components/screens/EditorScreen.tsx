@@ -7,10 +7,13 @@ import 'frontend/codemirror-grammar';
 import { loadCode, unloadCode } from 'frontend/redux/editor/actions';
 import { State } from 'frontend/redux/state';
 import { navigateTo, ROUTE_HOME, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from 'frontend/services/navigation';
-import { ActionsRow } from 'frontend/components/layout/ActionsRow';
-import { Button } from 'frontend/components/widgets/Button';
 import { BaseScreen } from './BaseScreen';
 import { EditorCheatSheet } from '../layout/EditorCheatSheet';
+import { IconButton } from '../widgets/IconButton';
+import { EditorActions } from '../widgets/EditorActions';
+import styled from 'styled-components';
+import { Row } from '../layout/Row';
+import { GRAY } from 'frontend/style';
 
 
 const asm = new Assembler();
@@ -24,6 +27,12 @@ const mapDispatchToProps = {
     loadCode
 };
 
+const EditorColumn = styled.div`
+    width: 50%;
+    flex-grow: 1;
+    border: 1px ${GRAY} solid;
+`;
+
 type EditorScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
@@ -35,29 +44,32 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <BaseScreen title="Hero creator">
-            <EditorCheatSheet></EditorCheatSheet>
-            <CodeMirror
-                value={this.props.code || ''}
-                options={{
-                    mode: 'twc',
-                    theme: 'isotope',
-                    lineNumbers: true,
-                }}
-                onBeforeChange={(_editor, _data, value) => {
-                    this.props.loadCode(value);
-                }}
-                onChange={(_editor, _data, value) => {
-                    this.checkCode(value);
-                }}
-                editorDidMount={(editor) => this.instance = editor }
-            />
-            <ActionsRow>
-                <Button href={`#${ROUTE_HOME}`}>◄ Home</Button>
-                <Button onClick={this.discardHandler}>Discard</Button>
-                <Button href={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
-                <Button onClick={this.playtestHandler}>Test ►</Button>
-            </ActionsRow>
-
+            <Row>
+                <EditorColumn>
+                    <EditorActions>
+                        <IconButton href={`#${ROUTE_HOME}`} type="chevron-left" title="Back"/>
+                        <IconButton onClick={this.discardHandler} type="trash" title="Discard"></IconButton>
+                        <IconButton href={`#${ROUTE_PUBLISH_HERO}`} type="paper-plane-o" title="Publish"></IconButton>
+                        <IconButton onClick={this.playtestHandler} type="play" title="Playtest"></IconButton>
+                    </EditorActions>
+                    <CodeMirror
+                        value={this.props.code || ''}
+                        options={{
+                            mode: 'twc',
+                            theme: 'isotope',
+                            lineNumbers: true,
+                        }}
+                        onBeforeChange={(_editor, _data, value) => {
+                            this.props.loadCode(value);
+                        }}
+                        onChange={(_editor, _data, value) => {
+                            this.checkCode(value);
+                        }}
+                        editorDidMount={(editor) => this.instance = editor }
+                    />
+                </EditorColumn>
+                <EditorCheatSheet></EditorCheatSheet>
+            </Row>
         </BaseScreen>
     }
 

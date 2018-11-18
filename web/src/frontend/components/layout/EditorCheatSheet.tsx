@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CRT_GLITCH_TEXT_LG, COLOR_PRIMARY } from 'frontend/style';
+import { CRT_GLITCH_TEXT_LG, COLOR_PRIMARY, GRAY } from 'frontend/style';
 import styled from 'styled-components';
 
 const Title = styled.h2`
@@ -9,10 +9,10 @@ const Title = styled.h2`
 `;
 
 const CheatSheetDiv = styled.div`
-    float: right;
-    padding-left: 10px;
-    padding-right: 10px;
-    width: 25%;
+    width: 250px;
+    padding: 10px;
+    border: 1px ${GRAY} solid;
+    border-left: 0;
 `;
 
 const CheatSheetUl = styled.ul`
