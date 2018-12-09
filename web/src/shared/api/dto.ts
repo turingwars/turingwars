@@ -10,7 +10,11 @@ export const Hero = Record({
 export type HeroSummary = Static<typeof HeroSummary>;
 export const HeroSummary = Record({
     name: String,
-    id: String
+    id: String,
+    rank: Number,
+    score: Number,
+    wins: Number,
+    losses: Number
 });
 
 export interface ResultPage<T> {

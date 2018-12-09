@@ -1,10 +1,11 @@
 
 package core
 
-import core.dto.EngineConfiguration
+import core.dto._
 import helpers.ProgramDeserializer
 import io.circe.generic.auto._
 import io.circe.parser._
+import io.circe.syntax._
 
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
@@ -46,13 +47,28 @@ class Engine(val prog1Code: String, val prog2Code: String, val configJSON: Strin
 
   @JSExport
   def run(): String = {
-    var result = "["
-    for (i <- 0 until config.nbCycles) {
-      if((i % config.diffFrequency) == 0) {
-        result += ALU.outputState() + ","
-      }
-      ALU.step()
+    val log = (0 until config.nbCycles)
+      .map(_ => {
+        val s = ALU.serializedState()
+        ALU.step()
+        s
+      })
+      .takeWhile(s => !s.score.exists(_.score >= 1000))
+      .grouped(config.diffFrequency)
+      .map(s => GameUpdate(s.last.processes, s.flatMap(_.memory).toList, s.last.score))
+      .toList
+    SimulationResult(score2Outcome(log.last.score), log).asJson.noSpaces
+  }
+
+  private def score2Outcome(score: List[Score]) = {
+    val score1 = score(0).score
+    val score2 = score(1).score
+    if (score1 > score2) {
+      Outcome(0, score1, score2)
+    } else if (score1 < score2) {
+      Outcome(1, score1, score2)
+    } else {
+      Outcome(-1, score1, score2)
     }
-    result.substring(0, result.length - 1) + "]"
   }
 }

@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm';
 
-import { Champion } from './entities/Champion';
+import { Champion } from './Champion';
 
 /* Some more neat champions:
 

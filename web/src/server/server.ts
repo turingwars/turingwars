@@ -6,24 +6,20 @@ import * as cors from 'cors';
 import * as express from 'express';
 import { errorReporter } from 'express-youch';
 import * as path from 'path';
-import { Connection, createConnection } from 'typeorm';
-import { endpoints } from 'shared/api/endpoints';
 import { BANNER } from './banner';
-import { Champion } from './entities/Champion';
-import { GameLog } from './entities/GameLog';
-import { appRouter } from './router';
-import { seedDatabase } from './seed';
-import { getConfig } from './config';
-import { pause } from 'shared/utils';
-import { createRouter } from 'rest-ts-express';
+import { Container } from 'inversify';
+import { EXPRESS_APP, IModule } from './framework';
+import { TuringWarsModule } from './modules/TuringWars/TuringWarsModule';
 
-const ONE_SECOND_IN_MS = 2000;
-const DB_CONNECT_ATTEMPTS = 40;
+
+const APP_MODULES: IModule[] = [
+    new TuringWarsModule()
+];
 
 class TuringWarsApplication {
 
-    private connection: Connection;
     private webpackDevMiddleware?: any;
+    private container: Container = new Container();
 
     /**
      * Called when the application starts.
@@ -39,12 +35,10 @@ class TuringWarsApplication {
         console.log('initializing front-end build pipeline...');
         await this.initializeFrontEnd();
 
-        console.log('initializing DB...');
-        await this.initDatabase();
-
         console.log('Initializing server...');
         const app = await this.initServer();
 
+        console.log('Server ready');
         return app;
     }
 
@@ -55,7 +49,8 @@ class TuringWarsApplication {
      * one has fully completed its `teardown`. 
      */
     public async teardown() {
-        await this.connection.close();
+        await APP_MODULES.reduce((p, m) => p.then(() => m.teardown()), Promise.resolve());
+        this.container.unbindAll();
         await new Promise<void>((resolve) => {
             if (this.webpackDevMiddleware) {
                 this.webpackDevMiddleware.close(resolve);
@@ -67,16 +62,6 @@ class TuringWarsApplication {
     }
 
     /**
-     * Initialize here the custom application routers.
-     */
-    private async initRouters(app: express.Application) {
-        const championsRepo = this.connection.getRepository(Champion);
-        const gamesRepo = this.connection.getRepository(GameLog);
-
-        app.use('/api', createRouter(endpoints, appRouter(championsRepo, gamesRepo)));
-    }
-
-    /**
      * Express server boilerplate initialization.
      */
     private async initServer() {
@@ -85,13 +70,18 @@ class TuringWarsApplication {
         // wherever the request was actually handled, back to the top and out to the client.
         const app = express();
 
+        this.container.bind(EXPRESS_APP).toConstantValue(app);
+
         // Pre-application logic stuff
         app.use(cors());
         app.use(json());
         app.use(urlencoded({ extended: true }));
 
-        // Application logic
-        await this.initRouters(app);
+        // Application logic.
+        console.log("Configuring modules...");
+        await APP_MODULES.reduce((p, m) => p.then(() => m.configure(this.container)), Promise.resolve());
+        console.log("Starting modules...");
+        await APP_MODULES.reduce((p, m) => p.then(() => m.start(this.container)), Promise.resolve());
 
         // Static files and front-end assets
         if (this.webpackDevMiddleware) {
@@ -106,35 +96,6 @@ class TuringWarsApplication {
         return app;
     }
 
-    private async initDatabase() {
-        this.connection = await this.tryConnectToDB();
-        await seedDatabase(this.connection);
-    }
-
-
-    private async tryConnectToDB() {
-        for (let i = 0 ; i < DB_CONNECT_ATTEMPTS ; i++) {
-            try {
-                return await createConnection({
-                    ...getConfig().db,
-                    entities: [
-                        Champion,
-                        GameLog
-                    ],
-                });
-            } catch (e) {
-                if (i == DB_CONNECT_ATTEMPTS - 1) {
-                    console.log(`Could not connect to DB after ${DB_CONNECT_ATTEMPTS} attempts!`);
-                    throw e;
-                } else {
-                    console.log(e);
-                    console.log("Failed to connect. Retrying...");
-                }
-            }
-            await pause(ONE_SECOND_IN_MS);
-        }
-        throw new Error("Unreachable code reached!");
-    }
 
     /**
      * Creates a development middleware for the front-end.
