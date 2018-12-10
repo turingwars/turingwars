@@ -34,7 +34,7 @@ ReactDOM.render(
             <div>
                 <Route exact path="/" component={HomeScreen} />
                 <Route exact path={ROUTE_MATCHMAKING} component={MatchMakingScreen} />
-                <Route path={`${ROUTE_REPLAY}/:gameId`} component={ReplayScreen} />
+                <Route path={`${ROUTE_REPLAY}/:gameId?`} component={ReplayScreen} />
                 <Route exact path={ROUTE_LEADERBOARD} component={LeaderboardScreen} />
                 <Route exact path={ROUTE_IMPORT_HERO} component={LoadHeroScreen} />
                 <Route exact path={ROUTE_EDITOR} component={EditorScreen} />

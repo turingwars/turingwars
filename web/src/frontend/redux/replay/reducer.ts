@@ -77,6 +77,11 @@ export function replayReducer(state: ReplayState | undefined, action: ReplayAct
                 player1: playerState(action.payload.p1Name),
                 player2: playerState(action.payload.p2Name)
             };
+        case 'loadGame':
+            return {
+                ...state,
+                loadedGame: action.payload
+            };
         default:
             catchUnhandledAction(action);
     }

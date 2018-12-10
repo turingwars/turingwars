@@ -1,4 +1,4 @@
-import { Process } from 'shared/model/GameUpdate';
+import { Process, GameUpdate } from 'shared/model/GameUpdate';
 import { nop, Instruction } from 'shared/model/Instruction';
 import { CORESIZE } from 'shared/constants';
 
@@ -47,7 +47,14 @@ export function replayInitialState() {
         gameStarted: false,
         player1: playerState('player 1'),
         player2: playerState('player 2'),
+        loadedGame: null as null | LoadedGame
     };
+}
+
+export interface LoadedGame {
+    player1Name: string;
+    player2Name: string;
+    log: GameUpdate[];
 }
 
 

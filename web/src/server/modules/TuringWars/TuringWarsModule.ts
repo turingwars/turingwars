@@ -9,6 +9,7 @@ import { CHAMPIONS_REPO, GAMES_REPO } from './TuringWarsModuleConstants';
 import { TuringWarsServer } from './TuringWarsServer';
 import { IModule } from 'server/framework';
 import { TournamentEngine } from './TournamentEngine';
+import { GameEngine } from './GameEngine';
 
 const ONE_SECOND_IN_MS = 2000;
 const DB_CONNECT_ATTEMPTS = 40;
@@ -20,6 +21,7 @@ export class TuringWarsModule implements IModule {
 
     private tournament: TournamentEngine;
 
+    /** @override */
     public async configure(container: Container) {
         this.connection = await this.tryConnectToDB();
         await seedDatabase(this.connection);
@@ -27,14 +29,17 @@ export class TuringWarsModule implements IModule {
         container.bind<Repository<GameLog>>(GAMES_REPO).toConstantValue(this.connection.getRepository(GameLog));
         container.bind(TuringWarsServer).toSelf();
         container.bind(TournamentEngine).toSelf();
+        container.bind(GameEngine).toSelf();
     }
 
+    /** @override */
     public async start(container: Container) {
         container.get(TuringWarsServer).attach();
         this.tournament = container.get(TournamentEngine);
         this.tournament.startAutoUpdate();
     }
 
+    /** @override */
     public async teardown() {
         await this.tournament.stopAutoUpdate();
         await this.connection.close();

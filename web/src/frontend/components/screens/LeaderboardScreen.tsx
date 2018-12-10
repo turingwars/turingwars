@@ -7,6 +7,8 @@ import { HeroPicker, PICKER_FONT_SIZE } from 'frontend/components/widgets/HeroPi
 import { BaseScreen } from './BaseScreen';
 import styled from 'styled-components';
 import { COLOR_PRIMARY } from 'frontend/style';
+import { ActionsRow } from '../layout/ActionsRow';
+import { BackButton } from '../widgets/BackButton';
 
 const mapStateToProps = (_state: State) => {
     return {
@@ -48,6 +50,9 @@ class extends React.Component<LoadHeroSreenProps> {
                     player={1}
                     list={this.state.listState}
                     update={(listState) => this.setState({ listState })} />
+            <ActionsRow>
+                <BackButton />
+            </ActionsRow>
         </BaseScreen>
     }
 });

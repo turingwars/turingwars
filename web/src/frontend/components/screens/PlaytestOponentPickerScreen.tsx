@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { loadCode } from 'frontend/redux/editor/actions';
 import { State } from 'frontend/redux/state';
 import { api, herosCache } from 'frontend/services/api';
 import { navigateTo, ROUTE_CREATE_HERO, ROUTE_REPLAY } from 'frontend/services/navigation';
@@ -9,6 +8,7 @@ import { BackButton } from 'frontend/components/widgets/BackButton';
 import { HeroPicker } from 'frontend/components/widgets/HeroPicker';
 import { ScreenActionButton } from 'frontend/components/widgets/ScreenActionButton';
 import { BaseScreen } from './BaseScreen';
+import { loadGame } from 'frontend/redux/replay/actions';
 
 const mapStateToProps = (state: State) => {
     return {
@@ -17,7 +17,7 @@ const mapStateToProps = (state: State) => {
 };
 
 const mapDispatchToProps = {
-    loadCode
+    loadGame
 };
 
 type PlaytestOponentPickerScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -63,6 +63,12 @@ class extends React.Component<PlaytestOponentPickerScreenProps> {
             }
         });
 
-        navigateTo(`${ROUTE_REPLAY}/${res.data.gameId}`);
+        this.props.loadGame({
+            player1Name: '[unnamed hero]',
+            player2Name: res.data.opponentName,
+            log: res.data.log
+        });
+
+        navigateTo(`${ROUTE_REPLAY}`);
     };
 });

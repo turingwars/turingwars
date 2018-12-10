@@ -13,6 +13,7 @@ import { GetGameResponse } from 'shared/api/dto';
 import { getConfig } from 'server/config';
 import { EXPRESS_APP } from 'server/framework';
 import { CHAMPIONS_REPO, GAMES_REPO } from './TuringWarsModuleConstants';
+import { GameEngine } from './GameEngine';
 
 @injectable()
 export class TuringWarsServer {
@@ -21,7 +22,8 @@ export class TuringWarsServer {
         @inject(EXPRESS_APP) private app: express.Application,
         @inject(CHAMPIONS_REPO) private championsRepo: Repository<Champion>,
         @inject(GAMES_REPO) private gamesRepo: Repository<GameLog>,
-        @inject(TournamentEngine) private tournament: TournamentEngine
+        @inject(TournamentEngine) private tournament: TournamentEngine,
+        @inject(GameEngine) private gameEngine: GameEngine
     ) { }
 
     public attach() {
@@ -111,9 +113,9 @@ export class TuringWarsServer {
                 if (request.champions.length !== 2) {
                     throw new BadRequestHttpException('You must send exactly two champion IDs');
                 }
-                const champions = await Promise.all(
+                const [ player1, player2 ] = await Promise.all(
                     request.champions.map(async (id) => await this.championsRepo.findOneOrFail(id)));
-                const theGame = await this.tournament.createGame(champions);
+                const theGame = await this.tournament.createGame(player1, player2);
 
                 return {
                     gameId: `${theGame.id}`
@@ -125,13 +127,12 @@ export class TuringWarsServer {
                 const tmpHero = new Champion();
                 tmpHero.code = req.body.hero.program;
                 tmpHero.name = 'tmp';
+        
+                const result = this.gameEngine.simulate(req.body.hero.program, opponent.code);
 
-                const theGame = await this.tournament.createGame([
-                    tmpHero,
-                    opponent
-                ]);
                 return {
-                    gameId: `${theGame.id}`
+                    log: result.frames,
+                    opponentName: opponent.name
                 };
             })
 

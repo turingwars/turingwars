@@ -13,8 +13,9 @@ import { SplashMessage } from 'frontend/components/widgets/SplashMessage';
 import { BaseScreen } from './BaseScreen';
 import { Row } from 'frontend/components/layout/Row';
 import { startGame, initPlayers } from 'frontend/redux/replay/actions';
-import { GameResult } from 'frontend/redux/replay/state';
+import { GameResult, LoadedGame } from 'frontend/redux/replay/state';
 import { ActionsRow } from 'frontend/components/layout/ActionsRow';
+import { navigateTo, ROUTE_HOME } from 'frontend/services/navigation';
 
 const MEMORY_WIDTH = 40;
 const START_DELAY_MS = 1000;
@@ -29,7 +30,6 @@ const mapDispatchToProps = {
 };
 
 const PlayerName = styled.div<{winner: boolean}>`
-    
     text-align: center;
     font-size: 30px;
     margin: 5px 20px;
@@ -45,14 +45,21 @@ const Contents = styled.div`
     margin-top: -40px;
 `;
 
-type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId: string}>;
+type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId?: string}>;
 
 export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
     class extends React.Component<ReplaySreenProps> {
 
         /** @override */ public componentDidMount() {
             if (!this.props.gameStarted) {
-                this.pollServerForGame().catch((e) => {throw e;});
+                if (this.props.match.params.gameId != null) {
+                    this.pollServerForGame(this.props.match.params.gameId).catch((e) => { throw e; });
+                } else if (this.props.loadedGame != null) {
+                    this.startLoadedGame(this.props.loadedGame);
+                } else {
+                    console.error("Impossible to load this game");
+                    navigateTo(ROUTE_HOME);
+                }
             }
         }
 
@@ -98,10 +105,10 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             return gameResult != null && gameResult.type === 'VICTORY' && gameResult.winner === playerId;
         }
 
-        private async pollServerForGame() {
+        private async pollServerForGame(gameId: string) {
             const res = await api.getGame({
                 params: {
-                    id: this.props.match.params.gameId
+                    id: gameId
                 }
             });
 
@@ -111,8 +118,17 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
                 player.load(res.data.log);
                 this.startReplay();
             } else {
-                setTimeout(() => this.pollServerForGame(), 1000);
+                setTimeout(() => this.pollServerForGame(gameId), 1000);
             }
+        }
+
+        /**
+         * This is used to replay a game that was preloaded by another component. For instance during playtests.
+         */
+        private startLoadedGame(loadedGame: LoadedGame) {
+            this.props.initPlayers(loadedGame.player1Name, loadedGame.player2Name);
+            player.load(loadedGame.log);
+            this.startReplay();
         }
 
         private getEndGameText(gameResult: GameResult) {

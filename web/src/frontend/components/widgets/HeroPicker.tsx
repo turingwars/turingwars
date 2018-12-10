@@ -141,15 +141,15 @@ const StyledElement = styled.div<{
 
 const RankField = (props: {value: string | number}) => (
     <span style={{whiteSpace: 'pre'}}>{
-        ("     " + props.value).substr(-4)
+        (`     ${props.value}`).substr(-4)
     }</span>
 );
 
 const ScoreField = (props: { stats: { score: number, wins: number, losses: number }}) => (
     <span style={{whiteSpace: 'pre'}}>{
-        ("      " + props.stats.score).substr(-6)
+        (`      ${props.stats.score}`).substr(-6)
     } - {
-        (props.stats.wins + " / " + props.stats.losses + "      ").substr(0, 9)
+        (`${props.stats.wins} / ${props.stats.losses}      `).substr(0, 9)
     }</span>
 );
 

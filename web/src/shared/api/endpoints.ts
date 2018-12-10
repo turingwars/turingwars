@@ -1,5 +1,5 @@
 import { GET, POST, defineAPI }from 'rest-ts-core';
-import { ResultPage, HeroSummary, Hero, GetGameResponse, CreateMatchRequest, PlaytestRequest, CreateMatchResponse, CommitHeroRequest } from './dto';
+import { ResultPage, HeroSummary, Hero, GetGameResponse, CreateMatchRequest, PlaytestRequest, CreateMatchResponse, CommitHeroRequest, PlaytestResponse } from './dto';
 import * as rt from 'runtypes';
 
 export const endpoints = defineAPI({
@@ -26,6 +26,6 @@ export const endpoints = defineAPI({
         
     playTest: POST `/playtest`
         .body(PlaytestRequest)
-        .response(CreateMatchResponse)
+        .response(PlaytestResponse)
 
 });

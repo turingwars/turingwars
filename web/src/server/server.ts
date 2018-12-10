@@ -11,7 +11,6 @@ import { Container } from 'inversify';
 import { EXPRESS_APP, IModule } from './framework';
 import { TuringWarsModule } from './modules/TuringWars/TuringWarsModule';
 
-
 const APP_MODULES: IModule[] = [
     new TuringWarsModule()
 ];
