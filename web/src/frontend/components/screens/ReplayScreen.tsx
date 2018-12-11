@@ -15,6 +15,8 @@ import { Row } from 'frontend/components/layout/Row';
 import { startGame, initPlayers } from 'frontend/redux/replay/actions';
 import { GameResult } from 'frontend/redux/replay/state';
 import { ActionsRow } from 'frontend/components/layout/ActionsRow';
+import { Sounds } from 'frontend/sounds';
+import { Preloader } from 'frontend/preloader';
 
 const MEMORY_WIDTH = 40;
 const START_DELAY_MS = 1000;
@@ -35,6 +37,8 @@ const PlayerName = styled.div<{winner: boolean}>`
     margin: 5px 20px;
     margin-top: 0;
     color: ${GRAY_2};
+    font-family: Lazer85;
+    text-transform: lowercase;
     ${props => props.winner && css`
         text-shadow: 0px 0px 2px ${GRAY_2};
         color: ${COLOR_PRIMARY};
@@ -45,12 +49,22 @@ const Contents = styled.div`
     margin-top: -40px;
 `;
 
-type ReplaySreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId: string}>;
+type ReplayScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{gameId: string}>;
 
 export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
-    class extends React.Component<ReplaySreenProps> {
+    class extends React.Component<ReplayScreenProps> {
 
         /** @override */ public componentDidMount() {
+
+            this.waitForPreloader();
+        }
+
+        private waitForPreloader() {
+            if (Preloader.isPreloaderVisible()) {
+                setTimeout(() => this.waitForPreloader(), 1000);
+                return;
+            }
+
             if (!this.props.gameStarted) {
                 this.pollServerForGame().catch((e) => {throw e;});
             }
@@ -119,14 +133,17 @@ export const ReplayScreen = connect(mapStateToProps, mapDispatchToProps)(
             if (gameResult.type === 'DRAW') {
                 return 'Draw!';
             } else if(gameResult.winner === '0') {
+                Sounds.playSFX('you_win');
                 return `${this.props.player1.name} wins!`;
             } else {
+                Sounds.playSFX('you_loose');
                 return `${this.props.player2.name} wins!`;
             }
         }
 
         private startReplay() {
             this.props.startGame();
+            Sounds.playSFX('fight');
             // Delay the start of the game by one second so we can appreciate the magnificent wordart
             // in the middle of the screen.
             setTimeout(() => player.start(), START_DELAY_MS);

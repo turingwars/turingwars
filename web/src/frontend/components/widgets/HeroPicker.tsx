@@ -7,9 +7,10 @@ import { Label } from './Label';
 import { SearchInput } from './SearchBar';
 import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/private/PagedDataSource';
 import { herosCache } from '../../services/api';
+import { Sounds } from 'frontend/sounds';
 
-const ENTRIES_PER_PAGE = 15;
-const PICKER_HEIGHT = 500;
+const ENTRIES_PER_PAGE = 10;
+const PICKER_HEIGHT = 350;
 
 /**
  * Returns the index of the first entry shown at page n (0-indexed)
@@ -27,10 +28,6 @@ function firstEntryOfPage(n: number) {
 }
 
 const HorizontalPixelGridBackground = styled.div<{baseColor: string}>`
-    background: repeating-linear-gradient(
-        ${props => color(props.baseColor).fade(1).string()} 0px,
-        ${props => color(props.baseColor).fade(0.8).string()} 3px,
-        ${props => color(props.baseColor).fade(1).string()} 4px);
     position: absolute;
     width: 100%;
     height: 100%;
@@ -59,6 +56,7 @@ const RGBPixelGridBackground = styled.div`
     height: 100%;
     top: 0;
     z-index: 101;
+    opacity: 0.7;
     mix-blend-mode: multiply;
 `;
 
@@ -143,11 +141,17 @@ class ListElement extends React.PureComponent<{
         selected: boolean;
         baseColor: string;
     }> {
+
+    public hover(): void {
+        Sounds.playSFX("beep");
+    }
+
     /** @override */ public render() {
         return <StyledElement
                 baseColor={this.props.baseColor}
                 selected={this.props.selected}
-                onClick={this.clickHandler}>
+                onClick={this.clickHandler}
+                onMouseEnter={this.hover}>
             <Label>{ this.props.hero.name }</Label>
         </StyledElement>
     }

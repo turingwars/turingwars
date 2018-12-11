@@ -19,10 +19,10 @@ const mapDispatchToProps = {
     loadCode
 };
 
-type LoadHeroSreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type LoadHeroScreenProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 export const LoadHeroScreen = connect(mapStateToProps, mapDispatchToProps)(
-class extends React.Component<LoadHeroSreenProps> {
+class extends React.Component<LoadHeroScreenProps> {
 
     /** @override */ public state = {
         listState: HeroPicker.initialListState()

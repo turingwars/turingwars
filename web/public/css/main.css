@@ -5,6 +5,11 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: 'Lazer85';
+    src: url('../fonts/lazer85.woff');
+}
+
 html {
     background-color: #000;
 }
@@ -17,20 +22,8 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
+    padding-top: 10px;
 }
-
-#innerBody{
-    position:relative;
-    z-index: 100;
-    background-color: black;
-    width: 1000px;
-    margin:auto;
-    padding: 30px;
-    padding-top: 5px;
-    opacity: 0.9;
-    background: linear-gradient(to bottom, #0000 0%,#00000073 10%,#1c1c1c 30%,#131313 100%);
-}
-
 
 /** Code-mirror stuff */
 

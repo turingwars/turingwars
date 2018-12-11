@@ -9,5 +9,5 @@ export const FatMenu = styled.div`
     width: 100%;
     padding: 20px 0;
     margin: 0;
-    height: 400px;
+    height: 350px;
 `;

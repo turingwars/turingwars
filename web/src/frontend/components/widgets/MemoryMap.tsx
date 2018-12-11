@@ -49,6 +49,7 @@ const MemoryMapCanvas = styled.canvas`
     border: 15px solid #222;
     padding: 0px;
     margin: 0px 5px;
+    z-index:4;
 `;
 
 export class MemoryMap extends React.Component<IMemoryMapProps> {
