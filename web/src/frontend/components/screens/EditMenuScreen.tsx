@@ -7,6 +7,8 @@ import { FatMenu } from 'frontend/components/widgets/FatMenu';
 import { FatMenuButton } from 'frontend/components/widgets/FatMenuButton';
 import { MainTitle } from 'frontend/components/widgets/MainTitle';
 import { FatMenuSpacer } from 'frontend/components/widgets/FatMenuSpacer';
+import { ActionsRow } from '../layout/ActionsRow';
+import { BackButton } from '../widgets/BackButton';
 
 const DEFAULT_CODE = `; Type your code here
 
@@ -36,13 +38,16 @@ export const EditMenuScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <div>
-            <MainTitle>Create a hero</MainTitle>
+            <MainTitle>New Hero</MainTitle>
             <FatMenu>
-                <FatMenuButton href={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
-                <FatMenuButton href={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_EDITOR}`} onClick={this.fromScratchHandler}>From scratch</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_IMPORT_HERO}`}>Load existing</FatMenuButton>
                 <FatMenuSpacer />
-                <FatMenuButton href="#/" smaller={true}>Main menu</FatMenuButton>
+                <FatMenuButton url="#/" smaller={true}>Main menu</FatMenuButton>
             </FatMenu>
+            <ActionsRow>
+                <BackButton />
+            </ActionsRow>
         </div>
     }
 

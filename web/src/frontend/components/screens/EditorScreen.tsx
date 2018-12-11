@@ -35,6 +35,10 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
 
     /** @override */ public render() {
         return <BaseScreen title="Hero creator">
+            <style dangerouslySetInnerHTML={{__html: `.cm-s-isotope.CodeMirror {
+                height: 400px !important;
+                margin-bottom: 20px;
+            }`}} />
             <EditorCheatSheet></EditorCheatSheet>
             <CodeMirror
                 value={this.props.code || ''}
@@ -52,9 +56,9 @@ export const EditorScreen = connect(mapStateToProps, mapDispatchToProps)(
                 editorDidMount={(editor) => this.instance = editor }
             />
             <ActionsRow>
-                <Button href={`#${ROUTE_HOME}`}>◄ Home</Button>
+                <Button url={`#${ROUTE_HOME}`}>◄ Home</Button>
                 <Button onClick={this.discardHandler}>Discard</Button>
-                <Button href={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
+                <Button url={`#${ROUTE_PUBLISH_HERO}`}>Publish</Button>
                 <Button onClick={this.playtestHandler}>Test ►</Button>
             </ActionsRow>
 

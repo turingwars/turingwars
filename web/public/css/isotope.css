@@ -15,7 +15,7 @@
 .cm-s-isotope .CodeMirror-linenumber {color: #808080;}
 .cm-s-isotope .CodeMirror-cursor {border-left: 1px solid #c0c0c0 !important;}
 
-.cm-s-isotope span.cm-comment {color: #3300ff;}
+.cm-s-isotope span.cm-comment {color: #808080;}
 .cm-s-isotope span.cm-atom {color: #cc00ff;}
 .cm-s-isotope span.cm-number {color: #cc00ff;}
 

@@ -26,7 +26,6 @@ Star.prototype.update = function() {
   	this.space.population.splice(this.space.population.indexOf(this),1)
   	this.space.populate(1);
   }
-
 };
 
 function sign() {
@@ -93,7 +92,6 @@ Space.prototype = {
 
 document.addEventListener('DOMContentLoaded', function() {
 	var sp = new Space(5);
-	console.log(sp);
 });
 
 })();

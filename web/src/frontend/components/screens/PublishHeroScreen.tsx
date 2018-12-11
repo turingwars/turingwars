@@ -40,15 +40,15 @@ class extends React.Component<PublishHeroScreenProps> {
 
     /** @override */ public render() {
         return <div>
-            <MainTitle>Publish your hero</MainTitle>
+            <MainTitle>Publish</MainTitle>
             <FatMenu>
                 <Label>Publish your hero to make it visible to other players.<br />You won't be able to modify it after that.</Label>
                 <Input placeholder="Name your herofrontend/components." value={this.state.heroName} onChange={this.handleHeroNameChange} />
                 { this.state.error && <Label type="error">{ this.state.error }</Label> }
                 <FatMenuSpacer />
-                <Button href="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>
+                <Button url="#" onClick={this.publishHandler} enabled={this.state.heroName != ''} >Publish</Button>
                 <FatMenuSpacer />
-                <FatMenuButton href={`#${ROUTE_EDITOR}`} smaller={true}>Back to editor</FatMenuButton>
+                <FatMenuButton url={`#${ROUTE_EDITOR}`} smaller>Back to editor</FatMenuButton>
             </FatMenu>
         </div>
     }

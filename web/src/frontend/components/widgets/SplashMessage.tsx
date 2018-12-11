@@ -27,6 +27,8 @@ export const SplashMessageText = styled.div`
     animation-duration: 1000ms;
     animation-name: ${splashing};
     color: ${COLOR_PRIMARY};
+    font-family: Lazer85;
+    text-transform: lowercase;
 `;
 
 export class SplashMessage extends React.Component<ISplashMessageProps> {
