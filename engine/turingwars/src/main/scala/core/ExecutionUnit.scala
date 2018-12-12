@@ -117,7 +117,7 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
     destInstruction.copy(newA, newB)
   }
 
-  def outputState(): String = {
+  def serializedState(): GameUpdate = {
     val ret = GameUpdate(
       state.processes.zipWithIndex.map({ case (descriptor: ProcessDescriptor, id: Int) =>
         Process(
@@ -142,9 +142,10 @@ class ExecutionUnit(var state: State, val nbCycles: Int = 1000, val diffFrequenc
         )
       )),
       state.scores.map(t => Score(t._1.toString, t._2)).toList
-    ).asJson.noSpaces
-
+    )
     state.memory.resetDiff()
     ret
   }
+
+  def outputState(): String = serializedState().asJson.noSpaces
 }

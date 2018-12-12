@@ -3,19 +3,30 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { createStore, Store } from 'redux';
+
+import { AppBody } from './components/layout/CRTElements';
 import { EditMenuScreen } from './components/screens/EditMenuScreen';
 import { EditorScreen } from './components/screens/EditorScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
+import { LeaderboardScreen } from './components/screens/LeaderboardScreen';
 import { LoadHeroScreen } from './components/screens/LoadHeroScreen';
 import { MatchMakingScreen } from './components/screens/MatchMakingScreen';
-import { ReplayScreen } from './components/screens/ReplayScreen';
-import { ROUTE_CREATE_HERO, ROUTE_EDITOR, ROUTE_IMPORT_HERO, ROUTE_MATCHMAKING, ROUTE_REPLAY, ROUTE_PLAYTEST, ROUTE_PUBLISH_HERO } from './services/navigation';
-import { AppActions, reducer } from './redux/reducer';
-import { initialState, State } from './redux/state';
-import { player } from './services/player';
 import { PlaytestOponentPickerScreen } from './components/screens/PlaytestOponentPickerScreen';
 import { PublishHeroScreen } from './components/screens/PublishHeroScreen';
-import { AppBody } from './components/layout/CRTElements';
+import { ReplayScreen } from './components/screens/ReplayScreen';
+import { AppActions, reducer } from './redux/reducer';
+import { initialState, State } from './redux/state';
+import {
+    ROUTE_CREATE_HERO,
+    ROUTE_EDITOR,
+    ROUTE_IMPORT_HERO,
+    ROUTE_LEADERBOARD,
+    ROUTE_MATCHMAKING,
+    ROUTE_PLAYTEST,
+    ROUTE_PUBLISH_HERO,
+    ROUTE_REPLAY,
+} from './services/navigation';
+import { player } from './services/player';
 
 declare global {
     interface Window {
@@ -34,7 +45,8 @@ ReactDOM.render(
             <AppBody>
                 <Route exact path="/" component={HomeScreen} />
                 <Route exact path={ROUTE_MATCHMAKING} component={MatchMakingScreen} />
-                <Route path={`${ROUTE_REPLAY}/:gameId`} component={ReplayScreen} />
+                <Route path={`${ROUTE_REPLAY}/:gameId?`} component={ReplayScreen} />
+                <Route exact path={ROUTE_LEADERBOARD} component={LeaderboardScreen} />
                 <Route exact path={ROUTE_IMPORT_HERO} component={LoadHeroScreen} />
                 <Route exact path={ROUTE_EDITOR} component={EditorScreen} />
                 <Route exact path={ROUTE_CREATE_HERO} component={EditMenuScreen} />

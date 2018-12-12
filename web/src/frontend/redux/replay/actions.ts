@@ -1,5 +1,5 @@
 import { GameUpdate } from 'shared/model/GameUpdate';
-import { GameResult } from './state';
+import { GameResult, LoadedGame } from './state';
 import { baseAction } from '../utils';
 
 export function publishGameUpdate(update: GameUpdate) {
@@ -34,6 +34,10 @@ export function initPlayers(p1Name: string, p2Name: string) {
     });
 }
 
+export function loadGame(loadedGame: LoadedGame) {
+    return baseAction('loadGame', loadedGame);
+}
+
 /**
  * Join here all possible actions
  */
@@ -43,4 +47,5 @@ export type ReplayActions =
         ReturnType<typeof publishVictory> |
         ReturnType<typeof publishGameOver> |
         ReturnType<typeof resetReplay> |
-        ReturnType<typeof initPlayers>;
+        ReturnType<typeof initPlayers> |
+        ReturnType<typeof loadGame>;

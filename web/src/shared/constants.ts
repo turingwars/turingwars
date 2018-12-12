@@ -14,7 +14,7 @@ export const CORESIZE = 40 * 40;
 export const NUM_CYCLES = 2000;
 
 /**
- * Number of scheduler cwles
+ * Number of scheduler cycles to skip between consecutive updates
  */
 export const UPDATE_PERIOD = 4;
 

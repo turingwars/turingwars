@@ -10,7 +10,11 @@ export const Hero = Record({
 export type HeroSummary = Static<typeof HeroSummary>;
 export const HeroSummary = Record({
     name: String,
-    id: String
+    id: String,
+    rank: Number,
+    score: Number,
+    wins: Number,
+    losses: Number
 });
 
 export interface ResultPage<T> {
@@ -41,6 +45,13 @@ export const PlaytestRequest = Record({
 });
 export type PlaytestRequest = Static<typeof PlaytestRequest>;
 
+export const PlaytestResponse = Record({
+    opponentName: String,
+    log: Array(GameUpdate)
+});
+export type PlaytestResponse = Static<typeof PlaytestResponse>;
+
+
 export type GetGameResponse = Static<typeof GetGameResponse>;
 export const GetGameResponse = Intersect(
     Record({
@@ -48,7 +59,6 @@ export const GetGameResponse = Intersect(
         isOver: Boolean,
         player1Name: String,
         player2Name: String,
-
     }),
     Partial({
         log: Array(GameUpdate)

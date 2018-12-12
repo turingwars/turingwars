@@ -9,8 +9,10 @@ import { IDataPage, emptyDataPage, PagedDataSource } from '../../services/privat
 import { herosCache } from '../../services/api';
 import { Sounds } from 'frontend/sounds';
 
-const ENTRIES_PER_PAGE = 10;
-const PICKER_HEIGHT = 350;
+export const ENTRIES_PER_PAGE = 10;
+export const PICKER_HEIGHT = 350;
+export const PICKER_ROW_HEIGHT = PICKER_HEIGHT / ENTRIES_PER_PAGE;
+export const PICKER_FONT_SIZE = PICKER_HEIGHT / ENTRIES_PER_PAGE - 6;
 
 /**
  * Returns the index of the first entry shown at page n (0-indexed)
@@ -106,10 +108,10 @@ const StyledElement = styled.div<{
         baseColor: string;
         selected: boolean;
     }>`
-    font-size: ${PICKER_HEIGHT / ENTRIES_PER_PAGE - 6}px; /* The magic offset depends on the font used */
+    font-size: ${PICKER_FONT_SIZE}px; /* The magic offset depends on the font used */
     color: #eee;
     width: 100%;
-    height: ${PICKER_HEIGHT / ENTRIES_PER_PAGE}px;
+    height: ${PICKER_ROW_HEIGHT}px;
     padding: 3px 12px;
     cursor: pointer;
     position: relative;
@@ -135,11 +137,28 @@ const StyledElement = styled.div<{
     }
 `;
 
+const RankField = (props: {value: string | number}) => (
+    <span style={{whiteSpace: 'pre'}}>{
+        (`     ${props.value}`).substr(-4)
+    }</span>
+);
+
+const ScoreField = (props: { stats: { score: number, wins: number, losses: number }}) => (
+    <span style={{whiteSpace: 'pre'}}>{
+        (`      ${props.stats.score}`).substr(-6)
+    } - {
+        (`${props.stats.wins} / ${props.stats.losses}      `).substr(0, 9)
+    }</span>
+);
+
+const If = (props: any) => props.condition ? props.children : null;
+
 class ListElement extends React.PureComponent<{
         hero: HeroSummary;
         onClick: (heroId: string) => void;
         selected: boolean;
         baseColor: string;
+        showRanking: boolean;
     }> {
 
     public hover(): void {
@@ -152,7 +171,13 @@ class ListElement extends React.PureComponent<{
                 selected={this.props.selected}
                 onClick={this.clickHandler}
                 onMouseEnter={this.hover}>
-            <Label>{ this.props.hero.name }</Label>
+            <Label>
+                <If condition={this.props.showRanking}>
+                    <RankField value={this.props.hero.rank} /> |
+                    <ScoreField stats={this.props.hero} /> |&nbsp;
+                </If>
+                { this.props.hero.name }
+            </Label>
         </StyledElement>
     }
 
@@ -173,6 +198,7 @@ export type HeroPickerProps = {
     player: 1 | 2;
     list: HeroPickerListState;
     update: (listState: HeroPickerListState) => void;
+    showRanking?: boolean;
 };
 
 export class HeroPicker extends React.Component<HeroPickerProps> {
@@ -227,9 +253,11 @@ export class HeroPicker extends React.Component<HeroPickerProps> {
                 </StyledElement>
             ),
             herosPage.data.map((hero) => <ListElement
+                showRanking={this.props.showRanking === true}
                 key={hero.id}
                 baseColor={baseColor}
-                hero={hero} selected={hero.id === this.props.list.selected}
+                hero={hero}
+                selected={hero.id === this.props.list.selected}
                 onClick={this.selectHandler} />
             ),
             herosPage.hasNext && (
