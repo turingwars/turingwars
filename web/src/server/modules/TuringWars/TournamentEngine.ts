@@ -85,7 +85,7 @@ export class TournamentEngine {
         if (leastPlayed != null) {
             // Now find a match it has not played yet
             const missingMatch = await this.championsRepo.createQueryBuilder()
-                .andWhere(`NOT EXISTS(SELECT 1 FROM game_log WHERE game_log.player1Id = ${leastPlayed.id} AND game_log.player2Id = Champion_id)`)
+                .andWhere(`NOT EXISTS(SELECT 1 FROM game_log WHERE game_log.player1Id = ${leastPlayed.id} AND game_log.player2Id = \`Champion\`.\`id\`)`)
                 .getOne();
             if (missingMatch != null) {
                 // Simulate that game
