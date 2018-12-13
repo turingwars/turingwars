@@ -26,3 +26,4 @@ branches:
   only: 
     # Avoids PRs to get built twice but keep building master when a new change is merged
     - master
+    - /^\d+\.\d+\.\d+(-\S+)?$/
