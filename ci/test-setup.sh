@@ -21,7 +21,7 @@ pid=-1
 
 echo "Testing the version to be published"
 
-tag=`git describe --tags`
+tag=`git describe --tags | sed 's/v?\(\d+\.\d+(\.\d+)?(-\S+)\)?/\1/'`
 version=`turingwars --version`
 if ! echo $tag | grep -q 'untagged' && [ "$version" != "$tag" ]; then
     echo "Did not return the right version:"
