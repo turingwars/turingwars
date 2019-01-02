@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
-import { SQLColumnType_mediumText } from './schemaHelper';
+import { SQLColumnType_mediumText } from './dbUtils';
 
 @Entity()
 @Index(["player1Id", "player2Id"], { unique: true })

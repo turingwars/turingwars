@@ -11,7 +11,7 @@ import { IModule } from 'server/framework';
 import { TournamentEngine } from './TournamentEngine';
 import { GameEngine } from './GameEngine';
 
-const ONE_SECOND_IN_MS = 2000;
+const DB_POLL_INTERVAL = 2000;
 const DB_CONNECT_ATTEMPTS = 40;
 
 @injectable()
@@ -64,7 +64,7 @@ export class TuringWarsModule implements IModule {
                     console.log("Failed to connect. Retrying...");
                 }
             }
-            await pause(ONE_SECOND_IN_MS);
+            await pause(DB_POLL_INTERVAL);
         }
         throw new Error("Unreachable code reached!");
     }

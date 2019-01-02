@@ -4,6 +4,7 @@ import { Champion } from './data/Champion';
 import { GameLog } from './data/GameLog';
 import { GAMES_REPO, CHAMPIONS_REPO } from './TuringWarsModuleConstants';
 import { GameEngine } from './GameEngine';
+import { isDuplicateEntryViolation } from './data/dbUtils';
 
 /**
  * Handles matchmaking and ranking.
@@ -112,7 +113,7 @@ export class TournamentEngine {
         try {
             await this.gamesRepo.save(theGame);
         } catch (e) {
-            if (/UNIQUE constraint failed/.test(e.message)) {
+            if (isDuplicateEntryViolation(e)) {
                 return this.gamesRepo.findOneOrFail({
                     where: {
                         player1Id: theGame.player1Id,
