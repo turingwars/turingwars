@@ -1,64 +1,36 @@
-# TuringWars [![Build Status](https://travis-ci.org/turingwars/turingwars.svg?branch=master)](https://travis-ci.org/turingwars/turingwars)
+# TuringWars
 
-![TuringWars](/resources/logos/turingwars.png)
+<p align="center">
+    <img src="/resources/logos/turingwars.png" />
+</p>
+<p align="center">
+    May the core be with you!
+</p>
 
-TuringWars is a game where you create **programs** that fight together to **death**!
 
-You create simple programs in assembly (two lines of code are enough).
+TuringWars is a multiplayer strategic coding game, inspired by the 1984 classic: [Core War](https://en.wikipedia.org/wiki/Core_War).
 
-Then, we spawn two programs in a shared space (a Turing machine), and execute them turn by turn.
+In this game, you write a **program** which fights other programs in **duels**. All submissions are ranked in a world-wide leaderboard.
 
-The goal is to generate more **resources** than the opponent ! Think of bitcoin miners; those program have access to a special assembly instruction `MINE` that generates resources. But beware of others programs ! Will you greedily mine, or try to anticipate and react to what your opponent is doing ?
+## Get started
 
-![TuringWars](/resources/screenshots/ingame.png)
+Read [the manual](https://github.com/turingwars/turingwars/wiki/Player-guide) to learn how to play and get started in a breeze.
 
-### Thanks for the pitch. But how does it work ?
+## Running the game
 
-The simplest program is the *Miner*.
-```asm
-mine %id
-mov 1 -1
+### Public instance
+
+The easiest way to play the game is to go to a public instance. You can try https://turingwars.hmil.fr , or ping @hmil if the instance is down.
+
+### From a github release
+
+The second easiest way is to use a pre-built release with Node.JS.
+
+Grab the [latest release](https://github.com/turingwars/turingwars/releases/latest) from GitHub. Copy the link to `turing-wars.tgz` and install it with npm.
+
+For instance, to install version 0.0.4, run
 ```
-His first instruction is *mining* for himself (`%id`), then is second instruction is "move back one instruction".
-
-Hey, that sound efficient! Let's see another simple program that defeats the first one, the *Imp*.
-```asm
-mov 1 0
-```
-Twice as efficient, only one instruction! Thing is, he never *mines*, so he never generates point for himself. But he copies the current instruction `mov 1 0` on the next memory slot, and proceed to quickly overwrite the memory with those useless instruction. When it comes where the *Miner* is, he kills it by overwriting the *Miner* program.
-
-### No, that's too dumb. Anything else ?
-
-Sure! a simple but more clever version is the *Dwarf*, so-called because he creates tunnels.
-```asm
-add b(3) 4
-mov b(2) 2
-jmp -2
-mine %id
-```
-This one does not mine at first, but hopes to hijack the other's program CPU time! He floods every 4 slots of the memory with `mov` instructions that points to its own `mine` instruction. If it his the memory space corresponding to the opponent program, he will make him jump to the Dwarf's `mine` instruction. Potentially, in the end, both program work for the Dwarf ! 
-
-
-## Development guidelines
-
-### How to run
-
-You need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt](https://www.scala-sbt.org/) to build and run stuff.
-
-Then just run `make serve` from the root of the repo and you are good to go.
-
-### How to debug
-
-In VSCode, just hit "F5" while the server is running, this will attach a debugger to the process. Then set your breakpoints and happy debugging!
-
-
-## Using the releases
-
-Grab the [latest release](https://github.com/turingwars/turingwars/releases/latest) from github. Copy the link to `turing-wars.tgz` and install it with npm.
-
-For instance:
-```
-npm install -g https://github.com/turingwars/turingwars/releases/download/(actual version here)/turing-wars.tgz
+npm install -g https://github.com/turingwars/turingwars/releases/download/v0.0.4/turing-wars.tgz
 ```
 
 Then start the game with:
@@ -67,10 +39,21 @@ Then start the game with:
 turingwars
 ```
 
+### From source
 
-## Authors
+To build and run the game from source, you need **a recent** [NodeJS](https://nodejs.org/) (at least 8.11 LTS) and [sbt](https://www.scala-sbt.org/), as well as `make`<sup>*</sup>.
 
-- [Christophe Tafani-Dereeper](https://christophetd.fr)
-- Nicolas Reich
-- [Hadrien Milano](https://hmil.fr)
-- [Ludovic Barman](https://lbarman.ch)
+Then just run `make serve` from the root of the repo and you are good to go.
+
+<sup>*</sup> make is found: on linux in the package `build-essentials`, on MacOS it ships with Xcode, on windows good luck.
+
+### How to debug
+
+In VSCode, hit "F5" while the server is running, this will attach a debugger to it. Then set your breakpoints and happy debugging!
+
+## About
+
+The core mechanic of this game was re-discovered independently from Core War. Elements of the latter were then integrated into the design of TuringWars.
+
+Original concept: [Ludovic Barman](https://lbarman.ch), [Hadrien Milano](https://hmil.fr), Nicolas Reich, [Christophe Tafani-Dereeper](https://christophetd.fr)
+Maintainers: Ludovic Barman & Hadrien Milano
