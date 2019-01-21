@@ -86,7 +86,7 @@ class Instruction extends React.Component<IInstructionProps> {
                     style = CODEMIRROR_CSS_CONSTANTS.keyword;
                     break;
             }
-            return <Token value={token+' '} class={style} />
+            return <Token value={token+' '} class={style} key={token}/>
         });
 
         if(this.props.tooltip !== undefined){

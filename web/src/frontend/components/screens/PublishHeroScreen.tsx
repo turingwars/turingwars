@@ -34,6 +34,7 @@ class extends React.Component<PublishHeroScreenProps> {
 
     /** @override */ public componentDidMount() {
         if (this.props.code == null) {
+            console.error('Publish screen has no code to publish!');
             navigateTo(ROUTE_HOME);
         }
     }

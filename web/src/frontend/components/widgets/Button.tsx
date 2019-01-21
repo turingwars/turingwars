@@ -77,7 +77,7 @@ export class Button extends React.Component <IButtonProps>{
 
     /** @override */ public render() {
         return <StyledButton 
-            href={(this.props.url === undefined) ? this.props.url : '#'}
+            href={(this.props.url !== null) ? this.props.url : '#'}
             onMouseEnter={this.hover}
             onClick={this.props.onClick}
             size={this.props.size}
