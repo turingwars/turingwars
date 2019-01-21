@@ -1,16 +1,18 @@
-# TuringWars
-
 <p align="center">
-    <img src="/resources/logos/turingwars.png" />
+    <img src="/resources/logos/turingwars.png" width="450" alt="Turing Wars logo"/>
 </p>
 <p align="center">
-    May the core be with you!
+    <strong>Turing Wars</strong> — may the core be with you!
 </p>
 
 
-TuringWars is a multiplayer strategic coding game, inspired by the 1984 classic: [Core War](https://en.wikipedia.org/wiki/Core_War).
+Turing Wars is a multiplayer strategic coding game, inspired by the 1984 classic: [Core War](https://en.wikipedia.org/wiki/Core_War).
 
-In this game, you write a **program** which fights other programs in **duels**. All submissions are ranked in a world-wide leaderboard.
+In this game, **programs** fight each other in **duels** inside a virtual machine (aka. the **core**). The machine allocates one thread for each program. The goal is to cause the machine to spend as much CPU time mining resources for your side.
+
+There are infinite tactics, including killing the opponent's process, or tricking it into mining for the wrong side!
+
+All programs compete in a world-wide championship, and the best ones show up at the top of the leaderboard.
 
 ## Get started
 
@@ -22,7 +24,7 @@ Read [the manual](https://github.com/turingwars/turingwars/wiki/Player-guide) to
 
 The easiest way to play the game is to go to a public instance. You can try https://turingwars.hmil.fr , or ping @hmil if the instance is down.
 
-### From a github release
+### Using a pre-built release
 
 The second easiest way is to use a pre-built release with Node.JS.
 
@@ -45,7 +47,7 @@ To build and run the game from source, you need **a recent** [NodeJS](https://no
 
 Then just run `make serve` from the root of the repo and you are good to go.
 
-<sup>*</sup> make is found: on linux in the package `build-essentials`, on MacOS it ships with Xcode, on windows good luck.
+<sup>*</sup>make is found: on linux in the package `build-essentials`, on MacOS it ships with Xcode, on windows good luck.
 
 ### How to debug
 
@@ -53,7 +55,7 @@ In VSCode, hit "F5" while the server is running, this will attach a debugger to 
 
 ## About
 
-The core mechanic of this game was re-discovered independently from Core War. Elements of the latter were then integrated into the design of TuringWars.
+The core mechanic of this game was re-discovered independently from Core War. Redcode was used for inspiration in the design of the Turing Wars machine architecture.
 
-Original concept: [Ludovic Barman](https://lbarman.ch), [Hadrien Milano](https://hmil.fr), Nicolas Reich, [Christophe Tafani-Dereeper](https://christophetd.fr)
+Original concept: [Ludovic Barman](https://lbarman.ch), [Hadrien Milano](https://hmil.fr), Nicolas Reich, [Christophe Tafani-Dereeper](https://christophetd.fr)  
 Maintainers: Ludovic Barman & Hadrien Milano
