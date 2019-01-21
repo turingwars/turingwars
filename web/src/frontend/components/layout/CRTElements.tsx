@@ -46,7 +46,6 @@ const CRTScreen = styled.div`
 const CRTInnerScreen = styled.div`
     margin: 0px;
     padding: 0px;
-    animation: textShadow 10s infinite;
     padding-top: 50px;
     min-height: 650px;
     background: black;
